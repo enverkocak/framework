@@ -12,7 +12,7 @@ Deneme kapatılırken içeriği silinmez, arşive alınır: hiçbir veri
 kaybolmaz kuralı burada da geçerlidir.
 
 Komutlar:
-    ac       Yeni deneme alanı aç
+    aç       Yeni deneme alanı aç
     liste    Açık deneme alanları
     kapat    Deneme alanını kapat (arşivlenir)
 
@@ -115,7 +115,7 @@ def komut_kapat(args):
         print(f"Böyle bir deneme yok: {hedef}")
         return 1
 
-    # Once arsivle - hicbir veri silinmez
+    # Önce arşivle - hiçbir veri silinmez
     if not args.arsivleme:
         try:
             klasor = arsiv.arsivle(

@@ -5,8 +5,8 @@ Enver birden çok bilgisayar kullanıyor. Bir makinede yarım bırakılan iş
 diğerinde kaldığı yerden devam edebilmeli.
 
 Akış:
-  cek     Depodan en güncel hali al, sonra "nerede kaldık" göster
-  gonder  Yerel değişiklikleri depoya işle
+  çek     Depodan en güncel hali al, sonra "nerede kaldık" göster
+  gönder  Yerel değişiklikleri depoya işle
   durum   Yerel ile depo arasında fark var mı
 
 Çakışma koruması: göndermeden önce depoda yeni kayıt olup olmadığına bakılır.
@@ -40,7 +40,7 @@ SENKRON_YOLLARI = ["hafiza"]
 
 
 def _git(*argumanlar, kok=None):
-    """Depo komutu çalıştır, (basarili, cikti) döndür."""
+    """Depo komutu çalıştır, (başarılı, çıktı) döndür."""
     kok = kok or yollar.proje_kok()
     try:
         sonuc = subprocess.run(

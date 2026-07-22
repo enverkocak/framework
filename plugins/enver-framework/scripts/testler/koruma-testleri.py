@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Koruma senaryolari - butun kancalarin davranisini tek yerden dogrular.
+"""Koruma senaryoları - bütün kancaların davranışını tek yerden doğrular.
 
-Test verileri bilincli olarak bu dosyanin icinde tutulur. Kabuk komutuna
-gomulurse korumalar test komutunun kendisini engelliyor.
+Test verileri bilinçli olarak bu dosyanın içinde tutulur. Kabuk komutuna
+gömülürse korumalar test komutunun kendisini engelliyor.
 
-Kullanim:
-    python koruma-testleri.py [proje-koku]
+Kullanım:
+    python koruma-testleri.py [proje-kökü]
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import json
@@ -22,14 +22,14 @@ for akis in (sys.stdout, sys.stderr):
 KOK = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[4]
 KANCA_DIZINI = KOK / "hooks"
 
-# Sunucu adresi ve korunan kok HARITADAN okunur; teste gomulmez.
-# Bu dosya paylasilan kopyada da bulunacagi icin kisisel deger tasiyamaz.
+# Sunucu adresi ve korunan kök HARITADAN okunur; teste gömülmez.
+# Bu dosya paylaşılan kopyada da bulunacağı için kişisel değer taşıyamaz.
 def _harita():
     yol = KOK / "plugins" / "enver-framework" / "references" / "sunucu-haritasi.json"
     try:
         veri = json.loads(yol.read_text(encoding="utf-8"))
         sunucu = veri["sunucular"][0]
-        # Izinli bir dizin de haritadan alinir; testte proje adi gomulmez
+        # İzinli bir dizin de haritadan alınır; testte proje adı gömülmez
         izinli = sunucu["projeler"][0]["dizin"]
         return sunucu["adres"], veri["korunan_kok_dizinler"][0], izinli
     except (OSError, json.JSONDecodeError, KeyError, IndexError):
@@ -76,7 +76,7 @@ def baslik(metin):
     print(f"\n  {metin}")
 
 
-# ---------------------------------------------------------- veri korumasi
+# ---------------------------------------------------------- veri koruması
 
 baslik("Silme yasağı (E7)")
 for komut in ["rm -rf eski/", "rmdir bos/", "del /f x.txt",
@@ -103,7 +103,7 @@ dene("veri-koruma.py", "Write", {"file_path": str(KOK / "README.md")},
 dene("veri-koruma.py", "Write", {"file_path": str(KOK / "_calisma" / "test-deneme.tmp")},
      "gecti", "çalışma alanına geçici dosya")
 
-# ---------------------------------------------------------- kasa korumasi
+# ---------------------------------------------------------- kasa koruması
 
 baslik("Kasa erişimi (E1)")
 dene("kasa-koruma.py", "Read", {"file_path": str(KOK / "kasa" / "kasa.kilit")},
@@ -137,7 +137,7 @@ dene("kasa-koruma.py", "Write",
      {"file_path": "ayar.py", "content": "ANAHTAR = os.environ['API_KEY']"},
      "gecti", "ortam değişkeni")
 
-# ---------------------------------------------------------- sunucu korumasi
+# ---------------------------------------------------------- sunucu koruması
 
 baslik("Müşteri sunucusu koruması (E3)")
 dene("sunucu-koruma.py", "Bash",
@@ -154,7 +154,7 @@ dene("sunucu-koruma.py", "Bash", {"command": f"scp log.txt root@{ADRES}:/tmp/"},
 dene("sunucu-koruma.py", "Bash", {"command": "git status"},
      "gecti", "sunucuyla ilgisiz komut")
 
-# ---------------------------------------------------------- depo gizliligi
+# ---------------------------------------------------------- depo gizliliği
 
 baslik("Depo gizlilik kuralı")
 dene("git-gizlilik-koruma.py", "Bash", {"command": "gh repo create yeni --pub" + "lic"},
@@ -164,7 +164,7 @@ dene("git-gizlilik-koruma.py", "Bash", {"command": "gh repo create yeni"},
 dene("git-gizlilik-koruma.py", "Bash", {"command": "gh repo create yeni --private"},
      "gecti", "gizli depo")
 
-# ---------------------------------------------------------- sonuc
+# ---------------------------------------------------------- sonuç
 
 print()
 print(f"  Senaryo sonucu: {gecen} geçti, {kalan} kaldı")

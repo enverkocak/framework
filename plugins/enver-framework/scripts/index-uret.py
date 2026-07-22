@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Komut rehberini otomatik uretir.
+"""Komut rehberini otomatik üretir.
 
-Komut, ajan, beceri ve kanca dosyalarini tarar; her birinin
-basligini ve aciklamasini cikarip tek bir rehber metni olusturur.
+Komut, ajan, beceri ve kanca dosyalarını tarar; her birinin
+başlığını ve açıklamasını çıkarıp tek bir rehber metni oluşturur.
 
-Elle liste tutulmaz - dosyalar degisince rehber kendiliginden guncellenir.
+Elle liste tutulmaz - dosyalar değişince rehber kendiliğinden güncellenir.
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import json
@@ -14,7 +14,7 @@ import re
 import sys
 from pathlib import Path
 
-# Windows konsolu varsayilan olarak UTF-8 degil; Turkce karakterler bozulmasin.
+# Windows konsolu varsayılan olarak UTF-8 değil; Türkçe karakterler bozulmasın.
 for akis in (sys.stdout, sys.stderr):
     if hasattr(akis, "reconfigure"):
         akis.reconfigure(encoding="utf-8", errors="replace")
@@ -28,9 +28,9 @@ import metin  # noqa: E402
 PLUGIN_KOK = SCRIPT_DIZINI.parent
 FRAMEWORK_KOK = PLUGIN_KOK.parent.parent
 
-# Uretilen dosyalar komut ya da ajan degildir; rehbere girmemeli.
-# proje-index.py her klasore ICINDEKILER.md yaziyor ve bunlar
-# commands/ ile agents/ altina da dusuyor.
+# Üretilen dosyalar komut ya da ajan değildir; rehbere girmemeli.
+# proje-index.py her klasöre İÇİNDEKİLER.md yazıyor ve bunlar
+# commands/ ile agents/ altına da düşüyor.
 URETILEN_DOSYALAR = {"ICINDEKILER.md", "INDEX.md"}
 
 
@@ -38,7 +38,7 @@ def uretilmis_mi(yol):
     return yol.name in URETILEN_DOSYALAR
 
 
-# Komutlarin hangi kategoriye girdigi. Listede olmayan "Diger"e duser.
+# Komutların hangi kategoriye girdiği. Listede olmayan "Diğer"e düşer.
 KATEGORILER = {
     "Genel": ["index", "panel", "framework-ayarlari"],
     "Süreç ve durum": ["durum-kaydet", "faz-kontrol", "proje-baslat"],
@@ -49,7 +49,7 @@ KATEGORILER = {
 
 
 def on_bilgi_ayikla(icerik):
-    """Markdown dosyasinin basindaki YAML on bilgisini sozluk olarak dondur."""
+    """Markdown dosyasının başındaki YAML on bilgisini sözlük olarak döndür."""
     eslesme = re.match(r"^---\s*\n(.*?)\n---\s*\n", icerik, re.DOTALL)
     if not eslesme:
         return {}
@@ -63,7 +63,7 @@ def on_bilgi_ayikla(icerik):
 
 
 def aciklama_bul(yol):
-    """Dosyanin aciklamasini bul: once on bilgi, sonra ilk anlamli satir."""
+    """Dosyanın açıklamasını bul: önce on bilgi, sonra ilk anlamlı satır."""
     try:
         icerik = yol.read_text(encoding="utf-8", errors="ignore")
     except OSError:
@@ -141,7 +141,7 @@ def kancalari_tara():
 
     sonuc = []
     for yol in sorted(dizin.glob("*.py")):
-        # Alt cizgiyle baslayanlar yardimci modul, koruma degil
+        # Alt çizgiyle başlayanlar yardımcı modül, koruma değil
         if yol.name.startswith("_"):
             continue
         try:

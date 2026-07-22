@@ -8,10 +8,10 @@ düzenin farklı boyları değil, farklı düzenlerdir.
 Beş cihaz sınıfı:
 
     mobil       tek sütun, büyük dokunma hedefi, alt gezinme
-    buyuk-mobil tek sütun ama daha rahat, yan yana ikili öğeler
+    büyük-mobil tek sütun ama daha rahat, yan yana ikili öğeler
     tablet      iki sütun, yan panel açılabilir, hem dokunma hem imleç
     web         çok sütun, üst gezinme, imleç odaklı
-    masaustu    geniş ekran, kenarlar sınırlanır, okuma genişliği korunur
+    masaüstü    geniş ekran, kenarlar sınırlanır, okuma genişliği korunur
 
 Ayrıca cihazın kendisi de tanınır: dokunmatik mi, ince imleç mi, hareket
 azaltma isteniyor mu, ekran yoğunluğu ne.
@@ -39,7 +39,7 @@ for akis in (sys.stdout, sys.stderr):
     if hasattr(akis, "reconfigure"):
         akis.reconfigure(encoding="utf-8", errors="replace")
 
-# (anahtar, ad, alt sinir px, ust sinir px, aciklama)
+# (anahtar, ad, alt sınır px, üst sınır px, açıklama)
 CIHAZ_SINIFLARI = [
     ("mobil", "Mobil", 0, 479,
      "Tek sütun · tek elle kullanım · alt gezinme · büyük dokunma hedefi"),
@@ -53,13 +53,13 @@ CIHAZ_SINIFLARI = [
      "Geniş ekran · kenarlar sınırlanır · okuma genişliği korunur"),
 ]
 
-# Dokunma hedefi en az bu kadar olmali (WCAG ve platform kilavuzlari)
+# Dokunma hedefi en az bu kadar olmalı (WCAG ve platform kılavuzları)
 EN_KUCUK_DOKUNMA = 44
 
-# Okuma genisligi: satir basina karakter
+# Okuma genişliği: satır başına karakter
 OKUMA_GENISLIGI = "68ch"
 
-# Cihaz uyumunu bozan kaliplar
+# Cihaz uyumunu bozan kalıplar
 DENETIMLER = [
     ("goruntu-alani-yok", "yuksek",
      "Görüntü alanı etiketi yok",
@@ -76,8 +76,8 @@ DENETIMLER = [
 
     ("sabit-genislik", "yuksek",
      "Sabit piksel genişliği",
-     # min-width ve max-width HARIC: onlar kesme noktasi ve ust sinir belirtir,
-     # sorun olan sabit 'width' degeridir.
+     # min-width ve max-width HARİÇ: onlar kesme noktası ve üst sınır belirtir,
+     # sorun olan sabit 'width' değeridir.
      re.compile(r"(?<![-a-z])width\s*:\s*(?!auto|100%|inherit)\d{3,}px",
                 re.IGNORECASE),
      "Sabit genişlik küçük ekranda yatay kaydırma üretir. "

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Kancalarin ortak betik katmanini bulmasini saglar.
+"""Kancaların ortak betik katmanını bulmasını sağlar.
 
-Kancalar hem depo duzeninde hem kurulu duzende calisir; ikisinde de
-betikler ../plugins/enver-framework/scripts/ altindadir. Ortam degiskeni
-verilmisse once ona bakilir.
+Kancalar hem depo düzeninde hem kurulu düzende çalışır; ikisinde de
+betikler ../plugins/enver-framework/scripts/ altındadır. Ortam değişkeni
+verilmişse önce ona bakılır.
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import os
@@ -25,7 +25,7 @@ def _adaylar():
 
 
 def betik_dizini():
-    """Betik katmaninin yolunu dondur, bulunamazsa None."""
+    """Betik katmanının yolunu döndür, bulunamazsa None."""
     for aday in _adaylar():
         if (aday / "ortak" / "metin.py").is_file():
             return aday
@@ -33,10 +33,10 @@ def betik_dizini():
 
 
 def hazirla():
-    """Ortak betikleri iceri aktarilabilir hale getir.
+    """Ortak betikleri içeri aktarılabilir hale getir.
 
-    Basarili olursa True doner. Betikler bulunamazsa kanca yine de
-    calismali - o yuzden False donup sessizce gecilir.
+    Başarılı olursa True döner. Betikler bulunamazsa kanca yine de
+    çalışmalı - o yüzden False dönüp sessizce geçilir.
     """
     dizin = betik_dizini()
     if dizin is None:

@@ -3,10 +3,10 @@
 
 İki ayrı alan vardır ve bilinçli olarak ayrılmışlardır:
 
-  hafiza/   Kalıcı, özetlenmiş, PAYLAŞILAN bilgi. Depoya girer, makineler
+  hafıza/   Kalıcı, özetlenmiş, PAYLAŞILAN bilgi. Depoya girer, makineler
             arasında senkron olur. Küçük ve okunabilir kalır.
 
-  gunluk/   Ham oturum kaydı. Makineye özeldir, depoya GİRMEZ.
+  günlük/   Ham oturum kaydı. Makineye özeldir, depoya GİRMEZ.
             Büyüyebilir; özetlenip hafızaya aktarılır.
 
 Böylece "nerede kaldık" bilgisi her bilgisayarda aynı olur, ham kayıt ise

@@ -10,8 +10,8 @@ dosyayı doğru adlandırmaktan çok daha kolaydır.
 Kaynak dosyalar değiştirilmeden önce yedeklenir; hiçbir işlem tek yönlü değildir.
 
 İşlemler:
-    adlandir    Dosya adlarını düzenle (Türkçe karakter, boşluk, büyük harf)
-    tasi        Uzantıya göre klasörlere ayır
+    adlandır    Dosya adlarını düzenle (Türkçe karakter, boşluk, büyük harf)
+    taşı        Uzantıya göre klasörlere ayır
     listele     Klasördeki dosyaları türlerine göre say
 
 Geliştirici: Enver KOCAK

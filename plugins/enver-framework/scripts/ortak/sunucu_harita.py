@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Sunucu ve proje haritasi - okuma ve sorgulama.
+"""Sunucu ve proje haritası - okuma ve sorgulama.
 
-Sunucu korumasi artik sabit kodlanmis IP ve dizin kullanmaz;
-butun bilgi references/sunucu-haritasi.json icinden gelir.
+Sunucu koruması artık sabit kodlanmış IP ve dizin kullanmaz;
+bütün bilgi references/sunucu-haritası.json içinden gelir.
 
-Kullanim (komut satiri):
-    python sunucu_harita.py                 haritayi ozetle
+Kullanım (komut satırı):
+    python sunucu_harita.py                 haritayı özetle
     python sunucu_harita.py <dizin>         bu dizin hangi projeye ait
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import json
@@ -27,7 +27,7 @@ _onbellek = {}
 
 
 def yukle(yol=None):
-    """Haritayi oku. Dosya yoksa bos harita dondur."""
+    """Haritayı oku. Dosya yoksa boş harita döndür."""
     yol = Path(yol or VARSAYILAN_YOL)
     anahtar = str(yol)
 
@@ -44,7 +44,7 @@ def yukle(yol=None):
 
 
 def sunucu_bul(adres, yol=None):
-    """Adrese gore sunucu kaydini dondur."""
+    """Adrese göre sunucu kaydını döndür."""
     for sunucu in yukle(yol).get("sunucular", []):
         if sunucu.get("adres") == adres:
             return sunucu
@@ -56,7 +56,7 @@ def adresler(yol=None):
 
 
 def izinli_dizinler(sunucu):
-    """Bir sunucuda calisilmasina izin verilen butun dizinler."""
+    """Bir sunucuda çalışılmasına izin verilen bütün dizinler."""
     sonuc = list(sunucu.get("ortak_izinli_dizinler", []))
     for proje in sunucu.get("projeler", []):
         if proje.get("dizin"):

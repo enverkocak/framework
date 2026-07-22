@@ -5,8 +5,8 @@ Yirmi üç projenin tanımını elle yazmak yerine, klasördeki izlerden
 çıkarılabilecek ne varsa çıkarılır:
 
     teknolojiler   hangi dosyalar var (package.json, composer.json, *.php ...)
-    aciklama       README'nin ilk anlamlı satırı
-    alan_adi       depo adresinden ya da yapılandırma dosyalarından
+    açıklama       README'nin ilk anlamlı satırı
+    alan_adı       depo adresinden ya da yapılandırma dosyalarından
     durum          son değişiklik tarihine göre tahmin
     servisler      tanınan yapı taşları (site, API, bot, masaüstü ...)
 

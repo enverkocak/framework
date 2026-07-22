@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
-"""PreToolUse kancasi: Depo gizlilik korumasi.
+"""PreToolUse kancası: Depo gizlilik koruması.
 
 Kural: HER DEPO PRIVATE olacak.
-- Yeni depo olusturulurken --private zorunlu.
-- Mevcut bir depoyu public yapma girisimi engellenir.
-- Public yapmak gerekiyorsa Enver GitHub arayuzune girip elle yapar.
+- Yeni depo oluşturulurken --private zorunlu.
+- Mevcut bir depoyu public yapma girişimi engellenir.
+- Public yapmak gerekiyorsa Enver GitHub arayüzüne girip elle yapar.
 """
 
 import sys
 import json
 import re
 
-# Yeni depo olusturma komutu
+# Yeni depo oluşturma komutu
 DEPO_OLUSTUR = re.compile(r"\bgh\s+repo\s+create\b", re.IGNORECASE)
 
-# Gorunurluk degistirme komutu
+# Görünürlük değiştirme komutu
 DEPO_DUZENLE = re.compile(r"\bgh\s+repo\s+edit\b", re.IGNORECASE)
 
-# Public'e cevirme belirtileri
+# Public'e çevirme belirtileri
 PUBLIC_DESENLERI = [
     re.compile(r"--public\b", re.IGNORECASE),
     re.compile(r"--visibility[= ]+public\b", re.IGNORECASE),
@@ -25,14 +25,14 @@ PUBLIC_DESENLERI = [
     re.compile(r"private=false", re.IGNORECASE),
 ]
 
-# API uzerinden gorunurluk degistirme
+# API üzerinden görünürlük değiştirme
 API_GORUNURLUK = re.compile(r"\bgh\s+api\b.*\b(visibility|private)\b", re.IGNORECASE)
 
 PRIVATE_VAR = re.compile(r"--private\b", re.IGNORECASE)
 
 
 def engelle(sebep):
-    """Islemi reddet ve Turkce gerekce dondur."""
+    """İşlemi reddet ve Türkçe gerekçe döndür."""
     return {
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
@@ -48,7 +48,7 @@ def kontrol_et(komut):
 
     public_istegi = any(desen.search(komut) for desen in PUBLIC_DESENLERI)
 
-    # 1) Acikca public yapma girisimi
+    # 1) Açıkça public yapma girişimi
     if public_istegi:
         return engelle(
             "ENGELLENDI - Depo gizlilik kurali\n"
@@ -60,7 +60,7 @@ def kontrol_et(komut):
             "Bu islem buradan yapilamaz."
         )
 
-    # 2) Yeni depo olusturulurken --private yoksa
+    # 2) Yeni depo oluşturulurken --private yoksa
     if DEPO_OLUSTUR.search(komut) and not PRIVATE_VAR.search(komut):
         return engelle(
             "ENGELLENDI - Depo gizlilik kurali\n"
@@ -71,7 +71,7 @@ def kontrol_et(komut):
             "Komuta --private ekleyip tekrar dene."
         )
 
-    # 3) API uzerinden gorunurluk oynamasi - onay iste
+    # 3) API üzerinden görünürlük oynaması - onay iste
     if API_GORUNURLUK.search(komut):
         return {
             "hookSpecificOutput": {

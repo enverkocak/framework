@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Sanal deneme - komutu calistirmadan ne olacagini gosterir.
+"""Sanal deneme - komutu çalıştırmadan ne olacağını gösterir.
 
-Tahmin yurutmez: komutu gercek korumalara sorar ve verdikleri karari raporlar.
-Boylece rapor ile gercek davranis birbirinden ayrilamaz.
+Tahmin yürütmez: komutu gerçek korumalara sorar ve verdikleri kararı raporlar.
+Böylece rapor ile gerçek davranış birbirinden ayrılamaz.
 
-Kullanim:
+Kullanım:
     python kuru-deneme.py "rm -rf eski/"
-    python kuru-deneme.py --arac Write --dosya /yol/dosya.tmp
+    python kuru-deneme.py --araç Write --dosya /yol/dosya.tmp
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import argparse
@@ -26,7 +26,7 @@ sys.path.insert(0, str(SCRIPT_DIZINI / "ortak"))
 
 import yollar  # noqa: E402
 
-# Sirasiyla sorulacak korumalar
+# Sırasıyla sorulacak korumalar
 KORUMALAR = [
     ("Müşteri sunucusu koruması", "sunucu-koruma.py"),
     ("Depo gizlilik kuralı", "git-gizlilik-koruma.py"),
@@ -42,7 +42,7 @@ KARAR_ETIKETLERI = {
 
 
 def kanca_dizini():
-    """Kancalarin bulundugu dizini bul."""
+    """Kancaların bulunduğu dizini bul."""
     adaylar = [
         SCRIPT_DIZINI.parent.parent.parent / "hooks",
         Path(yollar.proje_kok()) / "hooks",
@@ -54,7 +54,7 @@ def kanca_dizini():
 
 
 def korumaya_sor(kanca_yolu, arac, girdiler):
-    """Bir korumaya komutu sor, kararini dondur."""
+    """Bir korumaya komutu sor, kararını döndür."""
     veri = json.dumps({"tool_name": arac, "tool_input": girdiler})
 
     try:

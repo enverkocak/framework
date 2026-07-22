@@ -6,10 +6,10 @@ klasör içindekiler belgeleri. "Şunu nerede yazmıştık" sorusunun cevabı
 için dört yere ayrı ayrı bakmak gerekmesin diye hepsi tek aramadan geçer.
 
 Aranan yerler:
-    hafiza/       durum, kararlar, hatalar, oturum özetleri
+    hafıza/       durum, kararlar, hatalar, oturum özetleri
     bilgi/        statik notlar
     proje tanımları (bu projede ve merkezi yansımada)
-    ICINDEKILER.md belgeleri
+    İÇİNDEKİLER.md belgeleri
 
 Kasa ARANMAZ. İçeriği şifrelidir ve parola olmadan okunamaz; arama
 yalnızca "bu bilgi kasada olabilir" diye yol gösterir.

@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-"""Yol cozumleme - proje kokunu ve standart dizinleri bulur.
+"""Yol çözümleme - proje kökünü ve standart dizinleri bulur.
 
-Sabit yol yazilmaz. Her sey proje kokunden turetilir, boylece
-farkli bilgisayarlarda farkli disk/dizin yapisi sorun cikarmaz.
+Sabit yol yazılmaz. Her şey proje kökünden türetilir, böylece
+farklı bilgisayarlarda farklı disk/dizin yapısı sorun çıkarmaz.
 
 Standart dizinler:
-    _calisma/   gecici isler (git'e girmez)
-    _arsiv/     isi biten her sey, notuyla (git'e girmez)
-    gunluk/     oturum kayitlari (git'e girmez)
+    _çalışma/   geçici işler (git'e girmez)
+    _arşiv/     işi biten her şey, notuyla (git'e girmez)
+    günlük/     oturum kayıtları (git'e girmez)
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import os
 from pathlib import Path
 
-# Proje kokunu belli eden isaretler (oncelik sirasiyla)
+# Proje kökünü belli eden işaretler (öncelik sırasıyla)
 KOK_ISARETLERI = [".git", "CLAUDE.md", ".claude"]
 
 CALISMA_ADI = "_calisma"
@@ -24,9 +24,9 @@ GUNLUK_ADI = "gunluk"
 
 
 def proje_kok(baslangic=None):
-    """Verilen yoldan yukari cikarak proje kokunu bul.
+    """Verilen yoldan yukarı çıkarak proje kökünü bul.
 
-    Bulunamazsa baslangic dizinini dondurur.
+    Bulunamazsa başlangıç dizinini döndürür.
     """
     if baslangic is None:
         baslangic = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
@@ -49,7 +49,7 @@ def proje_kok(baslangic=None):
 
 
 def calisma_dizini(kok=None, olustur=True):
-    """Gecici islerin yapildigi dizin."""
+    """Geçici işlerin yapıldığı dizin."""
     yol = Path(kok or proje_kok()) / CALISMA_ADI
     if olustur:
         yol.mkdir(parents=True, exist_ok=True)
@@ -57,7 +57,7 @@ def calisma_dizini(kok=None, olustur=True):
 
 
 def arsiv_dizini(kok=None, olustur=True):
-    """Arsiv dizini. Proje disina cikarilmak istenirse ayarlardan okunur."""
+    """Arşiv dizini. Proje dışına çıkarılmak istenirse ayarlardan okunur."""
     import ayarlar
 
     kok = Path(kok or proje_kok())
@@ -71,7 +71,7 @@ def arsiv_dizini(kok=None, olustur=True):
 
 
 def gunluk_dizini(kok=None, olustur=True):
-    """Oturum kayitlarinin tutuldugu dizin."""
+    """Oturum kayıtlarının tutulduğu dizin."""
     yol = Path(kok or proje_kok()) / GUNLUK_ADI
     if olustur:
         yol.mkdir(parents=True, exist_ok=True)
@@ -79,14 +79,14 @@ def gunluk_dizini(kok=None, olustur=True):
 
 
 def proje_adi(kok=None):
-    """Proje klasorunun adi."""
+    """Proje klasörünün adı."""
     return Path(kok or proje_kok()).name
 
 
 def ana_dizinde_mi(dosya_yolu, kok=None):
     """Bu dosya projenin ANA dizininde mi duruyor?
 
-    Ana dizin temiz kalir kuralinin denetimi icin kullanilir.
+    Ana dizin temiz kalır kuralının denetimi için kullanılır.
     """
     kok = Path(kok or proje_kok()).resolve()
     hedef = Path(dosya_yolu).resolve()
@@ -94,7 +94,7 @@ def ana_dizinde_mi(dosya_yolu, kok=None):
 
 
 def gecici_mi(dosya_yolu):
-    """Bu dosya gecici/test amacli gorunuyor mu?"""
+    """Bu dosya geçici/test amaçlı görünüyor mu?"""
     ad = Path(dosya_yolu).name.lower()
 
     gecici_ekler = (".tmp", ".temp", ".bak", ".log", ".swp")

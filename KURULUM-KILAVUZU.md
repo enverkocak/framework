@@ -53,8 +53,8 @@ python -m pip install cryptography
 ### 1. Dosyaları al
 
 ```bash
-git clone <depo-adresi> enver-framework
-cd enver-framework
+git clone https://github.com/enverkocak/framework
+cd framework
 ```
 
 ### 2. Ortamı kontrol et
@@ -169,7 +169,7 @@ python "$P/sema.py" uret --ac
 ## Klasör düzeni
 
 ```
-enver-framework/
+framework/
 ├── hooks/                  Korumalar
 ├── plugins/enver-framework/
 │   ├── commands/           Eğik çizgi komutları
@@ -343,8 +343,8 @@ Değiştirmesi en muhtemel yerler:
 
 | Dosya | Ne için |
 |-------|---------|
-| `references/sunucu-haritasi.json` | Kendi sunucuların ve projelerin |
-| `references/dizin-duzeni.json` | Ana dizinde ne bulunabilir |
+| `plugins/enver-framework/references/sunucu-haritasi.json` | Kendi sunucuların ve projelerin |
+| `plugins/enver-framework/references/dizin-duzeni.json` | Ana dizinde ne bulunabilir |
 | `hooks/veri-koruma.py` | Hangi komutlar engellensin |
-| `diller/tr.json` | Arayüz metinleri |
-| `references/yazi-tipi-eslesmeleri.json` | Tasarım kataloğu |
+| `plugins/enver-framework/diller/tr.json` | Arayüz metinleri |
+| `plugins/enver-framework/references/yazi-tipi-eslesmeleri.json` | Tasarım kataloğu |

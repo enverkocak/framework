@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 10 kapi kontrolu - saglik ve paylasim (son faz)
+# Faz 10 kapı kontrolü - sağlık ve paylaşım (son faz)
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -41,7 +41,7 @@ grep -q "SAĞLIK KONTROLÜ" _calisma/sg.txt \
 python - << PY 2>/dev/null && kontrol "Koruma olcumu KAYITLI degil CALISIYOR mu bakiyor" 0 || kontrol "Koruma olcumu davranis olcuyor" 1
 $YOL_EKLE
 import saglik
-# Her olcumde gercek bir girdi ve beklenen karar olmali
+# Her ölçümde gerçek bir girdi ve beklenen karar olmalı
 assert len(saglik.KORUMA_OLCUMLERI) >= 5, len(saglik.KORUMA_OLCUMLERI)
 for dosya, arac, girdiler, beklenen, mesaj in saglik.KORUMA_OLCUMLERI:
     assert dosya.endswith(".py"), dosya
@@ -57,14 +57,14 @@ kanca = Path("hooks/veri-koruma.py")
 yedek = Path("_calisma/veri-koruma-yedek.py")
 shutil.copy2(kanca, yedek)
 try:
-    # Korumayi gecici olarak etkisizlestir
+    # Korumayı geçici olarak etkisizleştir
     kanca.write_text('import json\nprint(json.dumps({}))\n', encoding="utf-8")
     bulgular = saglik.kancalari_kontrol()
     assert any(d[0] == saglik.BOZUK for d in bulgular), bulgular
 finally:
     shutil.copy2(yedek, kanca)
     yedek.unlink()
-# Geri alindiktan sonra tekrar iyi olmali
+# Geri alındıktan sonra tekrar iyi olmalı
 bulgular = saglik.kancalari_kontrol()
 assert not any(d[0] == saglik.BOZUK for d in bulgular), bulgular
 PY
@@ -82,7 +82,7 @@ python - << PY 2>/dev/null && kontrol "Harf farkiyla cakisma yakalanabiliyor" 0 
 $YOL_EKLE
 import saglik, re
 kaynak = open("plugins/enver-framework/scripts/saglik/saglik.py", encoding="utf-8").read()
-# Windows veri kaybi dersinden gelen kontrol kodda olmali
+# Windows veri kaybı dersinden gelen kontrol kodda olmalı
 assert "lower()" in kaynak and "cakisma" in kaynak.lower()
 assert "Windows" in kaynak
 PY
@@ -131,7 +131,7 @@ $YOL_EKLE
 import sihirbaz
 assert "hafiza" in sihirbaz.PAYLASIMDA_CIKAR, sihirbaz.PAYLASIMDA_CIKAR
 assert "kasa" in sihirbaz.ASLA_DEPOYA
-# Iki liste ayri olmali - hafiza kendi kullanimda depoda durur
+# İki liste ayrı olmalı - hafıza kendi kullanımda depoda durur
 assert "hafiza" not in sihirbaz.ASLA_DEPOYA
 sorunlar = sihirbaz.kisisel_veri_kontrol(paylasim=True)
 assert any("hafiza" in s for s in sorunlar), sorunlar
@@ -165,7 +165,7 @@ python - << PY 2>/dev/null && kontrol "Temiz kopyada musteri bilgisi YOK" 0 || k
 import json
 from pathlib import Path
 hedef = Path("_calisma/paylasim-kapi")
-# Cihaz envanteri ve proje tanimlari musteri adi tasir; kopyada olmamali
+# Cihaz envanteri ve proje tanımları müşteri adı taşır; kopyada olmamalı
 for yol in hedef.rglob("*.json"):
     ad = yol.name
     assert ad not in ("cihaz-envanteri.json", "gorevler.json",

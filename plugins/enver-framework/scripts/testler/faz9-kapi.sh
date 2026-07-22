@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 9 kapi kontrolu - sektor ve veri araclari
+# Faz 9 kapı kontrolü - sektör ve veri araçları
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -41,7 +41,7 @@ PY
 python - << PY 2>/dev/null && kontrol "Envantere PAROLA yazilamiyor" 0 || kontrol "Envantere PAROLA yazilamiyor" 1
 $YOL_EKLE
 import envanter, re
-# Yasak alan deseni parola alanlarini yakalamali
+# Yasak alan deseni parola alanlarını yakalamalı
 for alan in ("parola", "password", "sifre", "şifre", "secret"):
     assert envanter.YASAK_ALANLAR.match(alan), alan
 # Normal alanlar serbest
@@ -52,7 +52,7 @@ PY
 python - << PY 2>/dev/null && kontrol "Sir denetimi calisiyor" 0 || kontrol "Sir denetimi calisiyor" 1
 $YOL_EKLE
 import envanter
-# Not alanina parola gorunumlu icerik konursa yakalanmali
+# Not alanına parola görünümlü içerik konursa yakalanmalı
 veri = envanter.oku()
 veri["cihazlar"].append({"no": 9999, "ad": "Sizinti testi", "tur": "kamera",
                          "musteri": "-", "not": "parola: CokGizli123",

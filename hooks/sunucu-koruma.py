@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""PreToolUse kancasi: Musteri sunucusu korumasi.
+"""PreToolUse kancası: Müşteri sunucusu koruması.
 
-Sunucuda birden cok musterinin sitesi barinir. Bu kanca, calisma izni
-verilmemis bir dizine dokunulmasini engeller.
+Sunucuda birden çok müşterinin sitesi barınır. Bu kanca, çalışma izni
+verilmemiş bir dizine dokunulmasını engeller.
 
-Izinli dizinler artik bu dosyada sabit degil - references/sunucu-haritasi.json
-icinden okunur. Yeni proje eklemek icin haritayi guncellemek yeterlidir.
+İzinli dizinler artık bu dosyada sabit değil - references/sunucu-haritası.json
+içinden okunur. Yeni proje eklemek için haritayı güncellemek yeterlidir.
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import json
@@ -31,7 +31,7 @@ UZAK_ERISIM = re.compile(r"\b(ssh|scp|sftp|rsync)\b", re.IGNORECASE)
 
 
 def _dizin_adaylari(komut, korunan_kokler):
-    """Komut icinde gecen, korunan kok altindaki yollari topla."""
+    """Komut içinde geçen, korunan kök altındaki yolları topla."""
     bulunanlar = []
     for kok in korunan_kokler:
         for eslesme in re.finditer(re.escape(kok) + r"[^\s'\"]*", komut):
@@ -65,7 +65,7 @@ def kontrol_et(komut):
         if any(aday.startswith(izinli) for izinli in izinliler):
             continue
 
-        # Bu dizin haritada baska bir projeye mi ait?
+        # Bu dizin haritada başka bir projeye mi ait?
         _, baska_proje = sunucu_harita.proje_bul(aday, hedef)
         sahip = f"\nBu dizin '{baska_proje['ad']}' projesine ait." if baska_proje else ""
 

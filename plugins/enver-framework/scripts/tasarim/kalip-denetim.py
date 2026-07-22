@@ -9,9 +9,9 @@ hep aynı yazı tipi, hep aynı köşe yuvarlaklığı.
 Bu betik o işaretleri arar ve ağırlığına göre raporlar.
 
 Ağırlıklar:
-    yuksek   Tek başına bile "şablon" dedirtir
+    yüksek   Tek başına bile "şablon" dedirtir
     orta     Birkaçı bir arada olursa belli eder
-    dusuk    Tek başına sorun değil, yığılırsa dikkat çeker
+    düşük    Tek başına sorun değil, yığılırsa dikkat çeker
 
 Amaç kuralcılık değil: her bulgunun yanında NE YAPILACAĞI yazar.
 
@@ -41,7 +41,7 @@ TARANACAK_UZANTILAR = {".html", ".htm", ".css", ".scss", ".jsx", ".tsx", ".vue",
 TARANMAYAN_DIZINLER = ("/node_modules/", "/.git/", "/vendor/", "/dist/",
                        "/build/", "/_arsiv/", "/_calisma/")
 
-# (kod, agirlik, aciklama, desen, ne yapilmali)
+# (kod, ağırlık, açıklama, desen, ne yapılmalı)
 KURALLAR = [
     ("mor-mavi-gecis", "yuksek",
      "Herkesin kullandığı mor-mavi geçiş",

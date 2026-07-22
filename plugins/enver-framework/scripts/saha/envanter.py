@@ -6,17 +6,17 @@ Hangi müşteride ne var, nereye kuruldu, hangi adresle erişiliyor, ne zaman
 kuruldu - hepsi burada durur.
 
 ERİŞİM BİLGİSİ BURADA TUTULMAZ. Cihazın kullanıcı adı ve parolası kasada
-durur; envanterdeki `kasa_anahtari` alanı yalnızca kasadaki kaydı işaret eder.
+durur; envanterdeki `kasa_anahtarı` alanı yalnızca kasadaki kaydı işaret eder.
 Envanter dosyası paylaşılabilir olmalı, parola içeren bir dosya paylaşılamaz.
 
-Kayıt `hafiza/cihaz-envanteri.json` içinde durur, makineler arasında senkron olur.
+Kayıt `hafıza/cihaz-envanteri.json` içinde durur, makineler arasında senkron olur.
 
 Komutlar:
     ekle       Cihaz kaydı ekle
     liste      Cihazları göster
-    musteri    Bir müşterinin bütün cihazları
-    guncelle   Bir alanı güncelle
-    bakim      Bakım tarihi gelen cihazlar
+    müşteri    Bir müşterinin bütün cihazları
+    güncelle   Bir alanı güncelle
+    bakım      Bakım tarihi gelen cihazlar
 
 Geliştirici: Enver KOCAK
 """

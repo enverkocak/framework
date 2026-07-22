@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Dil katmani - kullaniciya gorunen butun metinler buradan gecer.
+"""Dil katmanı - kullanıcıya görünen bütün metinler buradan geçer.
 
-Kullanim:
+Kullanım:
     from metin import al
     print(al("korumalar.engellendi"))
 
-Kural: Hicbir kullanici metni koda gomulmez. Hepsi diller/<kod>.json icinde durur.
-Boylece yeni dil eklemek sadece bir dosya kopyalayip cevirmek olur.
+Kural: Hiçbir kullanıcı metni koda gömülmez. Hepsi diller/<kod>.json içinde durur.
+Böylece yeni dil eklemek sadece bir dosya kopyalayıp çevirmek olur.
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import json
@@ -23,7 +23,7 @@ _onbellek = {}
 
 
 def _dil_yukle(kod):
-    """Dil dosyasini yukle ve onbellege al."""
+    """Dil dosyasını yükle ve önbelleğe al."""
     if kod in _onbellek:
         return _onbellek[kod]
 
@@ -43,12 +43,12 @@ def _dil_yukle(kod):
 
 
 def al(anahtar, proje_kok=None, **degerler):
-    """Anahtara karsilik gelen metni dondur.
+    """Anahtara karşılık gelen metni döndür.
 
-    anahtar : "korumalar.engellendi" gibi noktali yol
-    degerler: metindeki {yer_tutucu} alanlarini doldurur
+    anahtar : "korumalar.engellendi" gibi noktalı yol
+    değerler: metindeki {yer_tutucu} alanlarını doldurur
 
-    Metin bulunamazsa once yedek dile bakilir, o da yoksa anahtar aynen doner.
+    Metin bulunamazsa önce yedek dile bakılır, o da yoksa anahtar aynen döner.
     """
     kod = ayarlar.dil_kodu(proje_kok)
 
@@ -70,7 +70,7 @@ def al(anahtar, proje_kok=None, **degerler):
 
 
 def _derinden_al(sozluk, anahtar):
-    """Noktali yolla ic ice sozlukten deger cek."""
+    """Noktalı yolla iç içe sözlükten değer çek."""
     parca = sozluk
     for ad in anahtar.split("."):
         if not isinstance(parca, dict) or ad not in parca:
@@ -80,7 +80,7 @@ def _derinden_al(sozluk, anahtar):
 
 
 def mevcut_diller():
-    """Kurulu dillerin listesini dondur."""
+    """Kurulu dillerin listesini döndür."""
     if not DILLER_DIZINI.is_dir():
         return []
 

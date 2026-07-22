@@ -3,7 +3,7 @@
 
 Riskli bir işten önce yedek alınır; iş bozarsa tek komutla geri dönülür.
 
-Yedekler `_arsiv/yedekler/` altında, tarihli klasörlerde durur.
+Yedekler `_arşiv/yedekler/` altında, tarihli klasörlerde durur.
 Her yedeğin yanında ne için alındığı yazar - altı ay sonra hangi yedeğin
 ne olduğu belli olsun diye.
 

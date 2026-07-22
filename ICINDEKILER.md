@@ -23,7 +23,7 @@
 | `CLAUDE.ornek.md` | 1. Kodda, yorumlarda, commit'lerde ve dokümantasyonda **üretim aracı izi |
 | `DEGISIKLIKLER.md` | Enver Framework'ün sürüm geçmişi. |
 | `guncelle.ps1` | Enver Framework - Guncelleme (Windows) |
-| `guncelle.sh` | Enver Framework - Guncelleme |
+| `guncelle.sh` | Enver Framework - Güncelleme |
 | `KULLANIM-KILAVUZU.md` | Enver Framework'ün günlük kullanımı. Ne zaman hangi komutu çalıştıracağını, |
 | `KURULUM-KILAVUZU.md` | Bu framework'ü sıfırdan kurmak için. Hiçbir adım varsayılmaz. |
 | `kurulum.ps1` | Enver Framework - Kurulum (Windows) |

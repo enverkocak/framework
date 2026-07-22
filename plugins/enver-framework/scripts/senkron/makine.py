@@ -6,14 +6,14 @@ yolların makineye göre çözülebilmesi ve "en son hangi makinede ne yapıldı
 sorusunun cevaplanabilmesi için her makine tanınır.
 
 Kayıt iki yerde tutulur:
-  hafiza/makineler.json   Tanınan bütün makineler (depoya girer, senkron olur)
+  hafıza/makineler.json   Tanınan bütün makineler (depoya girer, senkron olur)
   Ortam                   O anki makinenin kimliği çalışma anında hesaplanır
 
 Yollar makine kaydından çözülür; hiçbir yere sabit disk yolu yazılmaz.
 
 Komutlar:
     durum      Bu makine tanınıyor mu
-    tanit      Bu makineyi kaydet
+    tanıt      Bu makineyi kaydet
     liste      Tanınan bütün makineler
 
 Geliştirici: Enver KOCAK

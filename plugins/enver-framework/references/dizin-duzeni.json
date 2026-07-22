@@ -38,7 +38,8 @@
     "vault": "Duz metin kasa kaynagi - kasaya alindiktan sonra arsivlenir",
     "_calisma": "Gecici isler - depoya girmez",
     "_arsiv": "Isi biten her sey, notuyla - depoya girmez",
-    "ICINDEKILER.md": "Otomatik uretilen klasor icerigi"
+    "ICINDEKILER.md": "Otomatik uretilen klasor icerigi",
+    ".playwright-mcp": "Tarayici otomasyonu ciktisi - depoya girmez, is bitince arsivlenir"
   },
   "ana_dizinde_durmaz": [
     "Gecici ve test amacli dosyalar",

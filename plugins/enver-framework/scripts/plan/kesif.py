@@ -5,23 +5,23 @@ Yarım anlaşılmış bir işe başlayıp sonra baştan yazmak, en pahalı hatad
 Bu yüzden koda geçmeden önce dört aşama işletilir:
 
     1. ISTEK        Ne olacak? Hangi özellikler isteniyor? Sorulur.
-    2. ARASTIRMA    Ekstra neler olabilir? Benzer işlerde ne var, ne unutuluyor?
-    3. NETLESTIRME  Araştırmadan çıkanlar üzerinden soru sorulur, belirsizlik kalmaz.
+    2. ARAŞTIRMA    Ekstra neler olabilir? Benzer işlerde ne var, ne unutuluyor?
+    3. NETLEŞTİRME  Araştırmadan çıkanlar üzerinden soru sorulur, belirsizlik kalmaz.
     4. PLAN         Fazlara bölünür, kapı kontrolleri konur, ancak sonra kodlanır.
 
 Aşama atlanamaz. Her aşamanın çıktısı kaydedilir; oturum değişse bile
 keşif kaldığı yerden sürer.
 
-Durum `hafiza/kesif/<proje>.json` içinde durur, makineler arasında senkron olur.
+Durum `hafıza/keşif/<proje>.json` içinde durur, makineler arasında senkron olur.
 
 Komutlar:
-    baslat      Yeni keşif başlat
+    başlat      Yeni keşif başlat
     durum       Hangi aşamadayız
     yaz         Bir aşamaya bulgu ekle
     sorular     O aşamanın soru listesini göster
     ilerle      Sonraki aşamaya geç
-    ozet        Keşfin tamamını göster
-    plana-dok   Keşiften faz planı üret
+    özet        Keşfin tamamını göster
+    plana-dök   Keşiften faz planı üret
 
 Geliştirici: Enver KOCAK
 """

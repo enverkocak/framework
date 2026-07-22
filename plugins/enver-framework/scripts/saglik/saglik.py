@@ -9,11 +9,11 @@ Artık bakılıyor. Kontroller:
 
     kancalar    Korumalar kayıtlı mı VE gerçekten tepki veriyor mu
     betikler    Betikler çalışabiliyor mu
-    hafiza      Hafıza yazılabiliyor, okunabiliyor mu
+    hafıza      Hafıza yazılabiliyor, okunabiliyor mu
     kasa        Kasa kurulu mu, kilitli mi
-    cakisma     İki şey aynı işi mi yapıyor
+    çakışma     İki şey aynı işi mi yapıyor
     dil         Dil dosyaları eksiksiz mi
-    duzen       Klasör düzeni bozulmuş mu
+    düzen       Klasör düzeni bozulmuş mu
 
 "Kayıtlı" ile "çalışıyor" farklı şeylerdir. Bu betik ikisini de ölçer:
 her korumaya gerçek bir girdi verilir ve beklenen kararı verip vermediğine
@@ -22,7 +22,7 @@ bakılır.
 Komutlar:
     bak        Bütün kontrolleri çalıştır
     kancalar   Yalnız koruma kontrolü
-    cakisma    Yalnız çakışma denetimi
+    çakışma    Yalnız çakışma denetimi
     istatistik Ne kullanılıyor, ne kullanılmıyor
 
 Geliştirici: Enver KOCAK
@@ -53,8 +53,8 @@ BOZUK = "bozuk"
 
 ISARETLER = {IYI: "[ iyi  ]", UYARI: "[uyari ]", BOZUK: "[BOZUK ]"}
 
-# Her koruma icin: (dosya, arac, girdi, beklenen karar)
-# Beklenen karar gerceklesmezse koruma yaziliydi ama CALISMIYOR demektir.
+# Her koruma için: (dosya, araç, girdi, beklenen karar)
+# Beklenen karar gerçekleşmezse koruma yazılıydı ama ÇALIŞMIYOR demektir.
 KORUMA_OLCUMLERI = [
     ("veri-koruma.py", "Bash", {"command": "rm -rf ornek-klasor"}, "deny",
      "Silme engellenmiyor"),
@@ -66,13 +66,13 @@ KORUMA_OLCUMLERI = [
      "Kasa dosyasi okunabiliyor"),
     ("git-gizlilik-koruma.py", "Bash", {"command": "gh repo create x --pub" + "lic"},
      "deny", "Herkese acik depo engellenmiyor"),
-    # Sunucu adresi HARITADAN alinir; koda gomulmez.
-    # Bu betik paylasilan kopyada da bulunacagi icin kisisel deger tasiyamaz.
+    # Sunucu adresi HARITADAN alınır; koda gömülmez.
+    # Bu betik paylaşılan kopyada da bulunacağı için kişisel değer taşıyamaz.
     ("sunucu-koruma.py", "Bash", "SUNUCU_OLCUMU", "deny",
      "Baska musteri dizini engellenmiyor"),
 ]
 
-# Ayni isi yapabilecek dosya adlari - cakisma belirtisi
+# Aynı işi yapabilecek dosya adları - çakışma belirtisi
 CAKISMA_ESIKLERI = 0.9
 
 
@@ -85,7 +85,7 @@ def _ayar_yolu():
 
 
 def _sunucu_olcumu():
-    """Sunucu korumasini sinamak icin haritadan bir adres al."""
+    """Sunucu korumasını sınamak için haritadan bir adres al."""
     try:
         sys.path.insert(0, str(BETIK_KOKU / "ortak"))
         import sunucu_harita
@@ -129,7 +129,7 @@ def _kanca_sor(dosya, arac, girdiler):
 def kancalari_kontrol():
     bulgular = []
 
-    # 1. Ayar dosyasinda kayitli mi
+    # 1. Ayar dosyasında kayıtlı mı
     ayar = _ayar_yolu()
     if not ayar.is_file():
         bulgular.append((BOZUK, "Ayar dosyası yok",
@@ -151,7 +151,7 @@ def kancalari_kontrol():
             bulgular.append((BOZUK, f"{dosya} ayar dosyasında KAYITLI DEĞİL",
                              "Yazılmış ama devrede değil - en tehlikeli durum."))
 
-    # 2. Gercekten tepki veriyor mu
+    # 2. Gerçekten tepki veriyor mu
     for dosya, arac, girdiler, beklenen, hata_mesaji in KORUMA_OLCUMLERI:
         if girdiler == "SUNUCU_OLCUMU":
             girdiler = _sunucu_olcumu()
@@ -217,7 +217,7 @@ def hafizayi_kontrol():
     except OSError as hata:
         bulgular.append((BOZUK, "Hafızaya yazılamıyor", str(hata)))
 
-    # Onemli hafiza dosyalari
+    # Önemli hafıza dosyaları
     beklenenler = [
         ("durum.md", "Nerede kaldık kaydı"),
         ("makineler.json", "Makine kayıtları"),
@@ -228,7 +228,7 @@ def hafizayi_kontrol():
         if not yol.is_file():
             bulgular.append((UYARI, f"{dosya} yok", aciklama))
 
-    # Gunluk depoya girmemeli
+    # Günlük depoya girmemeli
     import subprocess as alt_surec
     for yol, girmemeli in ((".", False),):
         pass
@@ -285,7 +285,7 @@ def cakismayi_kontrol():
     bulgular = []
     kok = Path(yollar.proje_kok())
 
-    # 1. Ayni adli komut dosyalari
+    # 1. Aynı adlı komut dosyaları
     komut_dizini = kok / "plugins" / "enver-framework" / "commands"
     if komut_dizini.is_dir():
         adlar = Counter(y.stem.lower() for y in komut_dizini.glob("*.md"))
@@ -293,7 +293,7 @@ def cakismayi_kontrol():
             if sayi > 1:
                 bulgular.append((BOZUK, f"'{ad}' komutu {sayi} kez tanımlı", ""))
 
-    # 2. Buyuk/kucuk harf cakismasi (Windows'ta veri kaybina yol acar)
+    # 2. Büyük/küçük harf çakışması (Windows'ta veri kaybına yol açar)
     for dizin in (kok, komut_dizini):
         if not dizin.is_dir():
             continue
@@ -304,7 +304,7 @@ def cakismayi_kontrol():
                                  f"Harf farkıyla çakışan dosya: {ad}",
                                  f"{dizin.name}/ içinde. Windows'ta veri kaybına yol açar."))
 
-    # 3. Ayni aciklamaya sahip komutlar
+    # 3. Aynı açıklamaya sahip komutlar
     if komut_dizini.is_dir():
         aciklamalar = {}
         for yol in komut_dizini.glob("*.md"):
@@ -517,7 +517,7 @@ def komut_istatistik(args):
     for ad, sayi in sayilar.items():
         print(f"  {ad:<12} {sayi:>4}")
 
-    # Hafizadan kullanim izleri
+    # Hafızadan kullanım izleri
     gunluk = hafiza.gunluk_dizini(kok, olustur=False) / hafiza.KOMUT_KAYDI
     kayitlar = hafiza.satirlari_oku(gunluk)
 

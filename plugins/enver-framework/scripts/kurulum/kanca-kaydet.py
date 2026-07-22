@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Kancalari ayar dosyasina kaydeder.
+"""Kancaları ayar dosyasına kaydeder.
 
-Onceki kurulum betikleri kancalari yaliniz kopyaliyordu; kaydetmedigi icin
-hicbiri devreye girmiyordu. Bu betik kayit isini yapar.
+Önceki kurulum betikleri kancaları yalnız kopyalıyordu; kaydetmediği için
+hiçbiri devreye girmiyordu. Bu betik kayıt işini yapar.
 
-Mevcut ayarlar korunur - sadece eksik kanca girdileri eklenir, hicbir sey silinmez.
+Mevcut ayarlar korunur - sadece eksik kanca girdileri eklenir, hiçbir şey silinmez.
 
-Kullanim:
-    python kanca-kaydet.py <kanca-dizini> [ayar-dosyasi]
+Kullanım:
+    python kanca-kaydet.py <kanca-dizini> [ayar-dosyası]
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import json
@@ -20,10 +20,10 @@ for akis in (sys.stdout, sys.stderr):
     if hasattr(akis, "reconfigure"):
         akis.reconfigure(encoding="utf-8", errors="replace")
 
-# Hangi kanca hangi olaya baglanir.
-# Ayni kanca birden cok olaya baglanabilir (ornek: kasa-koruma).
+# Hangi kanca hangi olaya bağlanır.
+# Aynı kanca birden çok olaya bağlanabilir (örnek: kasa-koruma).
 KANCA_TANIMLARI = [
-    # Kabuk komutlari
+    # Kabuk komutları
     {"dosya": "sunucu-koruma.py", "olay": "PreToolUse", "eslesme": "Bash"},
     {"dosya": "git-gizlilik-koruma.py", "olay": "PreToolUse", "eslesme": "Bash"},
     {"dosya": "veri-koruma.py", "olay": "PreToolUse", "eslesme": "Bash"},
@@ -38,24 +38,24 @@ KANCA_TANIMLARI = [
     # Dosya okuma
     {"dosya": "kasa-koruma.py", "olay": "PreToolUse", "eslesme": "Read"},
 
-    # Yazma sonrasi denetimler
+    # Yazma sonrası denetimler
     {"dosya": "iz-kontrol.py", "olay": "PostToolUse", "eslesme": "Write|Edit|MultiEdit"},
     {"dosya": "yazim-kontrol.py", "olay": "PostToolUse", "eslesme": "Write|Edit|MultiEdit"},
 
-    # Oturum kaydi (engellemez, sadece yazar)
+    # Oturum kaydı (engellemez, sadece yazar)
     {"dosya": "oturum-kayit.py", "olay": "PostToolUse", "eslesme": "Write|Edit|MultiEdit"},
     {"dosya": "oturum-kayit.py", "olay": "PostToolUse", "eslesme": "Bash"},
 
-    # Acilis brifingi
+    # Açılış brifingi
     {"dosya": "oturum-acilis.py", "olay": "SessionStart", "eslesme": None},
 
-    # Tam yetki modu - istisnalarda karar vermez, korumalari devre disi birakmaz
+    # Tam yetki modu - istisnalarda karar vermez, korumaları devre dışı bırakmaz
     {"dosya": "tam-yetki.py", "olay": "PreToolUse", "eslesme": "Bash"},
     {"dosya": "tam-yetki.py", "olay": "PreToolUse",
      "eslesme": "Write|Edit|MultiEdit|NotebookEdit"},
     {"dosya": "tam-yetki.py", "olay": "PreToolUse", "eslesme": "Read"},
 
-    # Kalite kapisi - tam yetkide "bitti" demeyi olcume baglar
+    # Kalite kapısı - tam yetkide "bitti" demeyi ölçüme bağlar
     {"dosya": "kalite-kapisi.py", "olay": "Stop", "eslesme": None},
 ]
 
@@ -101,8 +101,8 @@ def kaydet(kanca_dizini, ayar_yolu):
         komut = komut_uret(kanca_dizini, tanim["dosya"])
         olay_listesi = kancalar.setdefault(tanim["olay"], [])
 
-        # Bazi olaylarda eslesme yoktur (ornek: SessionStart) - o zaman
-        # grup matcher alani tasimaz.
+        # Bazı olaylarda eşleşme yoktur (örnek: SessionStart) - o zaman
+        # grup matcher alanı taşımaz.
         eslesme = tanim.get("eslesme")
 
         grup = None

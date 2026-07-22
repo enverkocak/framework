@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""PreToolUse kancasi: Kasa ve sir korumasi.
+"""PreToolUse kancası: Kasa ve sır koruması.
 
-Iki kural zorlanir:
+İki kural zorlanır:
 
-  1. KASA ERISIMI (E1)
-     Kasa dosyalari dogrudan okunamaz. Icerik yalniz kasa betigi uzerinden,
-     parola verilmis bir oturumda alinir.
+  1. KASA ERİŞİMİ (E1)
+     Kasa dosyaları doğrudan okunamaz. İçerik yalnız kasa betiği üzerinden,
+     parola verilmiş bir oturumda alınır.
 
   2. SIR SIZINTISI (T12)
-     Anahtar, parola ve ozel anahtar iceren metnin dosyaya yazilmasi engellenir.
-     Sirlar kasada durur, kaynak kodda degil.
+     Anahtar, parola ve özel anahtar içeren metnin dosyaya yazılması engellenir.
+     Sırlar kasada durur, kaynak kodda değil.
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import json
@@ -30,31 +30,31 @@ else:
     gerekce = None
 
 
-# --- Kasa dosyalari: dogrudan okunamaz -------------------------------------
+# --- Kasa dosyaları: doğrudan okunamaz -------------------------------------
 
 KASA_YOL_DESENLERI = [
     re.compile(r"\bkasa\.kilit\b", re.IGNORECASE),
     re.compile(r"\bkasa-oturum\.json\b", re.IGNORECASE),
-    # vault/ yolu satir basinda, bosluktan veya tirnaktan sonra da gelebilir
+    # vault/ yolu satır başında, boşluktan veya tırnaktan sonra da gelebilir
     re.compile(r"(?:^|[/\\\s'\"=])vault[/\\][^/\\\s'\"]+", re.IGNORECASE),
 ]
 
-# Kasa dosyasini ekrana dokecek kabuk komutlari
+# Kasa dosyasını ekrana dökecek kabuk komutları
 DOKME_KOMUTLARI = re.compile(
     r"\b(cat|type|more|less|head|tail|Get-Content|gc|strings|xxd|od|base64)\b",
     re.IGNORECASE,
 )
 
-# Kasa betiginin kendisi muaf - kasaya erisimin mesru yolu odur
+# Kasa betiğinin kendisi muaf - kasaya erişimin meşru yolu odur
 KASA_BETIGI = re.compile(r"kasa[/\\]kasa\.py", re.IGNORECASE)
 
 
-# --- Sir desenleri: dosyaya yazilmasi engellenir ---------------------------
+# --- Sır desenleri: dosyaya yazılması engellenir ---------------------------
 
-# (desen, aciklama, deger_grubu)
-# deger_grubu: yer tutucu denetiminin uygulanacagi yakalama grubu.
-# Butun eslesmeye bakmak yanlis sonuc veriyordu: 'ghp_...0123456789' icindeki
-# rakam dizisi yuzunden gercek jeton yer tutucu saniliyordu.
+# (desen, açıklama, değer_grubu)
+# değer_grubu: yer tutucu denetiminin uygulanacağı yakalama grubu.
+# Bütün eşleşmeye bakmak yanlış sonuç veriyordu: 'ghp_...0123456789' içindeki
+# rakam dizisi yüzünden gerçek jeton yer tutucu sanılıyordu.
 SIR_DESENLERI = [
     (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"), "özel anahtar bloğu", 0),
     (re.compile(r"\bsk-[A-Za-z0-9]{24,}"), "gizli API anahtarı", 0),
@@ -68,20 +68,20 @@ SIR_DESENLERI = [
      "koda gömülü parola veya anahtar", 2),
 ]
 
-# Yer tutucu belirtileri - yalniz DEGERE bakilir, degisken adina degil
+# Yer tutucu belirtileri - yalnız DEĞERE bakılır, değişken adına değil
 YER_TUTUCU_KELIMELERI = re.compile(
     r"(?i)(degistir|change[_-]?me|your[_-]|placeholder|example|ornek|sample"
     r"|dummy|fake|demo|buraya|doldur)"
 )
 
-# Deger bir ortam degiskeninden geliyorsa sir sayilmaz
+# Değer bir ortam değişkeninden geliyorsa sır sayılmaz
 ORTAM_DEGISKENI = re.compile(
     r"(?i)(process\.env|os\.environ|getenv|ENV\[|\$\{[^}]+\}|<[^>]+>)"
 )
 
 
 def _yer_tutucu_mu(deger):
-    """Bu deger gercek bir sir mi, yoksa doldurulacak bir ornek mi?"""
+    """Bu değer gerçek bir sır mı, yoksa doldurulacak bir örnek mi?"""
     if not deger or len(deger) < 8:
         return True
 
@@ -95,7 +95,7 @@ def _yer_tutucu_mu(deger):
     if re.search(r"(.)\1{3,}", deger):
         return True
 
-    # Tek tur karakterden olusan degerler (sadece harf ya da sadece rakam)
+    # Tek tür karakterden oluşan değerler (sadece harf ya da sadece rakam)
     if deger.isalpha() or deger.isdigit():
         return True
 
@@ -109,7 +109,7 @@ def kasa_yolu_mu(metin_parcasi):
 
 
 def okuma_kontrol(dosya_yolu):
-    """Read aracıyla kasa dosyasi okunmaya calisiliyor mu?"""
+    """Read aracıyla kasa dosyası okunmaya çalışılıyor mu?"""
     if not kasa_yolu_mu(dosya_yolu):
         return None
 
@@ -129,7 +129,7 @@ def okuma_kontrol(dosya_yolu):
 
 
 def bash_kontrol(komut):
-    """Kabuk komutu kasayi ekrana dokmeye mi calisiyor?"""
+    """Kabuk komutu kasayı ekrana dökmeye mi çalışıyor?"""
     if not komut:
         return None
 
@@ -165,8 +165,8 @@ def _sir_ara(icerik):
             except IndexError:
                 deger = eslesme.group(0)
 
-            # Jeton desenlerinde degerin kendisi zaten sirdir; uzunluk esigi
-            # uygulanmaz, yalniz acik yer tutucu belirtilerine bakilir.
+            # Jeton desenlerinde değerin kendisi zaten sırdır; uzunluk eşiği
+            # uygulanmaz, yalnız açık yer tutucu belirtilerine bakılır.
             if deger_grubu == 0:
                 if ORTAM_DEGISKENI.search(deger) or YER_TUTUCU_KELIMELERI.search(deger):
                     continue
@@ -180,7 +180,7 @@ def _sir_ara(icerik):
 
 
 def yazma_kontrol(dosya_yolu, icerik):
-    """Dosyaya sir yazilmasini engelle."""
+    """Dosyaya sır yazılmasını engelle."""
     if kasa_yolu_mu(dosya_yolu):
         return gerekce.engelle(
             "Kasa erişimi",

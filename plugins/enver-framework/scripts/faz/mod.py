@@ -5,7 +5,7 @@ Dört mod var. Her biri, sistemin ne kadar soru sorup ne kadar kendi
 karar vereceğini belirler:
 
     dikkatli    Varsayılan. Riskli işlemlerde onay ister.
-    hizli       Rutin işlerde soru azaltılır, riskli olanlar yine sorulur.
+    hızlı       Rutin işlerde soru azaltılır, riskli olanlar yine sorulur.
     sunucuda    En temkinli. Müşteri sunucusunda çalışırken kullanılır;
                 her dış etkili işlem onay ister.
     tam-yetki   Faz bitene kadar soru sorulmaz.

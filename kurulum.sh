@@ -1,7 +1,7 @@
 #!/bin/bash
 # ================================================
 # Enver Framework - Otomatik Kurulum
-# Mac ve Linux icin
+# Mac ve Linux için
 # ================================================
 
 set -e
@@ -17,14 +17,14 @@ echo "Kaynak: $REPO_DIR"
 echo "Hedef:  $CLAUDE_DIR"
 echo ""
 
-# .claude dizini var mi?
+# .claude dizini var mı?
 if [ ! -d "$CLAUDE_DIR" ]; then
     echo "HATA: $CLAUDE_DIR dizini bulunamadi!"
     echo "Once Claude Code'u kurun ve en az bir kez calistirin."
     exit 1
 fi
 
-# Dizinleri olustur
+# Dizinleri oluştur
 mkdir -p "$CLAUDE_DIR/vault"
 mkdir -p "$CLAUDE_DIR/bilgi"
 mkdir -p "$CLAUDE_DIR/sablonlar"
@@ -32,7 +32,7 @@ mkdir -p "$CLAUDE_DIR/hooks"
 mkdir -p "$CLAUDE_DIR/plugins/enver-framework"
 mkdir -p "$CLAUDE_DIR/plugins/.claude-plugin"
 
-# Dosyalari kopyala
+# Dosyaları kopyala
 echo "[1/6] Global CLAUDE.md kopyalaniyor..."
 cp "$REPO_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
 
@@ -53,7 +53,7 @@ echo "[6/6] Plugin kopyalaniyor..."
 cp -r "$REPO_DIR/plugins/enver-framework/"* "$CLAUDE_DIR/plugins/enver-framework/"
 cp -r "$REPO_DIR/plugins/.claude-plugin/"* "$CLAUDE_DIR/plugins/.claude-plugin/"
 
-# Kancalari KAYDET - sadece kopyalamak yetmez, kayit olmadan hicbiri calismaz
+# Kancaları KAYDET - sadece kopyalamak yetmez, kayıt olmadan hiçbiri çalışmaz
 echo ""
 echo "Korumalar devreye aliniyor..."
 

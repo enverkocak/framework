@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Faz 7 kapi kontrolu - operasyon ve sunucu
+# Faz 7 kapı kontrolü - operasyon ve sunucu
 #
-# Not: Guvenlik denetimini sinamak icin gercekci gorunumlu bir anahtar gerekiyor.
-# Dosyaya duz halde yazilsa kasa korumasi bu dosyanin YAZILMASINI engelliyor -
-# ki dogrusu da bu. Bu yuzden ornek anahtar calisma aninda parcalardan kuruluyor.
+# Not: Güvenlik denetimini sınamak için gerçekçi görünümlü bir anahtar gerekiyor.
+# Dosyaya düz halde yazılsa kasa koruması bu dosyanın YAZILMASINI engelliyor -
+# ki doğrusu da bu. Bu yüzden örnek anahtar çalışma anında parçalardan kuruluyor.
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -172,7 +172,7 @@ Path("_calisma/kontrol-kapi/k.html").write_text(
     '<!doctype html><html><head></head><body><img src="a.png">'
     '<div onclick="x()">T</div><script src="a.js"></script></body></html>',
     encoding="utf-8")
-# Ornek anahtar parcalardan kuruluyor; bu dosyada duz halde durmuyor
+# Örnek anahtar parçalardan kuruluyor; bu dosyada düz halde durmuyor
 ornek_anahtar = "sk-" + "ornekAnahtar" + "1234567890abc"
 Path("_calisma/kontrol-kapi/k.php").write_text(
     '<?php\n$api_key = "' + ornek_anahtar + '";\neval($k);\n',

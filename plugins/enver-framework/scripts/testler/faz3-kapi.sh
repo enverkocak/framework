@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 3 kapi kontrolu - hafiza ve sureklilik
+# Faz 3 kapı kontrolü - hafıza ve süreklilik
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -55,7 +55,7 @@ sys.path.insert(0, "plugins/enver-framework/scripts/senkron")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
 sys.path.insert(0, "plugins/enver-framework/scripts/hafiza")
 import makine
-# Her makine kendi yolunu tasir; yol makineye gore cozulur, koda gomulmez
+# Her makine kendi yolunu taşır; yol makineye göre çözülür, koda gömülmez
 d = json.load(open("hafiza/makineler.json", encoding="utf-8"))
 for kayit in d["makineler"].values():
     assert kayit.get("proje_yolu"), kayit
@@ -113,10 +113,10 @@ python "$P/scripts/index/proje-index.py" uret > _calisma/ix.txt 2>&1 \
 grep -q "INDEX.md" "$P/scripts/index/proje-index.py" && grep -q 'INDEX_ADI = "ICINDEKILER.md"' "$P/scripts/index/proje-index.py" \
   && kontrol "Uretilen ad ICINDEKILER.md (cakisma onlendi)" 0 || kontrol "Uretilen ad ICINDEKILER.md (cakisma onlendi)" 1
 
-# Gerileme korumasi: index ureteci daha once INDEX.md yaziyordu ve Windows
-# harf buyuklugune bakmadigi icin elle yazilmis index.md dosyalarinin uzerine
-# yaziliyordu. Uc dosya boyle kayboldu, depodan geri alindi.
-# Bu kontrol ayni seyin tekrar olmasini yakalar.
+# Gerileme koruması: index üreteci daha önce INDEX.md yazıyordu ve Windows
+# harf büyüklüğüne bakmadığı için elle yazılmış index.md dosyalarının üzerine
+# yazılıyordu. Uç dosya böyle kayboldu, depodan geri alındı.
+# Bu kontrol aynı şeyin tekrar olmasını yakalar.
 for D in "plugins/enver-framework/commands/index.md" "bilgi/index.md" "sablonlar/index.md"; do
   [ -s "$D" ] && kontrol "$D saglam (uzerine yazilmamis)" 0 || kontrol "$D saglam" 1
 done
@@ -125,8 +125,8 @@ grep -q "^description:" "plugins/enver-framework/commands/index.md" \
 grep -q "cakisma_var_mi" "$P/scripts/index/proje-index.py" \
   && kontrol "Uretecte cakisma kontrolu var" 0 || kontrol "Uretecte cakisma kontrolu var" 1
 
-# Once uret, sonra kontrol et. Yeni klasor eklendikce index eskiyor;
-# bu bir hata degil. Olculecek sey, uretim sonrasi guncel olup olmadigi.
+# Önce üret, sonra kontrol et. Yeni klasör eklendikçe index eskiyor;
+# bu bir hata değil. Ölçülecek şey, üretim sonrası güncel olup olmadığı.
 python "$P/scripts/index/proje-index.py" uret > /dev/null 2>&1
 python "$P/scripts/index/proje-index.py" kontrol > /dev/null 2>&1 \
   && kontrol "Index uretim sonrasi guncel" 0 || kontrol "Index uretim sonrasi guncel" 1

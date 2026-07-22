@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Arsivleme motoru - hicbir veri silinmez, her sey notuyla saklanir.
+"""Arşivleme motoru - hiçbir veri silinmez, her şey notuyla saklanır.
 
 Kurallar:
-  1. Silme yerine arsivleme yapilir.
-  2. Her arsiv klasorunde NEDEN.md bulunur: ne, neden, ne zaman, sonuc.
-  3. Arsiv INDEX.md ile listelenir, aranabilir kalir.
-  4. Ayni gun ayni ada ikinci kayit gelirse numaralanir, ustune yazilmaz.
+  1. Silme yerine arşivleme yapılır.
+  2. Her arşiv klasöründe NEDEN.md bulunur: ne, neden, ne zaman, sonuç.
+  3. Arşiv INDEX.md ile listelenir, aranabilir kalır.
+  4. Aynı gün aynı ada ikinci kayıt gelirse numaralanır, üstüne yazılmaz.
 
-Kullanim (komut satiri):
-    python arsiv.py <kaynak> "<is adi>" "<neden>"
+Kullanım (komut satırı):
+    python arşiv.py <kaynak> "<iş adı>" "<neden>"
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import os
@@ -29,7 +29,7 @@ NOT_ADI = "NEDEN.md"
 
 
 def _slug(metin):
-    """Klasor adina uygun sade metin uret (Turkce harfler sadelestirilir)."""
+    """Klasör adına uygun sade metin üret (Türkçe harfler sadeleştirilir)."""
     donusum = {
         "ç": "c", "Ç": "c", "ğ": "g", "Ğ": "g", "ı": "i", "I": "i",
         "İ": "i", "ö": "o", "Ö": "o", "ş": "s", "Ş": "s", "ü": "u", "Ü": "u",
@@ -51,7 +51,7 @@ def _saat():
 
 
 def hedef_klasor(is_adi, arsiv_kok=None):
-    """Cakismayan bir arsiv klasoru yolu uret."""
+    """Çakışmayan bir arşiv klasörü yolu üret."""
     kok = Path(arsiv_kok or yollar.arsiv_dizini())
     temel = f"{_bugun()}_{_slug(is_adi)}"
 
@@ -65,7 +65,7 @@ def hedef_klasor(is_adi, arsiv_kok=None):
 
 
 def not_yaz(klasor, is_adi, neden, kaynak, sonuc=None):
-    """Arsiv klasorune NEDEN.md yaz."""
+    """Arşiv klasörüne NEDEN.md yaz."""
     satirlar = [
         "# Arşiv notu",
         "",
@@ -92,7 +92,7 @@ def not_yaz(klasor, is_adi, neden, kaynak, sonuc=None):
 
 
 def index_guncelle(arsiv_kok=None):
-    """Arsiv kokune INDEX.md yaz - butun arsiv kayitlarini listeler."""
+    """Arşiv köküne INDEX.md yaz - bütün arşiv kayıtlarını listeler."""
     kok = Path(arsiv_kok or yollar.arsiv_dizini())
 
     kayitlar = []
@@ -143,10 +143,10 @@ def index_guncelle(arsiv_kok=None):
 
 
 def arsivle(kaynak, is_adi, neden, sonuc=None, arsiv_kok=None, tasi=True):
-    """Bir dosya veya klasoru arsive al.
+    """Bir dosya veya klasörü arşive al.
 
-    tasi=True  : kaynak tasinir (silme yerine gecer)
-    tasi=False : kaynak yerinde kalir, kopyasi arsivlenir
+    taşı=True  : kaynak taşınır (silme yerine geçer)
+    taşı=False : kaynak yerinde kalır, kopyası arşivlenir
     """
     kaynak_yolu = Path(kaynak)
     if not kaynak_yolu.exists():

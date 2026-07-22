@@ -3,7 +3,7 @@
 
 Müşteriye verilen sözler akılda tutulmaz. Buraya yazılır, biri unutulmaz.
 
-Görevler `hafiza/gorevler.json` içinde durur; yani makineler arasında
+Görevler `hafıza/görevler.json` içinde durur; yani makineler arasında
 senkron olur. Bir bilgisayarda eklenen görev diğerinde de görünür.
 
 Her görevin kaynağı yazılır: müşteri isteği mi, kendi kararımız mı,
@@ -11,17 +11,17 @@ bulunan bir hata mı. Altı ay sonra "bunu neden yapıyorduk" sorusunun
 cevabı burada durur.
 
 Durumlar:
-    yapilacak · yapiliyor · beklemede · bitti · iptal
+    yapılacak · yapılıyor · beklemede · bitti · iptal
 
 Öncelikler:
-    acil · yuksek · normal · dusuk
+    acil · yüksek · normal · düşük
 
 Komutlar:
     ekle      Yeni görev
     liste     Görevleri göster
     bitir     Görevi tamamla
     durum     Görevin durumunu değiştir
-    ozet      Bütün projelerin görev özeti
+    özet      Bütün projelerin görev özeti
 
 Geliştirici: Enver KOCAK
 """

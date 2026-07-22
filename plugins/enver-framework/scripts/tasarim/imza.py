@@ -12,9 +12,9 @@ seçilen biçim kaydedilir; iki proje aynı imzayı taşımaz.
 Beş imza biçimi vardır, hepsi göze batmayan yerlere yerleşir:
 
     kaynak-yorumu   Sayfa kaynağında yorum bloğu
-    ustveri         Meta etiketleri
+    üstveri         Meta etiketleri
     insanlar-txt    humans.txt dosyası
-    yapisal-veri    Yapısal veri bloğu
+    yapısal-veri    Yapısal veri bloğu
     altbilgi-ince   Alt bilgide tek satır, soluk
 
 Şirket bilgisi projeye göre değişebildiği için kimlik dosyasından okunur;
@@ -22,9 +22,9 @@ tanımlı değilse varsayılan kullanılır.
 
 Komutlar:
     ayarla     Bu projenin imza bilgisini ve biçimini belirle
-    goster     Mevcut imza ayarını göster
-    uret       İmza içeriğini üret
-    yerlestir  İmzayı bir dosyaya yerleştir
+    göster     Mevcut imza ayarını göster
+    üret       İmza içeriğini üret
+    yerleştir  İmzayı bir dosyaya yerleştir
     denetle    İmza ön planda mı, göze batıyor mu
 
 Geliştirici: Enver KOCAK
@@ -52,8 +52,8 @@ for akis in (sys.stdout, sys.stderr):
 IMZA_DOSYASI = "imza.json"
 KAYIT_DOSYASI = "imza-kayitlari.json"
 
-# Kimlik koda gomulmez; kurulumda kaydedilir ve ayardan okunur.
-# Boylece framework'u baskasi kullandiginda kendi bilgisi gorunur.
+# Kimlik koda gömülmez; kurulumda kaydedilir ve ayardan okunur.
+# Böylece framework'u başkası kullandığında kendi bilgisi görünür.
 def varsayilan_kimlik():
     kayit = ayarlar.kimlik()
     return {

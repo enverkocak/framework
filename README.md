@@ -113,11 +113,14 @@ Kendine göre değiştirmen gereken yerler:
 
 | Dosya | Ne için |
 |-------|---------|
-| `.claude/ayarlar.json` | Adın, siten, e-postan — üretilen dosyalara bu yazılır |
+| `~/.claude/enver/ayarlar.json` | Adın, siten, e-postan — üretilen dosyalara bu yazılır |
 | `CLAUDE.md` | Kendi çalışma kuralların (örnek sürüm kutudan çıkar) |
 | `plugins/enver-framework/references/sunucu-haritasi.json` | Sunucu ve izinli dizinler |
 
-Bu üç dosya örnek sürümleriyle gelir; kendi bilgin yazılana kadar hiçbir
+Tek bir projede farklı bilgi kullanmak istersen o projenin içine
+`.claude/enver-ayarlar.json` koy; kullanıcı katmanına üstün gelir.
+
+Bu dosyalar örnek sürümleriyle gelir; kendi bilgin yazılana kadar hiçbir
 yerde kişisel veri bulunmaz.
 
 ---

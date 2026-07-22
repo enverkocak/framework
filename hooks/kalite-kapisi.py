@@ -48,7 +48,7 @@ def main():
         print(json.dumps({}))
         return
 
-    # Sonsuz dongu korumasi: bu kanca zaten bir kez engellediyse tekrar etme
+    # Sonsuz döngü koruması: bu kanca zaten bir kez engellediyse tekrar etme
     if girdi.get("stop_hook_active"):
         print(json.dumps({}))
         return
@@ -63,7 +63,7 @@ def main():
         print(json.dumps({}))
         return
 
-    # Yalniz tam yetki modunda devreye girer
+    # Yalnız tam yetki modunda devreye girer
     if not ayarlar.oku(kok).get("tam_yetki"):
         print(json.dumps({}))
         return

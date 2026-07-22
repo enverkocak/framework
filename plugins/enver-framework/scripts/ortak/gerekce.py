@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Turkce gerekce ureteci - butun korumalar ayni bicimde konusur.
+"""Türkçe gerekçe üreteci - bütün korumalar aynı biçimde konuşur.
 
 Kural (E15/E16):
-  - Bir islem engellendiginde NEDEN engellendigi Turkce yazilir.
-  - Izin istenirken NE ICIN istendigi Turkce yazilir.
-  - Kullanici ne onayladigini bilmeden onay vermez.
+  - Bir işlem engellendiğinde NEDEN engellendiği Türkçe yazılır.
+  - İzin istenirken NE İÇİN istendiği Türkçe yazılır.
+  - Kullanıcı ne onayladığını bilmeden onay vermez.
 
-Her gerekce dort parcadan olusur:
-  BASLIK        ne oldu
-  NE YAPILACAKTI  engellenen islem tam olarak neydi
+Her gerekçe dört parçadan oluşur:
+  BAŞLIK        ne oldu
+  NE YAPILACAKTI  engellenen işlem tam olarak neydi
   NEDEN         hangi kural devreye girdi
-  NASIL DUZELTILIR  kullanicinin onunde duran secenekler
+  NASIL DÜZELTİLİR  kullanıcının önünde duran seçenekler
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import sys
@@ -26,7 +26,7 @@ CIZGI = "-" * 52
 
 
 def _kisalt(deger, sinir=200):
-    """Uzun komutlari okunur uzunlukta tut."""
+    """Uzun komutları okunur uzunlukta tut."""
     deger = " ".join(str(deger).split())
     if len(deger) <= sinir:
         return deger
@@ -34,7 +34,7 @@ def _kisalt(deger, sinir=200):
 
 
 def olustur(baslik, ne_yapilacakti, neden, nasil_duzeltilir=None, ek_bilgi=None):
-    """Insan okuyacak gerekce metnini uret."""
+    """İnsan okuyacak gerekçe metnini üret."""
     satirlar = [baslik, CIZGI, ""]
 
     if ne_yapilacakti:
@@ -60,7 +60,7 @@ def olustur(baslik, ne_yapilacakti, neden, nasil_duzeltilir=None, ek_bilgi=None)
 
 
 def engelle(baslik, ne_yapilacakti, neden, nasil_duzeltilir=None, ek_bilgi=None):
-    """Islemi tamamen reddet. Kullanici onay veremez, once duzeltmesi gerekir."""
+    """İşlemi tamamen reddet. Kullanıcı onay veremez, önce düzeltmesi gerekir."""
     return {
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
@@ -74,7 +74,7 @@ def engelle(baslik, ne_yapilacakti, neden, nasil_duzeltilir=None, ek_bilgi=None)
 
 
 def onay_iste(baslik, ne_yapilacakti, neden, nasil_duzeltilir=None, ek_bilgi=None):
-    """Kullanicidan acik onay iste. Ne icin izin istendigi yazilir (E16)."""
+    """Kullanıcıdan açık onay iste. Ne için izin istendiği yazılır (E16)."""
     return {
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
@@ -88,12 +88,12 @@ def onay_iste(baslik, ne_yapilacakti, neden, nasil_duzeltilir=None, ek_bilgi=Non
 
 
 def izin_ver():
-    """Karar verme, normal akisa birak."""
+    """Karar verme, normal akışa bırak."""
     return {}
 
 
 def uyar(baslik, neden, nasil_duzeltilir=None):
-    """Islem sonrasi uyari (PostToolUse). Engellemez, bilgilendirir."""
+    """İşlem sonrası uyarı (PostToolUse). Engellemez, bilgilendirir."""
     return {
         "hookSpecificOutput": {
             "hookEventName": "PostToolUse",

@@ -63,7 +63,7 @@ def dene(komut, beklenen, etiket, arac="Bash"):
 
 
 def korumayla_dene(kanca, komut, etiket):
-    """Tam yetki acikken bile ilgili koruma engelliyor mu?"""
+    """Tam yetki açıkken bile ilgili koruma engelliyor mu?"""
     global gecen, kalan
 
     karar = kanca_sor(kanca, "Bash", {"command": komut})
@@ -76,7 +76,7 @@ def korumayla_dene(kanca, komut, etiket):
         kalan += 1
 
 
-# Onceki modu koru, test bitince geri al
+# Önceki modu koru, test bitince geri al
 onceki_mod = ayarlar.oku().get("calisma_modu", "dikkatli")
 
 try:
@@ -87,7 +87,7 @@ try:
     for komut in ["ls -la", "git status", "python test.py"]:
         dene(komut, "sessiz", f"kapaliyken: {komut}")
 
-    # ---------------------------------------------------- tam yetki ACIK
+    # ---------------------------------------------------- tam yetki AÇIK
     mod.mod_ayarla("tam-yetki")
 
     print("\n  Tam yetki AÇIK - rutin işler izin almalı")

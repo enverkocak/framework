@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 2 kapi kontrolu - koruma kalkani
+# Faz 2 kapı kontrolü - koruma kalkanı
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"

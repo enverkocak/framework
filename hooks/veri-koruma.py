@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""PreToolUse kancasi: Veri korumasi.
+"""PreToolUse kancası: Veri koruması.
 
-Iki kural zorlanir:
+İki kural zorlanır:
 
-  1. SILME YASAGI (E7)
-     Hicbir veri silinmez. Silme komutlari engellenir, kullanici arsive yonlendirilir.
+  1. SILME YASAĞI (E7)
+     Hiçbir veri silinmez. Silme komutları engellenir, kullanıcı arşive yönlendirilir.
 
   2. YIKICI KOMUT KALKANI (T11)
-     Geri donusu olmayan komutlar (gecmis silme, zorla gonderme, tablo dusurme,
-     disk yazma) once acik onay ister.
+     Geri dönüşü olmayan komutlar (geçmiş silme, zorla gönderme, tablo düşürme,
+     disk yazma) önce açık onay ister.
 
-Ayrica ana dizine gecici dosya yazilmasi engellenir - calisma alanina yonlendirilir.
+Ayrıca ana dizine geçici dosya yazılması engellenir - çalışma alanına yönlendirilir.
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import json
@@ -33,7 +33,7 @@ else:
     yollar = None
 
 
-# Komut konumunu yakalayan on ek: satir basi veya ayirac sonrasi
+# Komut konumunu yakalayan on ek: satır başı veya ayıraç sonrası
 KOMUT_BASI = r"(?:^|[;&|]\s*|\$\(\s*|`\s*|\bsudo\s+|\bthen\s+|\bdo\s+)"
 
 
@@ -41,7 +41,7 @@ def _desen(govde):
     return re.compile(KOMUT_BASI + govde, re.IGNORECASE | re.MULTILINE)
 
 
-# --- Silme komutlari: kesin engellenir -------------------------------------
+# --- Silme komutları: kesin engellenir -------------------------------------
 
 SILME_DESENLERI = [
     (_desen(r"rm\s+(?:-\w+\s+)*"), "rm"),
@@ -56,14 +56,14 @@ SILME_DESENLERI = [
     (re.compile(r"\bgit\s+clean\b[^|;&]*-\w*f", re.IGNORECASE), "git clean -f"),
 ]
 
-# Silme sayilmayacak zararsiz kullanimlar
+# Silme sayılmayacak zararsız kullanımlar
 SILME_MUAFIYETLERI = [
     re.compile(r"\brm\s+-?-?help\b", re.IGNORECASE),
     re.compile(r"\bnpm\b|\bpnpm\b|\byarn\b", re.IGNORECASE),
 ]
 
 
-# --- Yikici komutlar: acik onay ister --------------------------------------
+# --- Yıkıcı komutlar: açık onay ister --------------------------------------
 
 YIKICI_DESENLER = [
     (re.compile(r"\bgit\s+reset\s+--hard\b", re.IGNORECASE),
@@ -166,7 +166,7 @@ def bash_kontrol(komut):
 
 
 def yazma_kontrol(dosya_yolu):
-    """Ana dizine gecici dosya yazilmasini engelle (E7)."""
+    """Ana dizine geçici dosya yazılmasını engelle (E7)."""
     if not dosya_yolu or yollar is None:
         return None
 
@@ -216,8 +216,8 @@ def main():
     elif arac in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
         sonuc = yazma_kontrol(girdiler.get("file_path", ""))
 
-    # ensure_ascii bilincli olarak acik birakildi: Turkce karakterler \u kacisiyla
-    # yazilir, boylece konsol kodlamasi ne olursa olsun JSON gecerli kalir.
+    # ensure_ascii bilinçli olarak açık bırakıldı: Türkçe karakterler \u kaçışıyla
+    # yazılır, böylece konsol kodlaması ne olursa olsun JSON geçerli kalır.
     print(json.dumps(sonuc if sonuc else {}))
 
 

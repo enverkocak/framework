@@ -4,7 +4,7 @@
 Faz planı varsa sırasına uyulur, faz atlanmaz. Her fazın sonunda bir
 kapı kontrolü vardır; geçilmeden sonraki faza geçilmez.
 
-Plan `hafiza/faz-plani.json` içinde durur, yani makineler arasında senkron olur.
+Plan `hafıza/faz-planı.json` içinde durur, yani makineler arasında senkron olur.
 Bir bilgisayarda ilerlenen faz diğerinde de ilerlemiş görünür.
 
 Kapı kontrolü bir komuttur. Çıkış kodu sıfırsa kapı açılır, değilse kapalı
@@ -13,7 +13,7 @@ kalır. Böylece "bitti" demek bir görüş değil, ölçüm sonucu olur.
 Komutlar:
     durum      Aktif faz ve ilerleme
     plan       Bütün fazlar
-    kapi       Aktif fazın kapı kontrolünü çalıştır
+    kapı       Aktif fazın kapı kontrolünü çalıştır
     ilerle     Kapı geçtiyse sonraki faza geç
     ekle       Plana faz ekle
     ayarla     Bir fazın alanını güncelle
@@ -51,10 +51,10 @@ DURUM_ETIKETLERI = {
 
 
 def _numara(deger):
-    """Faz numarasini sayiya cevir.
+    """Faz numarasını sayıya çevir.
 
-    Numara metin olarak saklanirsa siralama alfabetik olur:
-    0, 1, 10, 11, 2, 3... Bu da aktif fazi yanlis hesaplatir.
+    Numara metin olarak saklanırsa sıralama alfabetik olur:
+    0, 1, 10, 11, 2, 3... Bu da aktif fazı yanlış hesaplatır.
     """
     try:
         return int(str(deger).strip())
@@ -63,13 +63,13 @@ def _numara(deger):
 
 
 def _sira_anahtari(faz):
-    """Sayilar once ve buyukluge gore, sayi olmayanlar sonra."""
+    """Sayılar önce ve büyüklüğe göre, sayı olmayanlar sonra."""
     no = faz.get("no")
     return (0, no, "") if isinstance(no, int) else (1, 0, str(no))
 
 
 def plan_duzelt(kok=None):
-    """Eski kayitlarda metin olarak saklanmis numaralari sayiya cevir."""
+    """Eski kayıtlarda metin olarak saklanmış numaraları sayıya çevir."""
     veri = plan_oku(kok)
     degisti = False
 
@@ -123,7 +123,7 @@ def faz_bul(no, kok=None):
 
 
 def kapi_calistir(faz, kok=None):
-    """Fazın kapı kontrolünü çalıştır, (gecti, cikti) döndür."""
+    """Fazın kapı kontrolünü çalıştır, (geçti, çıktı) döndür."""
     komut = faz.get("kapi_komutu")
     if not komut:
         return None, "Bu faza kapı kontrolü tanımlanmamış."
@@ -141,7 +141,7 @@ def kapi_calistir(faz, kok=None):
 
     cikti = (sonuc.stdout or "") + (sonuc.stderr or "")
 
-    # Kapı testleri "N gecti, M kaldi" biçiminde rapor veriyor
+    # Kapı testleri "N geçti, M kaldı" biçiminde rapor veriyor
     gecti = sonuc.returncode == 0
     if "kaldi" in cikti:
         import re
@@ -309,8 +309,8 @@ def komut_ekle(args):
         return 1
 
     veri["fazlar"].append({
-        # Numara SAYI olarak saklanir. Metin olarak saklanirsa siralama
-        # alfabetik olur ve "10" ile "11", "2"den once gelir.
+        # Numara SAYI olarak saklanır. Metin olarak saklanırsa sıralama
+        # alfabetik olur ve "10" ile "11", "2"den önce gelir.
         "no": _numara(args.no),
         "ad": args.ad,
         "aciklama": args.aciklama or "",

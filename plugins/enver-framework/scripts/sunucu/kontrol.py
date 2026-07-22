@@ -8,10 +8,10 @@ Denetimler dosya üzerinden çalışır, siteyi ayağa kaldırmak gerekmez.
 Bulunamayan şey "yok" sayılmaz, "bakılamadı" sayılır - ikisi farklı şeydir.
 
 Alanlar:
-    guvenlik        Açıkta kalmış bilgi, tehlikeli kalıplar, eksik başlıklar
-    erisilebilirlik Alternatif metin, etiket, başlık düzeni, dil bilgisi
+    güvenlik        Açıkta kalmış bilgi, tehlikeli kalıplar, eksik başlıklar
+    erişilebilirlik Alternatif metin, etiket, başlık düzeni, dil bilgisi
     arama           Sayfa başlığı, açıklama, adres yapısı
-    basarim         Büyük dosyalar, engelleyici yüklemeler
+    başarım         Büyük dosyalar, engelleyici yüklemeler
 
 Komutlar:
     tara <yol>    Bütün denetimleri çalıştır
@@ -42,7 +42,7 @@ KOD_UZANTILARI = {".js", ".ts", ".php", ".py", ".jsx", ".tsx"}
 
 BUYUK_DOSYA_ESIGI = 500 * 1024
 
-# (alan, kod, agirlik, aciklama, desen, ne yapilmali, hangi uzantilar)
+# (alan, kod, ağırlık, açıklama, desen, ne yapılmalı, hangi uzantılar)
 DENETIMLER = [
     # --- güvenlik ---
     ("guvenlik", "acik-anahtar", "yuksek",
@@ -57,8 +57,8 @@ DENETIMLER = [
 
     ("guvenlik", "sql-birlestirme", "yuksek",
      "Sorgu metni birleştirilerek kuruluyor",
-     # Bayrak desenin BASINDA olmali; iki parcayi birlestirirken ortada kalinca
-     # Python deseni derlemiyor. Bu yuzden re.IGNORECASE ayri veriliyor.
+     # Bayrak desenin BAŞINDA olmalı; iki parçayı birleştirirken ortada kalınca
+     # Python deseni derlemiyor. Bu yüzden re.IGNORECASE ayrı veriliyor.
      re.compile(r"(SELECT|INSERT|UPDATE|DELETE)[^;'\"]{0,80}[\"']\s*\.\s*\$"
                 r"|(SELECT|INSERT|UPDATE|DELETE)[^;'\"]{0,80}\+\s*(req|params|input)",
                 re.IGNORECASE),

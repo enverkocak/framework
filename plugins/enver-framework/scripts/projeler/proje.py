@@ -12,13 +12,13 @@ Bu dosya üç işi birden yapar:
   3. Sunucu korumasına dizin ve veritabanı bilgisi sağlar (E3)
 
 Tanımda parola tutulmaz. Gizli bilgi kasada durur; buradaki
-"kasa_anahtari" alanı kasadaki kaydı işaret eder.
+"kasa_anahtarı" alanı kasadaki kaydı işaret eder.
 
 Komutlar:
-    goster     Bu projenin tanımını göster
-    olustur    Tanım dosyası oluştur (şablondan)
-    guncelle   Tek bir alanı güncelle
-    dogrula    Tanım geçerli mi
+    göster     Bu projenin tanımını göster
+    oluştur    Tanım dosyası oluştur (şablondan)
+    güncelle   Tek bir alanı güncelle
+    doğrula    Tanım geçerli mi
 
 Geliştirici: Enver KOCAK
 """

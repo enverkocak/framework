@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Faz 0 kapi kontrolu - tum maddeleri dogrular
-# Gecici test dosyasi. Is bitince arsive tasinir.
+# Faz 0 kapı kontrolü - tüm maddeleri doğrular
+# Geçici test dosyası. İş bitince arşive taşınır.
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 cd "$KOK" || exit 1
 mkdir -p _calisma
 
-# Sunucu degerleri HARITADAN okunur; teste gomulmez.
-# Bu dosya paylasilan kopyada da bulunacagi icin kisisel deger tasiyamaz.
+# Sunucu değerleri HARITADAN okunur; teste gömülmez.
+# Bu dosya paylaşılan kopyada da bulunacağı için kişisel değer taşıyamaz.
 HARITA="plugins/enver-framework/references/sunucu-haritasi.json"
 ADRES=$(python -c "import json;d=json.load(open('$HARITA',encoding='utf-8'));print(d['sunucular'][0]['adres'])")
 KORUNAN=$(python -c "import json;d=json.load(open('$HARITA',encoding='utf-8'));print(d['korunan_kok_dizinler'][0])")
@@ -17,7 +17,7 @@ GECEN=0
 KALAN=0
 
 kontrol() {
-  # $1 = aciklama, $2 = beklenen (GECMELI/KALMALI), $3 = sonuc (0=basarili)
+  # $1 = açıklama, $2 = beklenen (GEÇMELİ/KALMALI), $3 = sonuç (0=başarılı)
   if [ "$3" -eq 0 ]; then
     echo "  [GECTI ] $1"
     GECEN=$((GECEN + 1))
@@ -43,13 +43,20 @@ kontrol "Kasa git takibinde YOK" GECMELI $S
 git ls-tree -r origin/master --name-only 2>/dev/null | grep -qi vault && S=1 || S=0
 kontrol "Kasa uzak depoda YOK" GECMELI $S
 
-# Gecmisin sifirlandigini commit SAYISI degil, kok commit gosterir.
-# Sayi her yeni calismada artiyor ve olcu olarak yaniltici.
-# Taze kurulumda henuz depo gecmisi olmayabilir; bu hata degildir.
+# Geçmişin sıfırlandığını commit SAYISI değil, kök commit gösterir.
+# Sayı her yeni çalışmada artıyor ve ölçü olarak yanıltıcı.
+# Taze kurulumda henüz depo geçmişi olmayabilir; bu hata değildir.
 if git rev-parse --git-dir > /dev/null 2>&1 && git rev-list -1 HEAD > /dev/null 2>&1; then
+  # Ölçülecek şey commit metni değil, GEÇMİŞTE SIR OLMAMASIDIR.
+  # Metin arayan bir test yalnızca bu deponun kendi geçmişine uyar;
+  # paylaşılan kopya kendi geçmişini oluşturduğunda yanlış alarm verir.
   KOK_COMMIT=$(git rev-list --max-parents=0 HEAD | head -1)
-  git log -1 --format=%s "$KOK_COMMIT" | grep -q "temiz baslangic" && S=0 || S=1
-  kontrol "Kok commit temiz baslangic (gecmis sifirlanmis)" GECMELI $S
+  if git log -1 --format=%s "$KOK_COMMIT" | grep -q "temiz baslangic"; then
+    kontrol "Kok commit temiz baslangic (gecmis sifirlanmis)" GECMELI 0
+  else
+    git log --all --name-only --format="" 2>/dev/null       | grep -qiE "^(vault|kasa)/|\.env$|\.pem$" && S=1 || S=0
+    kontrol "Gecmiste sir dosyasi yok (kendi gecmisi olan kopya)" GECMELI $S
+  fi
 else
   kontrol "Depo gecmisi yok - taze kurulum (atlandi)" GECMELI 0
 fi
@@ -73,9 +80,9 @@ rm -f .env
 echo ""
 echo "--- 3. KANCA DOSYALARI ---"
 
-# Ayar dosyasi bu makinenin mutlak yollarini tasir; her makinede
-# kurulum betigi yeniden uretir. Paylasilan kopyada bulunmamasi
-# beklenen durumdur, eksiklik degildir.
+# Ayar dosyası bu makinenin mutlak yollarını taşır; her makinede
+# kurulum betiği yeniden üretir. Paylaşılan kopyada bulunmaması
+# beklenen durumdur, eksiklik değildir.
 if [ -f ".claude/settings.json" ]; then
   kontrol "settings.json var" GECMELI 0
   python -c "import json;d=json.load(open('.claude/settings.json'));assert d['hooks']['PreToolUse'];assert d['hooks']['PostToolUse']" 2>/dev/null && S=0 || S=1
@@ -100,8 +107,8 @@ echo "--- 4. KANCA DAVRANISI ---"
 
 ct() { python "hooks/$1.py"; }
 
-# Tek tirnak degisken genisletmez; hook '$ADRES' metnini gorur ve
-# gercek bir adres saymaz. Bu yuzden JSON printf ile kuruluyor.
+# Tek tırnak değişken genişletmez; hook '$ADRES' metnini görür ve
+# gerçek bir adres saymaz. Bu yüzden JSON printf ile kuruluyor.
 printf '{"tool_name":"Bash","tool_input":{"command":"ssh root@%s rm -rf %sbaska-site.example/"}}' \
   "$ADRES" "$KORUNAN" | ct sunucu-koruma | grep -q '"deny"' && S=0 || S=1
 kontrol "Yasak musteri dizini ENGELLENIYOR" GECMELI $S
@@ -129,8 +136,8 @@ ct iz-kontrol < _calisma/iz1.json | grep -q "IZ BULUNDU" && S=0 || S=1
 kontrol "Musteri projesinde iz YAKALANIYOR" GECMELI $S
 rm -rf "D:/Projeler/_test-musteri"
 
-# .iz-muaf her deponun KENDI isaretidir; paylasilan kopyada bulunmaz,
-# kurulum sihirbazi olusturur. Yoklugu bir eksiklik degil, kurulum adimidir.
+# .iz-muaf her deponun KENDI işaretidir; paylaşılan kopyada bulunmaz,
+# kurulum sihirbazı oluşturur. Yokluğu bir eksiklik değil, kurulum adımıdır.
 if [ -f ".iz-muaf" ]; then
   printf '{"tool_name":"Write","tool_input":{"file_path":"%s/README.md"}}' "$KOK" > _calisma/iz2.json
   ct iz-kontrol < _calisma/iz2.json | grep -q "IZ BULUNDU" && S=1 || S=0
@@ -175,8 +182,8 @@ kontrol "Faz 0 arsivinin NEDEN notu var" GECMELI $S
 echo ""
 echo "--- 7. ANA DIZIN DUZENI ---"
 
-# Beklenen ust duzey icerik references/dizin-duzeni.json'dan okunur.
-# Yeni klasor eklendiginde sadece o dosya guncellenir, test degismez.
+# Beklenen üst düzey içerik references/dizin-düzeni.json'dan okunur.
+# Yeni klasör eklendiğinde sadece o dosya güncellenir, test değişmez.
 ANA=$(python - << 'PYKOD'
 import json, os, sys
 duzen = json.load(open("plugins/enver-framework/references/dizin-duzeni.json", encoding="utf-8"))

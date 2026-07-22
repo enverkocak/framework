@@ -9,7 +9,7 @@ Hata kütüphanesi (T23)
     Çözülen her hata, belirtisi ve çözümüyle birikir. Aynı hata tekrar
     çıktığında çözüm hazır gelir; sıfırdan uğraşılmaz.
 
-Her iki defter de hafizaya yazılır, yani makineler arasında senkron olur.
+Her iki defter de hafızaya yazılır, yani makineler arasında senkron olur.
 
 Komutlar:
     karar ekle / karar liste
@@ -126,9 +126,9 @@ def hata_ara(sorgu, kok=None):
     if not kelimeler:
         return []
 
-    # Butun kelimeler gecmeli. Once herhangi biri yeterliydi ve bu yuzden
-    # "boyle-bir-sey-yok" gibi bir sorgu, icinde yalnizca "yok" gecen bir
-    # kayitla eslesiyordu.
+    # Bütün kelimeler geçmeli. Önce herhangi biri yeterliydi ve bu yüzden
+    # "böyle-bir-şey-yok" gibi bir sorgu, içinde yalnızca "yok" geçen bir
+    # kayıtla eşleşiyordu.
     eslesenler = []
     for bolum in bolumler:
         tam_metin = _sadelestir(bolum["baslik"] + " " + bolum["govde"])

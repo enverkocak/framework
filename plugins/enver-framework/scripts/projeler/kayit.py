@@ -16,9 +16,9 @@ taşınsa bile ayrıntısı yanında gelir.
 Komutlar:
     tara      Proje köklerini gez, bulduklarını kaydet
     liste     Bütün projeler
-    goster    Bir projenin ayrıntısı
+    göster    Bir projenin ayrıntısı
     sor       Projeye geçmeden bilgi al
-    kok       Taranacak kök klasörleri yönet
+    kök       Taranacak kök klasörleri yönet
 
 Geliştirici: Enver KOCAK
 """

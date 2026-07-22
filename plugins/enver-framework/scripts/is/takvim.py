@@ -298,7 +298,7 @@ def komut_sil(args):
         veri["kayitlar"].pop(sira)
         yaz(veri)
 
-        # Kayit silinmez, hafizaya not dusulur
+        # Kayıt silinmez, hafızaya not düşülür
         hafiza.bolum_ekle(
             hafiza.hafiza_dosyasi("takvim-kaldirilanlar.md"),
             f"{hafiza.zaman_metni()} - {kayit.get('ad')}",

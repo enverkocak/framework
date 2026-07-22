@@ -7,17 +7,17 @@
 
 | Dosya | Ne işe yarar |
 |-------|--------------|
-| `_ortak_yol.py` | Ortak betikleri iceri aktarilabilir hale getir. |
-| `git-gizlilik-koruma.py` | Islemi reddet ve Turkce gerekce dondur. |
-| `iz-kontrol.py` | Dosya iceriginde iz ara, bulursa uyari sozlugu dondur. |
+| `_ortak_yol.py` | Ortak betikleri içeri aktarılabilir hale getir. |
+| `git-gizlilik-koruma.py` | İşlemi reddet ve Türkçe gerekçe döndür. |
+| `iz-kontrol.py` | Dosya içeriğinde iz ara, bulursa uyarı sözlüğü döndür. |
 | `kalite-kapisi.py` | Stop kancası: Kalite kapısı. |
-| `kasa-koruma.py` | Dosyaya sir yazilmasini engelle. |
+| `kasa-koruma.py` | Dosyaya sır yazılmasını engelle. |
 | `oturum-acilis.py` | Bir defterin en güncel başlıklarını döndür. |
 | `oturum-kayit.py` | PostToolUse kancası: Oturum kaydı. |
-| `sunucu-koruma.py` | Komut icinde gecen, korunan kok altindaki yollari topla. |
+| `sunucu-koruma.py` | Komut içinde geçen, korunan kök altındaki yolları topla. |
 | `tam-yetki.py` | Bu işlem tam yetki modunda bile ayrı değerlendirilmeli mi? |
-| `veri-koruma.py` | Ana dizine gecici dosya yazilmasini engelle (E7). |
-| `yazim-kontrol.py` | Kullanici metinlerinde eksik Turkce karakter var mi? |
+| `veri-koruma.py` | Ana dizine geçici dosya yazılmasını engelle (E7). |
+| `yazim-kontrol.py` | Kullanıcı metinlerinde eksik Türkçe karakter var mı? |
 
 ---
 

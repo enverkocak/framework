@@ -1,8 +1,8 @@
 #!/bin/bash
 # ================================================
-# Enver Framework - Guncelleme
-# GitHub'dan cekip dosyalari gunceller
-# Mac ve Linux icin
+# Enver Framework - Güncelleme
+# GitHub'dan çekip dosyaları günceller
+# Mac ve Linux için
 # ================================================
 
 set -e
@@ -19,7 +19,7 @@ echo "[1/3] GitHub'dan cekiliyor..."
 cd "$REPO_DIR"
 git pull origin master
 
-# Dosyalari kopyala
+# Dosyaları kopyala
 echo "[2/3] Dosyalar guncelleniyor..."
 cp "$REPO_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
 cp -r "$REPO_DIR/vault/"* "$CLAUDE_DIR/vault/"

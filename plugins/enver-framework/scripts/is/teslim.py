@@ -4,9 +4,9 @@
 Teslim, dosyaları göndermekten ibaret değildir. Müşterinin eline geçmesi
 gerekenler bir listede durur ve hiçbiri unutulmaz:
 
-    kilavuz      Kullanım kılavuzu - müşteri ne yapacağını bilsin
+    kılavuz      Kullanım kılavuzu - müşteri ne yapacağını bilsin
     teknik       Teknik doküman - başka biri devralabilsin
-    erisim       Erişim bilgileri - NEREDE olduğu, kendisi değil
+    erişim       Erişim bilgileri - NEREDE olduğu, kendisi değil
     tutanak      Teslim tutanağı - imzalanacak belge
     kvkk         Kişisel veri kontrol listesi
 
@@ -15,7 +15,7 @@ durduğunu söyler; bilginin kendisi ayrı ve güvenli bir yoldan verilir.
 Teslim belgesi e-postayla dolaşır, parola dolaşmamalı.
 
 Komutlar:
-    hazirla    Teslim paketini üret
+    hazırla    Teslim paketini üret
     kontrol    Teslime hazır mı
     liste      Pakette neler var
 
@@ -229,8 +229,8 @@ def erisim_uret(tanim, kok):
     else:
         satirlar.append("Tanımda erişim bilgisi kaydı yok.")
 
-    # Kayit olsun olmasin, bilginin nerede durdugu HER ZAMAN yazilir.
-    # Bu belgenin varlik sebebi zaten bu kural; kayit bos diye atlanmaz.
+    # Kayıt olsun olmasın, bilginin nerede durduğu HER ZAMAN yazılır.
+    # Bu belgenin varlık sebebi zaten bu kural; kayıt boş diye atlanmaz.
     satirlar += [
         "",
         "## Bilgiler nerede duruyor",

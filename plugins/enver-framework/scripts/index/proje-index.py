@@ -8,12 +8,12 @@ Açıklamalar şu sırayla aranır:
   1. Dosyanın ön bilgisindeki description alanı
   2. Kod dosyalarında ilk belge metni (docstring)
   3. Belgelerde ilk anlamlı satır
-  4. Elle yazılmış aciklamalar.json kaydı
+  4. Elle yazılmış açıklamalar.json kaydı
 
 Elle liste tutulmaz. Yeni dosya eklenince index yeniden üretilir.
 
 Komutlar:
-    uret     Index dosyalarını üret
+    üret     Index dosyalarını üret
     kontrol  Index güncel mi (üretmeden bakar)
 
 Geliştirici: Enver KOCAK
@@ -34,7 +34,7 @@ for akis in (sys.stdout, sys.stderr):
     if hasattr(akis, "reconfigure"):
         akis.reconfigure(encoding="utf-8", errors="replace")
 
-# Üretilen belgenin adı bilinçli olarak ICINDEKILER.md.
+# Üretilen belgenin adı bilinçli olarak İÇİNDEKİLER.md.
 #
 # Önce INDEX.md kullanılmıştı ve bu bir veri kaybına yol açtı: Windows dosya
 # sistemi büyük/küçük harf ayırmadığı için, içinde index.md bulunan bir klasöre

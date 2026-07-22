@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""PostToolUse kancasi: Turkce yazim denetimi.
+"""PostToolUse kancası: Türkçe yazım denetimi.
 
-Iki yonlu kural (E17):
+İki yönlü kural (E17):
 
-  1. KIMLIKLERDE TURKCE KARAKTER YASAK
-     Degisken, fonksiyon, sinif ve dosya adlarinda o, c, u, g, i, s
-     harflerinin Turkce bicimleri kullanilmaz. Kod her ortamda ayni calismali.
+  1. KIMLIKLERDE TÜRKÇE KARAKTER YASAK
+     Değişken, fonksiyon, sınıf ve dosya adlarında o, c, u, g, i, s
+     harflerinin Türkçe biçimleri kullanılmaz. Kod her ortamda aynı çalışmalı.
 
-  2. KULLANICI METINLERINDE TURKCE KARAKTER ZORUNLU
-     Arayuz yazilari, hata mesajlari ve web icerigi tam Turkce yazilir:
-     ö, ç, ü, ğ, ı, ş, İ. "Guncelle" degil "Güncelle".
+  2. KULLANICI METINLERINDE TÜRKÇE KARAKTER ZORUNLU
+     Arayüz yazıları, hata mesajları ve web içeriği tam Türkçe yazılır:
+     ö, ç, ü, ğ, ı, ş, İ. "Güncelle" değil "Güncelle".
 
-Bu kanca engellemez, uyarir - duzeltme baglam gerektirir.
+Bu kanca engellemez, uyarır - düzeltme bağlam gerektirir.
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import json
@@ -40,21 +40,21 @@ KOD_UZANTILARI = {
     ".go", ".rb", ".rs", ".c", ".cpp", ".h", ".sh", ".ps1", ".sql",
 }
 
-# Icerigin tamami kullaniciya gorunen metin sayilan dosyalar.
-# .json bilincli olarak DISARIDA: ayar dosyalarinda yollar, komutlar ve alan
-# adlari gecer; bunlar ASCII kalmak zorunda ve metin gibi denetlenirse
-# surekli yanlis uyari uretir.
+# İçeriğin tamamı kullanıcıya görünen metin sayılan dosyalar.
+# .json bilinçli olarak DIŞARIDA: ayar dosyalarında yollar, komutlar ve alan
+# adları geçer; bunlar ASCII kalmak zorunda ve metin gibi denetlenirse
+# sürekli yanlış uyarı üretir.
 METIN_UZANTILARI = {".md", ".txt", ".html", ".htm", ".vue", ".twig"}
 
-# Ic gelistirme notlari ve uretilmis dosyalar taranmaz.
-# gelistirme-arastirmasi/ calisma notudur, kullaniciya sunulan bir yuzey degil -
-# iz-kontrol.py de ayni dizini muaf tutuyor.
+# İç geliştirme notları ve üretilmiş dosyalar taranmaz.
+# geliştirme-araştırması/ çalışma notudur, kullanıcıya sunulan bir yüzey değil -
+# iz-kontrol.py de aynı dizini muaf tutuyor.
 TARANMAYAN_DIZINLER = (
     "/node_modules/", "/.git/", "/vendor/", "/dist/", "/build/",
     "/_arsiv/", "/_calisma/", "/gelistirme-arastirmasi/",
 )
 
-# Dizeleri ve aciklama satirlarini temizleyen desenler
+# Dizeleri ve açıklama satırlarını temizleyen desenler
 DIZE_VE_ACIKLAMA = [
     re.compile(r'"""[\s\S]*?"""'),
     re.compile(r"'''[\s\S]*?'''"),
@@ -67,13 +67,13 @@ DIZE_VE_ACIKLAMA = [
     re.compile(r"<!--[\s\S]*?-->"),
 ]
 
-# Kullaniciya gorunen metinlerde sik yapilan eksik yazimlar.
-# Anahtar: ASCII bicimi, deger: dogru Turkce bicimi.
+# Kullanıcıya görünen metinlerde sık yapılan eksik yazımlar.
+# Anahtar: ASCII biçimi, değer: doğru Türkçe biçimi.
 #
-# Listeye yalniz SU IKI KOSULU birden saglayan kelimeler girer:
-#   1. Dogru bicimi ASCII bicimden gercekten farkli olacak.
-#   2. En az dort harf olacak - "ac", "sec", "sil" gibi kisa kokler
-#      Ingilizce kelimelerin icinde geciyor ve yanlis uyari uretiyor.
+# Listeye yalnız ŞU İKİ KOŞULU birden sağlayan kelimeler girer:
+#   1. Doğru biçimi ASCII biçimden gerçekten farklı olacak.
+#   2. En az dört harf olacak - "aç", "seç", "sil" gibi kısa kökler
+#      İngilizce kelimelerin içinde geçiyor ve yanlış uyarı üretiyor.
 EKSIK_YAZIMLAR = {
     "guncelle": "güncelle", "gonder": "gönder", "goruntule": "görüntüle",
     "duzenle": "düzenle", "degistir": "değiştir", "olustur": "oluştur",
@@ -89,28 +89,28 @@ EKSIK_YAZIMLAR = {
     "olcu": "ölçü", "surum": "sürüm", "bolum": "bölüm",
 }
 
-# Turkce ekli bir dil: "sifreniz", "kullanicilar", "guncelleme" de yakalanmali.
-# Bu yuzden kokun ardindan gelen ek harfleri desene dahil edilir.
+# Türkçe ekli bir dil: "şifreniz", "kullanıcılar", "güncelleme" de yakalanmalı.
+# Bu yüzden kökün ardından gelen ek harfleri desene dahil edilir.
 EKSIK_DESENI = re.compile(
     r"\b(" + "|".join(sorted(EKSIK_YAZIMLAR, key=len, reverse=True)) + r")([a-z]*)\b",
     re.IGNORECASE,
 )
 
-# UNSUZ YUMUSAMASI
+# ÜNSÜZ YUMUŞAMASI
 #
-# Turkcede c, k, p, t ile biten kelimeler unlu ile baslayan bir ek aldiginda
-# yumusar: sonuc -> sonucu, kayit -> kaydi, kitap -> kitabi.
+# Türkçede c, k, p, t ile biten kelimeler ünlü ile başlayan bir ek aldığında
+# yumuşar: sonuç -> sonucu, kayıt -> kaydı, kitap -> kitabı.
 #
-# Yani "sonucu" YANLIS DEGIL, dogru yazimin ta kendisi. Kok halinde "sonuc"
-# yazilmasi yanlistir ama ekli halinde yumusamis bicim beklenir.
+# Yani "sonucu" YANLIŞ DEĞİL, doğru yazımın ta kendisi. Kök halinde "sonuç"
+# yazılması yanlıştır ama ekli halinde yumuşamış biçim beklenir.
 #
-# Bu ayrimi yapmayan bir denetim, dogru yazilmis metinleri hatali gosterir.
+# Bu ayrımı yapmayan bir denetim, doğru yazılmış metinleri hatalı gösterir.
 YUMUSAYAN_SONLAR = ("ç", "k", "p", "t")
 UNLULER = "aeıioöuüAEIİOÖUÜ"
 
 
 def _yumusama_mi(dogru_bicim, ek):
-    """Bulunan yazim, unsuz yumusamasi yuzunden mi boyle gorunuyor?"""
+    """Bulunan yazım, ünsüz yumuşaması yüzünden mi böyle görünüyor?"""
     if not ek:
         return False
 
@@ -120,34 +120,34 @@ def _yumusama_mi(dogru_bicim, ek):
     return ek[0] in UNLULER
 
 
-# TURKCE BUYUK HARF
+# TÜRKÇE BÜYÜK HARF
 #
-# Turkcede i ve i harflerinin buyugu farklidir:
-#     i -> I        (noktasiz)
-#     i -> I        (noktali)
+# Türkçede i ve i harflerinin büyüğü farklıdır:
+#     i -> I        (noktasız)
+#     i -> I        (noktalı)
 #
-# Yani "uyari" kelimesinin buyuk hali "UYARI"dir; icinde nokta yoktur.
-# Ingilizce buyutme kurali uygulanirsa "UYARI" yanlis gorunur, oysa dogrudur.
+# Yani "uyarı" kelimesinin büyük hali "UYARI"dir; içinde nokta yoktur.
+# İngilizce büyütme kuralı uygulanırsa "UYARI" yanlış görünür, oysa doğrudur.
 BUYUTME_ESLEMESI = str.maketrans({
     "ı": "I", "i": "İ", "ç": "Ç", "ğ": "Ğ", "ö": "Ö", "ş": "Ş", "ü": "Ü",
 })
 
 
 def turkce_buyut(metin):
-    """Turkce kurallarina gore buyuk harfe cevir."""
+    """Türkçe kurallarına göre büyük harfe çevir."""
     return metin.translate(BUYUTME_ESLEMESI).upper()
 
 
 def _dogru_buyuk_bicim_mi(bulunan, dogru_bicim):
-    """Buyuk harfle yazilmis bicim aslinda dogru mu?"""
+    """Büyük harfle yazılmış biçim aslında doğru mu?"""
     if not bulunan.isupper():
         return False
 
     return bulunan == turkce_buyut(dogru_bicim)
 
 
-# Bu kancanin kendi sozlugu, dogasi geregi ASCII bicimleri icerir;
-# kendini taramasi anlamsiz uyari uretir.
+# Bu kancanın kendi sözlüğü, doğası gereği ASCII biçimleri içerir;
+# kendini taraması anlamsız uyarı üretir.
 MUAF_DOSYALAR = {"yazim-kontrol.py"}
 
 
@@ -161,62 +161,62 @@ def _muaf_mi(dosya_yolu):
 
 
 def _kod_govdesi(icerik):
-    """Dize ve aciklamalari cikar - geriye kimlikler kalir."""
+    """Dize ve açıklamaları çıkar - geriye kimlikler kalır."""
     for desen in DIZE_VE_ACIKLAMA:
         icerik = desen.sub(" ", icerik)
     return icerik
 
 
-# Kod icindeki her dize kullaniciya gosterilmez. Sozluk anahtarlari, dosya
-# adlari ve alan adlari da dize olarak yazilir ve ASCII kalmak zorundadir
-# (ornek: veri.get("aciklama"), "aciklamalar.json").
+# Kod içindeki her dize kullanıcıya gösterilmez. Sözlük anahtarları, dosya
+# adları ve alan adları da dize olarak yazılır ve ASCII kalmak zorundadır
+# (örnek: veri.get("açıklama"), "açıklamalar.json").
 #
-# Ayirt etme kurali: gosterilen metin ya bosluk icerir ya da buyuk harfle
-# baslar. Tek kelimelik, kucuk harfli dizeler anahtar sayilir ve atlanir.
+# Ayırt etme kuralı: gösterilen metin ya boşluk içerir ya da büyük harfle
+# başlar. Tek kelimelik, küçük harfli dizeler anahtar sayılır ve atlanır.
 ANAHTAR_GORUNUMLU = re.compile(r"^[a-z0-9_.\-/\\]+$")
 
-# Yol, kabuk komutu ya da degisken iceren dizeler gosterilen metin degildir.
+# Yol, kabuk komutu ya da değişken içeren dizeler gösterilen metin değildir.
 KOMUT_GORUNUMLU = re.compile(
     r"(^|\s)(python|node|npm|git|bash|sh|psql|mysql|ssh|scp|curl|pip)\s"
     r"|\$\{?[A-Z_]{3,}"
     r"|[/\\][a-z0-9_.\-]+[/\\]"
     r"|\.(py|js|ts|php|sh|ps1|json|md|html|css|sql|jsonl)\b"
-    # CSS ozel degiskeni ve HTML etiketi: kod, gosterilen metin degil
+    # CSS özel değişkeni ve HTML etiketi: kod, gösterilen metin değil
     r"|--[a-z][a-z0-9-]*\s*:"
     r"|<[a-z]+[\s>/]"
 )
 
 
-# Dize desenleri ham metin uzerinde birbirinden bagimsiz calisir; kod icinde
-# gecen tek tirnak ("\"'" gibi) yanlis eslesip kocaman bir kod parcasini dize
-# gibi gosterebiliyor. Kod noktalamasi tasiyan parcalar bu yuzden elenir.
+# Dize desenleri ham metin üzerinde birbirinden bağımsız çalışır; kod içinde
+# geçen tek tırnak ("\"'" gibi) yanlış eşleşip kocaman bir kod parçasını dize
+# gibi gösterebiliyor. Kod noktalaması taşıyan parçalar bu yüzden elenir.
 KOD_NOKTALAMASI = re.compile(r"[=;{}()\[\]]")
 
-# Duzenli ifade desenleri de dize olarak yazilir ve icinde ASCII kokler gecer
-# (ornek: r"pos\b|odeme|payment"). Bunlar kullaniciya gosterilmez.
+# Düzenli ifade desenleri de dize olarak yazılır ve içinde ASCII kökler geçer
+# (örnek: r"pos\b|ödeme|payment"). Bunlar kullanıcıya gösterilmez.
 DESEN_GORUNUMLU = re.compile(r"\\[bdswAZ]|\(\?|\|.*\||\[\^|\{\d")
 
 
 def _gosterilen_metin_mi(ham_dize):
-    """Bu dize kullaniciya gosteriliyor mu, yoksa anahtar ya da kod mu?"""
+    """Bu dize kullanıcıya gösteriliyor mu, yoksa anahtar ya da kod mu?"""
     icerik = ham_dize.strip("\"'`").strip()
 
     if not icerik or len(icerik) < 4:
         return False
 
-    # Tek kelimelik kucuk harfli dize: sozluk anahtari ya da alan adi
+    # Tek kelimelik küçük harfli dize: sözlük anahtarı ya da alan adı
     if ANAHTAR_GORUNUMLU.match(icerik):
         return False
 
-    # Yol, dosya adi, kabuk komutu ya da ortam degiskeni
+    # Yol, dosya adı, kabuk komutu ya da ortam değişkeni
     if KOMUT_GORUNUMLU.search(icerik):
         return False
 
-    # Duzenli ifade deseni
+    # Düzenli ifade deseni
     if DESEN_GORUNUMLU.search(icerik):
         return False
 
-    # Cok satirli bir parca ancak kod noktalamasi tasimiyorsa metin sayilir
+    # Çok satırlı bir parça ancak kod noktalaması taşımıyorsa metin sayılır
     if "\n" in icerik and KOD_NOKTALAMASI.search(icerik):
         return False
 
@@ -224,7 +224,7 @@ def _gosterilen_metin_mi(ham_dize):
 
 
 def _dizeleri_topla(icerik):
-    """Kullaniciya gorunebilecek dize iceriklerini topla."""
+    """Kullanıcıya görünebilecek dize içeriklerini topla."""
     dizeler = []
     for desen in DIZE_VE_ACIKLAMA[:5]:
         for eslesme in desen.finditer(icerik):
@@ -235,7 +235,7 @@ def _dizeleri_topla(icerik):
 
 
 def kimlik_kontrol(dosya_yolu, icerik):
-    """Kimliklerde Turkce karakter var mi?"""
+    """Kimliklerde Türkçe karakter var mı?"""
     uzanti = Path(dosya_yolu).suffix.lower()
     if uzanti not in KOD_UZANTILARI:
         return []
@@ -253,41 +253,41 @@ def kimlik_kontrol(dosya_yolu, icerik):
 
 
 def dosya_adi_kontrol(dosya_yolu):
-    """Dosya ve klasor adinda Turkce karakter var mi?"""
+    """Dosya ve klasör adında Türkçe karakter var mı?"""
     bagil = dosya_yolu.replace("\\", "/")
     parcalar = [p for p in bagil.split("/") if p]
 
     return [p for p in parcalar if TURKCE_DESEN.search(p)]
 
 
-# Bir metin dizesinin icinde gorunen her sey kullaniciya gosterilen yazi degil:
+# Bir metin dizesinin içinde görünen her şey kullanıcıya gösterilen yazı değil:
 #
-#   {musteri}          bicimlendirme yer tutucusu - degisken adi, koddur
-#   `gorev`            ters tirnak icinde alan adi
-#   'kasa_anahtari'    tek tirnak icinde alan adi
+#   {müşteri}          biçimlendirme yer tutucusu - değişken adı, koddur
+#   `görev`            ters tırnak içinde alan adı
+#   'kasa_anahtarı'    tek tırnak içinde alan adı
 #
-# Bunlarin hepsi ASCII kalmak zorundadir, denetim disi birakilir.
-# Kural: kullanici metninde bir alan adi anilacaksa tirnak icine alinir.
+# Bunların hepsi ASCII kalmak zorundadır, denetim dışı bırakılır.
+# Kural: kullanıcı metninde bir alan adı anılacaksa tırnak içine alınır.
 KOD_PARCASI = re.compile(r"\{[^{}]*\}|`[^`]*`|'[^']*'")
 
 
-# Yardim metinlerinde komut listesi su bicimde yazilir:
+# Yardım metinlerinde komut listesi şu biçimde yazılır:
 #
-#     ozet      Butun projelerin gorev ozeti
-#     liste     Gorevleri goster
+#     özet      Bütün projelerin görev özeti
+#     liste     Görevleri göster
 #
-# Soldaki komut adi ASCII kalmak zorundadir; sagdaki aciklama denetlenir.
+# Soldaki komut adı ASCII kalmak zorundadır; sağdaki açıklama denetlenir.
 KOMUT_LISTESI_SATIRI = re.compile(r"^(\s{2,})([a-z][a-z0-9_-]*)(\s{2,})", re.MULTILINE)
 
 
 def _kod_parcalarini_cikar(metin):
-    """Yer tutucu, tirnakli ad ve komut adlarini denetim disi birak."""
+    """Yer tutucu, tırnaklı ad ve komut adlarını denetim dışı bırak."""
     metin = KOD_PARCASI.sub(" ", metin)
     return KOMUT_LISTESI_SATIRI.sub(r"\1 \3", metin)
 
 
 def metin_kontrol(dosya_yolu, icerik):
-    """Kullanici metinlerinde eksik Turkce karakter var mi?"""
+    """Kullanıcı metinlerinde eksik Türkçe karakter var mı?"""
     uzanti = Path(dosya_yolu).suffix.lower()
 
     if uzanti in KOD_UZANTILARI:
@@ -299,7 +299,7 @@ def metin_kontrol(dosya_yolu, icerik):
 
     bulunanlar = {}
     for ham_parca in adaylar:
-        # Yer tutucular ve tirnakli adlar koddur; denetim disi birakilir
+        # Yer tutucular ve tırnaklı adlar koddur; denetim dışı bırakılır
         parca = _kod_parcalarini_cikar(ham_parca)
 
         for eslesme in EKSIK_DESENI.finditer(parca):
@@ -307,15 +307,15 @@ def metin_kontrol(dosya_yolu, icerik):
             ek = eslesme.group(2)
             dogrusu = EKSIK_YAZIMLAR[kelime.lower()]
 
-            # Duzeltilecek bir sey yoksa atla (ornek: "tamam" -> "tamam")
+            # Düzeltilecek bir şey yoksa atla (örnek: "tamam" -> "tamam")
             if dogrusu == kelime.lower():
                 continue
 
-            # Unsuz yumusamasi: "sonucu" dogru yazimdir, uyari verilmez
+            # Ünsüz yumuşaması: "sonucu" doğru yazımdır, uyarı verilmez
             if _yumusama_mi(dogrusu, ek):
                 continue
 
-            # Turkce buyuk harf: "UYARI", "uyari" kelimesinin dogru buyuk halidir
+            # Türkçe büyük harf: "UYARI", "uyarı" kelimesinin doğru büyük halidir
             if _dogru_buyuk_bicim_mi(kelime + ek, dogrusu):
                 continue
 

@@ -39,7 +39,7 @@ for akis in (sys.stdout, sys.stderr):
     if hasattr(akis, "reconfigure"):
         akis.reconfigure(encoding="utf-8", errors="replace")
 
-# Kurulum sonrasi kullanicinin doldurmasi gereken kimlik alanlari
+# Kurulum sonrası kullanıcının doldurması gereken kimlik alanları
 KIMLIK_ALANLARI = [
     ("gelistirici", "Geliştirici adı", True),
     ("site", "Site adresi", False),
@@ -48,35 +48,35 @@ KIMLIK_ALANLARI = [
     ("sirket", "Şirket adı", False),
 ]
 
-# KISISEL VERI VE PAYLASIM
+# KİŞİSEL VERI VE PAYLAŞIM
 #
-# Burada ince bir ayrim var:
+# Burada ince bir ayrım var:
 #
-#   Kendi kullaniminda  hafiza/ depoya GIRMELI - coklu bilgisayar senkronu
-#                       buna dayaniyor (E13). Depo gizli oldugu surece sorun yok.
+#   Kendi kullanımında  hafıza/ depoya GIRMELI - çoklu bilgisayar senkronu
+#                       buna dayanıyor (E13). Depo gizli olduğu sürece sorun yok.
 #
-#   Paylasimda          hafiza/ icinde musteri adlari, sunucu dizinleri,
-#                       cihaz adresleri ve kararlar var. Baskasina verilen
+#   Paylaşımda          hafıza/ içinde müşteri adları, sunucu dizinleri,
+#                       cihaz adresleri ve kararlar var. Başkasına verilen
 #                       kopyada bunlar BULUNMAMALI.
 #
-# Bu yuzden iki ayri liste tutulur.
+# Bu yüzden iki ayrı liste tutulur.
 
-# Hicbir kosulda depoya girmemesi gerekenler
+# Hiçbir koşulda depoya girmemesi gerekenler
 ASLA_DEPOYA = ["kasa", "vault", "gunluk", "_arsiv", "_calisma"]
 
-# Kendi kullaniminda depoda durur, PAYLASIRKEN cikarilir
+# Kendi kullanımında depoda durur, PAYLAŞIRKEN çıkarılır
 PAYLASIMDA_CIKAR = [
     "hafiza",
     ".claude/proje.json",
     ".claude/imza.json",
     ".claude/tasarim-kimligi.json",
 
-    # Uretilen ayar dosyasi bu makinenin mutlak yollarini tasir.
-    # Baska makinede gecersizdir; kurulum betigi yenisini uretir.
+    # Üretilen ayar dosyası bu makinenin mutlak yollarını taşır.
+    # Başka makinede geçersizdir; kurulum betiği yenisini üretir.
     ".claude/settings.json",
     ".claude/settings.json.yedek",
 
-    # Kisiye ozel notlar ve haritalar
+    # Kişiye özel notlar ve haritalar
     "bilgi",                       # deploy rehberi, sunucu notlari
     "gelistirme-arastirmasi",      # gelistirme surecinin kendi notlari
     "CLAUDE.md",                   # sunucu adresi ve kisisel kurallar
@@ -86,8 +86,8 @@ PAYLASIMDA_CIKAR = [
     "plugins/.claude-plugin/marketplace.json",
 ]
 
-# Paylasilan kopyada bulunmasi gereken ornek dosyalar.
-# Cikarilan yapilandirmalarin yerine bunlar konur.
+# Paylaşılan kopyada bulunması gereken örnek dosyalar.
+# Çıkarılan yapılandırmaların yerine bunlar konur.
 ORNEK_DOSYALAR = {
     "CLAUDE.ornek.md": "CLAUDE.md",
     "README.ornek.md": "README.md",
@@ -99,15 +99,15 @@ ORNEK_DOSYALAR = {
         "plugins/.claude-plugin/marketplace.json",
 }
 
-# Kelime siniri deseni. Tek yerde tanimlanir ki kacis dizisi bozulmasin.
+# Kelime sınırı deseni. Tek yerde tanımlanır ki kaçış dizisi bozulmasın.
 SINIR = chr(92) + "b"
 
-# Yer tutucu adresler kisisel veri sayilmaz
+# Yer tutucu adresler kişisel veri sayılmaz
 YER_TUTUCU_ADRESLER = {"0.0.0.0", "127.0.0.1", "255.255.255.255", "1.2.3.4"}
 
-# Ozel ag araliklari da sayilmaz: bu adresler yerel agda gecerlidir,
-# disaridan erisilemez ve kimseyi isaret etmez.
-# (192.168.1.50 gibi bir kamera adresi kisisel veri degildir.)
+# Özel ağ aralıkları da sayılmaz: bu adresler yerel ağda geçerlidir,
+# dışarıdan erişilemez ve kimseyi işaret etmez.
+# (192.168.1.50 gibi bir kamera adresi kişisel veri değildir.)
 OZEL_AG = re.compile(
     r"^(?:"
     r"10\.|"
@@ -121,23 +121,23 @@ OZEL_AG = re.compile(
 def yer_tutucu_adres_mi(adres):
     return adres in YER_TUTUCU_ADRESLER or bool(OZEL_AG.match(adres))
 
-# Bicime gore her zaman aranan degerler
+# Biçime göre her zaman aranan değerler
 SABIT_DESENLER = [
     (r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b", "sunucu adresi"),
     (r"\b0\d{3}\s?\d{3}\s?\d{2}\s?\d{2}\b", "telefon"),
 ]
 
-# SIZINTI ile TELIF farklidir.
+# SIZINTI ile TELIF farklıdır.
 #
-# Paylasilan bir kaynak kodda yazarin ADI ve SITESI bulunmasi normaldir;
-# bu telif bilgisidir, sizinti degil. Zaten depo sayfasinda da gorunur.
+# Paylaşılan bir kaynak kodda yazarın ADI ve SITESI bulunması normaldir;
+# bu telif bilgisidir, sızıntı değil. Zaten depo sayfasında da görünür.
 #
-# Sizinti olan sey sudur: sunucu adresi, telefon, musteri adi, proje adi.
-# Bunlar baskasinin isine yaramaz ama Enver'e zarar verebilir.
+# Sızıntı olan şey şudur: sunucu adresi, telefon, müşteri adı, proje adı.
+# Bunlar başkasının işine yaramaz ama Enver'e zarar verebilir.
 #
-# Bu yuzden iki ayri liste var: biri kopyayi DURDURUR, digeri yalniz bildirir.
+# Bu yüzden iki ayrı liste var: biri kopyayı DURDURUR, diğeri yalnız bildirir.
 
-# Bulunursa kopya paylasilamaz
+# Bulunursa kopya paylaşılamaz
 ENGELLEYEN_ALANLAR = {
     "telefon": "telefon",
     "sirket": "şirket adı",
@@ -152,10 +152,10 @@ BILDIREN_ALANLAR = {
 
 
 def kisisel_desenler():
-    """Paylasilan kopyada aranacak kisisel degerler.
+    """Paylaşılan kopyada aranacak kişisel değerler.
 
-    Kimlik degerleri AYARDAN gelir; koda gomulmez. Aksi halde bu
-    denetleyicinin kendisi kisisel veri tasiyan bir dosya olurdu -
+    Kimlik değerleri AYARDAN gelir; koda gömülmez. Aksi halde bu
+    denetleyicinin kendisi kişisel veri taşıyan bir dosya olurdu -
     ki ilk denemede tam olarak bu oldu.
     """
     engelleyen = [(re.compile(desen), etiket) for desen, etiket in SABIT_DESENLER]
@@ -164,7 +164,7 @@ def kisisel_desenler():
     kayit = ayarlar.kimlik()
 
     def desen_uret(deger):
-        # Alan adinin ayirt edici parcasi aranir: ornek.com -> ornek
+        # Alan adının ayırt edici parçası aranır: örnek.com -> örnek
         kok_parca = deger.split("@")[-1].split(".")[0]
         aday = kok_parca if len(kok_parca) >= 5 else deger
         return re.compile(SINIR + re.escape(aday) + SINIR, re.IGNORECASE)
@@ -239,7 +239,7 @@ def depo_gizli_mi(kok=None):
     if "github.com" not in adres:
         return None
 
-    # Kimlik dogrulamasiz erisilebiliyorsa herkese aciktir
+    # Kimlik doğrulamasız erişilebiliyorsa herkese açıktır
     import urllib.error
     import urllib.request
     import re
@@ -261,8 +261,8 @@ def depo_gizli_mi(kok=None):
 def kisisel_veri_kontrol(paylasim=False):
     """Depoda kişiye özel veri kalmış mı?
 
-    paylasim=False : kendi kullanımı - yalnız asla girmemesi gerekenlere bakılır
-    paylasim=True  : başkasına verilecek kopya - hafıza da çıkarılmalı
+    paylaşım=False : kendi kullanımı - yalnız asla girmemesi gerekenlere bakılır
+    paylaşım=True  : başkasına verilecek kopya - hafıza da çıkarılmalı
     """
     kok = Path(yollar.proje_kok())
     sorunlar = []
@@ -385,11 +385,11 @@ def komut_kur(args):
     else:
         print("  Kayıt betiği ya da koruma klasörü bulunamadı.")
 
-    # 3b. Iz muafiyet isareti
+    # 3b. İz muafiyet işareti
     #
-    # Bu isaret, framework'un KENDI deposunun iz taramasindan muaf oldugunu
-    # soyler: kurulum talimatlari ve klasor adlari teknik zorunluluktur.
-    # Musteri projelerine ASLA konulmaz.
+    # Bu işaret, framework'un KENDI deposunun iz taramasından muaf olduğunu
+    # söyler: kurulum talimatları ve klasör adları teknik zorunluluktur.
+    # Müşteri projelerine ASLA konulmaz.
     isaret = kok / ".iz-muaf"
     if not isaret.is_file():
         kimlik = ayarlar.kimlik()
@@ -404,7 +404,7 @@ def komut_kur(args):
         print()
         print("3b. Muafiyet isareti oluşturuldu (.iz-muaf)")
 
-    # 4. Kisisel veri denetimi
+    # 4. Kişisel veri denetimi
     print()
     print("4. Kişisel veri denetimi")
     print("-" * 62)
@@ -418,7 +418,7 @@ def komut_kur(args):
     else:
         print("  [iyi  ] Kasa ve ham günlük depoya girmiyor")
 
-    # Paylasim riski ayri bir konu
+    # Paylaşım riski ayrı bir konu
     gizli = depo_gizli_mi(kok)
     paylasim_sorunlari = kisisel_veri_kontrol(paylasim=True)
     paylasima_ozel = [s for s in paylasim_sorunlari if s not in sorunlar]
@@ -436,7 +436,7 @@ def komut_kur(args):
         print()
         print("           Temiz kopya için: python sihirbaz.py paylasima-hazirla")
 
-    # 5. Saglik
+    # 5. Sağlık
     print()
     print("5. Sağlık kontrolü")
     print("-" * 62)
@@ -502,7 +502,7 @@ def komut_paylasima_hazirla(args):
     print(f"Hedef : {hedef}")
     print()
 
-    # Depoda izlenen dosyalari al - gitignore edilenler zaten disarida kalir
+    # Depoda izlenen dosyaları al - gitignore edilenler zaten dışarıda kalır
     sonuc = subprocess.run(["git", "ls-files"], cwd=str(kok),
                            capture_output=True, text=True, encoding="utf-8")
     if sonuc.returncode != 0:
@@ -514,8 +514,20 @@ def komut_paylasima_hazirla(args):
     cikarilan = []
     kopyalanan = 0
 
+    # Hedefin İÇİ temizlenir ama .git KORUNUR.
+    #
+    # Paylaşılan kopya kendi deposu hâline geldiğinde içinde yayınlanmış
+    # bir geçmiş bulunur. Klasörü komple silmek o geçmişi yok ederdi;
+    # "hiçbir veri silinmez" kuralına da aykırıdır. Burada yalnızca
+    # üretilen dosyalar yenilenir, sürüm geçmişi yerinde kalır.
     if hedef.exists():
-        shutil.rmtree(hedef)
+        for oge in hedef.iterdir():
+            if oge.name == ".git":
+                continue
+            if oge.is_dir():
+                shutil.rmtree(oge)
+            else:
+                oge.unlink()
     hedef.mkdir(parents=True, exist_ok=True)
 
     for bagil in izlenenler:
@@ -524,9 +536,9 @@ def komut_paylasima_hazirla(args):
             cikarilan.append(bagil)
             continue
 
-        # Ornek dosyalar kendi adlariyla degil, yerine gectikleri adla
-        # kopyalanir. Ikisi birden bulunursa kullanici hangisinin gecerli
-        # oldugunu bilemez.
+        # Örnek dosyalar kendi adlarıyla değil, yerine geçtikleri adla
+        # kopyalanır. İkisi birden bulunursa kullanıcı hangisinin geçerli
+        # olduğunu bilemez.
         if ".ornek." in Path(bagil).name:
             continue
 
@@ -550,7 +562,7 @@ def komut_paylasima_hazirla(args):
         if len(cikarilan) > 8:
             print(f"    ... ve {len(cikarilan) - 8} dosya daha")
 
-    # Ornek dosyalari yerine koy
+    # Örnek dosyaları yerine koy
     eklenen_ornek = []
     for ornek, yerine in ORNEK_DOSYALAR.items():
         kaynak = kok / ornek
@@ -567,39 +579,39 @@ def komut_paylasima_hazirla(args):
         for ad in eklenen_ornek:
             print(f"    {ad}")
 
-    # KISISEL DEGER TARAMASI
+    # KİŞİSEL DEĞER TARAMASI
     #
-    # Klasor cikarmak yetmiyor: kalan dosyalarin ICINDE de sunucu adresi,
-    # musteri adi ve iletisim bilgisi gecebiliyor. Ilk denemede tam olarak
-    # bu oldu - kopya "temiz" sayildi ama icinde sunucu IP'si vardi.
+    # Klasör çıkarmak yetmiyor: kalan dosyaların İÇİNDE de sunucu adresi,
+    # müşteri adı ve iletişim bilgisi geçebiliyor. İlk denemede tam olarak
+    # bu oldu - kopya "temiz" sayıldı ama içinde sunucu IP'si vardı.
     desenler, bildirilecekler = kisisel_desenler()
 
-    # Proje ve musteri adlari kisisel veridir - bunlar kopyayi DURDURUR
+    # Proje ve müşteri adları kişisel veridir - bunlar kopyayı DURDURUR
     try:
         sys.path.insert(0, str(BETIK_KOKU / "projeler"))
         import kayit as proje_kaydi
 
-        # Kisa ve yaygin adlar her metinde tutar ve taramayi kullanilamaz hale
-        # getirir. Yalniz ayirt edici adlar aranir.
+        # Kısa ve yaygın adlar her metinde tutar ve taramayı kullanılamaz hale
+        # getirir. Yalnız ayırt edici adlar aranır.
         YAYGIN = {
             "album", "sunum", "panel", "site", "proje", "test", "demo",
-            # Turkce proje adlarinda sik gecen genel kelimeler
+            # Türkçe proje adlarında sık geçen genel kelimeler
             "projesi", "sistem", "sistemi", "uygulama", "uygulamasi",
             "yonetim", "yonetimi", "kurulum", "masaustu", "hesap",
             "export", "import", "asistan", "asistanim",
         }
 
-        # Kimlik degerleri proje adi olarak sayilmaz; onlar zaten
-        # telif basligi altinda ayrica bildiriliyor.
+        # Kimlik değerleri proje adı olarak sayılmaz; onlar zaten
+        # telif başlığı altında ayrıca bildiriliyor.
         kimlik_degerleri = set()
         for deger in ayarlar.kimlik().values():
             deger = (deger or "").strip()
             if len(deger) >= 5:
                 kimlik_degerleri.add(deger.split("@")[-1].split(".")[0].lower())
 
-        # Proje adinin TAMAMI degil, ayirt edici PARCALARI da aranir.
-        # Ornek: 'musteri-adi-gen-tr' kayitliyken dosyada yalniz
-        # 'musteri-adi' geciyorsa kelime siniri yuzunden eslesmiyordu.
+        # Proje adının TAMAMI değil, ayırt edici PARÇALARI da aranır.
+        # Örnek: 'müşteri-adı-gen-tr' kayıtlıyken dosyada yalnız
+        # 'müşteri-adı' geçiyorsa kelime sınırı yüzünden eşleşmiyordu.
         arananlar = set()
 
         for ad in proje_kaydi.kayit_oku().get("projeler", {}):
@@ -615,12 +627,12 @@ def komut_paylasima_hazirla(args):
                 arananlar.add(aday)
 
         for aday in sorted(arananlar):
-            # Kelime siniri korunmasi bir kor nokta uretiyordu:
-            # '$DEGISKENmusteriadi' bicimindeki bitisik yazimlar eslesmiyordu.
-            # On ek degiskeni harfle bittigi icin sinir saglanmiyor.
+            # Kelime sınırı korunması bir kör nokta üretiyordu:
+            # '$DEGISKENmusteriadi' biçimindeki bitişik yazımlar eşleşmiyordu.
+            # On ek değişkeni harfle bittiği için sınır sağlanmıyor.
             #
-            # Uzun adlar tesadufen baska bir kelimenin icinde gecmez;
-            # onlarda sinir sarti aranmaz.
+            # Uzun adlar tesadüfen başka bir kelimenin içinde geçmez;
+            # onlarda sınır şartı aranmaz.
             if len(aday) >= 10:
                 desenler.append((re.compile(re.escape(aday), re.IGNORECASE),
                                  "proje adi"))
@@ -634,7 +646,7 @@ def komut_paylasima_hazirla(args):
     for yol in hedef.rglob("*"):
         if not yol.is_file() or yol.suffix.lower() in (".png", ".jpg", ".ico", ".woff"):
             continue
-        # Ornek dosyalarin icindeki degerler zaten yer tutucudur
+        # Örnek dosyaların içindeki değerler zaten yer tutucudur
         if ".ornek." in yol.name:
             continue
         try:
@@ -644,8 +656,8 @@ def komut_paylasima_hazirla(args):
 
         for desen, tur in desenler:
             if tur == "sunucu adresi":
-                # Bir dosyada birden cok adres olabilir; yer tutucu ve ozel ag
-                # adresleri elenir, geriye gercek bir adres kalirsa bulgu sayilir.
+                # Bir dosyada birden çok adres olabilir; yer tutucu ve özel ağ
+                # adresleri elenir, geriye gerçek bir adres kalırsa bulgu sayılır.
                 gercekler = [a for a in desen.findall(icerik)
                              if not yer_tutucu_adres_mi(a)]
                 if not gercekler:
@@ -656,7 +668,7 @@ def komut_paylasima_hazirla(args):
             bagil = yol.relative_to(hedef).as_posix()
             bulgular.setdefault(bagil, set()).add(tur)
 
-    # Telif bilgisi ayri sayilir: engellemez, bildirilir
+    # Telif bilgisi ayrı sayılır: engellemez, bildirilir
     telif = {}
     for yol in hedef.rglob("*"):
         if not yol.is_file() or yol.suffix.lower() in (".png", ".jpg", ".ico", ".woff"):

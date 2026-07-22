@@ -20,7 +20,7 @@
    Diğer sitelere dokunulmaz.
 
    Sunucu ve dizin bilgisi şurada tanımlanır:
-   `plugins/enver-framework/references/sunucu-haritasi.json`
+   `~/.claude/plugins/enver-framework/references/sunucu-haritasi.json`
 
 ## ÇALIŞMA KURALLARI
 
@@ -43,7 +43,7 @@
 | Sunucu / kimlik bilgisi | Kasa (parola korumalı) |
 | Proje bilgisi | Proje tanımı ve index'ler |
 | Komut rehberi | `/index` |
-| Kurallar | `plugins/enver-framework/references/kurallar.md` |
+| Kurallar | `~/.claude/plugins/enver-framework/references/kurallar.md` |
 
 ## KOMUTLAR
 

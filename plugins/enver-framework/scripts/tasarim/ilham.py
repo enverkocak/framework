@@ -19,9 +19,9 @@ Ağ erişimi olmayan makinede katalog çalışmaya devam eder; yalnız site
 çözümlemesi yapılamaz.
 
 Komutlar:
-    yazitipi liste      Katalogdaki eşleşmeler
-    yazitipi sec        Bir karaktere uygun eşleşme öner
-    yazitipi baglanti   Yükleme adresi üret
+    yazıtipi liste      Katalogdaki eşleşmeler
+    yazıtipi seç        Bir karaktere uygun eşleşme öner
+    yazıtipi bağlantı   Yükleme adresi üret
     site <adres>        Örnek siteyi çözümle
 
 Geliştirici: Enver KOCAK

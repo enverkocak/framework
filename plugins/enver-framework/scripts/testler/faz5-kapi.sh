@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 5 kapi kontrolu - faz motoru ve tam yetki
+# Faz 5 kapı kontrolü - faz motoru ve tam yetki
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -44,13 +44,13 @@ assert numaralar == sorted(numaralar), numaralar
 for f in fazlar:
     assert "no" in f and "ad" in f and "durum" in f, f
     assert f["durum"] in ("bekliyor", "calisiyor", "kapi-bekliyor", "tamamlandi"), f
-    # Numara SAYI olmali; metin olursa siralama alfabetik olur
-    # ve 10, 11 numarali fazlar 2'den once gelir
+    # Numara SAYI olmalı; metin olursa sıralama alfabetik olur
+    # ve 10, 11 numaralı fazlar 2'den önce gelir
     assert isinstance(f["no"], int), (f["no"], type(f["no"]).__name__)
 PY
 
-# Butun fazlar tamamlandiysa aktif faz OLMAZ - bu gecerli bir durumdur.
-# Olculecek sey durumun okunabilmesi, aktif faz bulunmasi degil.
+# Bütün fazlar tamamlandıysa aktif faz OLMAZ - bu geçerli bir durumdur.
+# Ölçülecek şey durumun okunabilmesi, aktif faz bulunması değil.
 python "$P/scripts/faz/faz.py" durum > _calisma/fz.txt 2>&1
 grep -qE "Aktif faz|Bütün fazlar tamamlandı" _calisma/fz.txt   && kontrol "Faz durumu okunabiliyor" 0 || kontrol "Faz durumu okunabiliyor" 1
 grep -q "İLERLEME" _calisma/fz.txt && kontrol "Ilerleme gosteriliyor" 0 || kontrol "Ilerleme gosteriliyor" 1
@@ -67,7 +67,7 @@ import faz
 biten, toplam = faz.ilerleme()
 assert toplam >= 11, toplam
 assert biten >= 5, biten
-# Aktif faz, tamamlanmamis ILK faz olmali - numarasi sabit degil
+# Aktif faz, tamamlanmamış İLK faz olmalı - numarası sabit değil
 plan = faz.plan_oku()["fazlar"]
 beklenen = next((f for f in plan if f.get("durum") != "tamamlandi"), None)
 aktif = faz.aktif_faz()
@@ -82,7 +82,7 @@ sys.path.insert(0, "plugins/enver-framework/scripts/hafiza")
 import faz
 aktif = faz.aktif_faz()
 if aktif is None:
-    # Butun fazlar bitti - o zaman TAMAMLANAN fazlarin kapisi olmali
+    # Bütün fazlar bitti - o zaman TAMAMLANAN fazların kapısı olmalı
     fazlar = faz.plan_oku()["fazlar"]
     kapisiz = [f["no"] for f in fazlar if not f.get("kapi_komutu")]
     assert not kapisiz, f"kapi komutu olmayan fazlar: {kapisiz}"
@@ -128,7 +128,7 @@ PY
 
 python - << 'PY' 2>/dev/null && kontrol "Kanca cokerse tam yetki kapali kalir" 0 || kontrol "Kanca cokerse tam yetki kapali kalir" 1
 import json, subprocess, sys
-# Bozuk girdi verildiginde kanca izin VERMEMELI
+# Bozuk girdi verildiğinde kanca izin VERMEMELI
 p = subprocess.run([sys.executable, "hooks/tam-yetki.py"], input="bozuk-json",
                    capture_output=True, text=True, encoding="utf-8")
 cikti = json.loads(p.stdout or "{}")

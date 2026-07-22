@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 4 kapi kontrolu - projeler beyni ve sistem semasi
+# Faz 4 kapı kontrolü - projeler beyni ve sistem şeması
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -43,11 +43,11 @@ echo "--- 3. MERKEZI KAYIT (E11) ---"
 python "$P/scripts/projeler/kayit.py" liste > _calisma/pl.txt 2>&1
 grep -q "PROJELER" _calisma/pl.txt && kontrol "Proje listesi uretiliyor" 0 || kontrol "Proje listesi uretiliyor" 1
 
-# Tanimli olma bilgisi kayittan degil, o anki durumdan okunmali
+# Tanımlı olma bilgisi kayıttan değil, o anki durumdan okunmalı
 grep -c "tanım dosyası yok" _calisma/pl.txt > _calisma/tanimsiz.txt 2>/dev/null || echo 0 > _calisma/tanimsiz.txt
 TANIMSIZ=$(cat _calisma/tanimsiz.txt)
 [ "$TANIMSIZ" -eq 0 ] && kontrol "Tanimli durumu guncel okunuyor" 0 || kontrol "Tanimli durumu guncel okunuyor ($TANIMSIZ tanimsiz gorunuyor)" 1
-# Cikti Turkce karakterli; ASCII aramak yaniltiyordu.
+# Çıktı Türkçe karakterli; ASCII aramak yanıltıyordu.
 grep -q "buradas" _calisma/pl.txt && kontrol "Mevcut proje isaretleniyor" 0 || kontrol "Mevcut proje isaretleniyor" 1
 
 python - << 'PY' 2>/dev/null && kontrol "Tarama koku D:/Projeler ile sinirli" 0 || kontrol "Tarama koku D:/Projeler ile sinirli" 1
@@ -85,13 +85,13 @@ sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
 sys.path.insert(0, "plugins/enver-framework/scripts/hafiza")
 import kayit
 from pathlib import Path
-# Denek olarak bulundugumuz depo kullanilir. Ad ve yol sabit
-# yazilmaz; depo baska bir ada klonlansa da test gecerli kalir.
+# Denek olarak bulunduğumuz depo kullanılır. Ad ve yol sabit
+# yazılmaz; depo başka bir ada klonlansa da test geçerli kalır.
 kok = Path.cwd()
 k = {"ad": kok.name, "yol": str(kok)}
 t = kayit.tanim_getir(k)
 assert t and t.get("ad") == kok.name, t
-# Yol bozuksa merkezi yansimaya dusmeli
+# Yol bozuksa merkezi yansımaya düşmeli
 k2 = {"ad": kok.name, "yol": "D:/olmayan-yol-12345"}
 t2 = kayit.tanim_getir(k2)
 assert t2 is not None, "merkezi yansimaya dusulmedi"
@@ -99,7 +99,7 @@ PY
 
 echo ""
 echo "--- 5. PROJEYE GECMEDEN SORGU (E10) ---"
-# Sorgulanacak proje HARITADAN alinir; teste gomulmez
+# Sorgulanacak proje HARITADAN alınır; teste gömülmez
 ILK_PROJE=$(python -c "
 import json, sys
 from pathlib import Path

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 8 kapi kontrolu - is ve musteri katmani
+# Faz 8 kapı kontrolü - iş ve müşteri katmanı
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -47,7 +47,7 @@ sys.path.insert(0, "plugins/enver-framework/scripts/hafiza")
 import gorev
 g = gorev.ekle("Musteri istegi ornegi", proje="kapi-testi", kaynak="musteri")
 assert g["kaynak"] == "musteri", g
-# Kaynak alanlari tanimli
+# Kaynak alanları tanımlı
 for k in ("musteri", "kendi", "hata", "bakim"):
     assert k in gorev.KAYNAKLAR
 PY
@@ -137,7 +137,7 @@ sys.path.insert(0, "plugins/enver-framework/scripts/is")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
 sys.path.insert(0, "plugins/enver-framework/scripts/hafiza")
 import takvim
-# Ikinci cagri ayni kayitlari TEKRAR eklememeli
+# İkinci çağrı aynı kayıtları TEKRAR eklememeli
 once = len(takvim.oku()["kayitlar"])
 takvim.sertifikadan_al()
 sonra = len(takvim.oku()["kayitlar"])
@@ -160,9 +160,9 @@ python - << 'PY' 2>/dev/null && kontrol "Erisim belgesinde PAROLA YOK" 0 || kont
 import re
 from pathlib import Path
 icerik = Path("_calisma/teslim-kapi/erisim-bilgileri.md").read_text(encoding="utf-8")
-# Parola gorunumlu deger olmamali
+# Parola görünümlü değer olmamalı
 assert not re.search(r"(?i)(parola|password|sifre)\s*[:=]\s*\S{6,}", icerik), icerik[:300]
-# Ama parolanin NEREDE oldugunu soylemeli
+# Ama parolanın NEREDE olduğunu söylemeli
 assert "kasa" in icerik.lower(), icerik[:300]
 PY
 

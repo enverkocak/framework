@@ -8,7 +8,7 @@ Canlıya çıkmak tek adım değildir. Zorunlu sıra:
     3. YEDEK       Geri dönülebilir bir nokta oluştur
     4. TEST        Proje testleri
     5. ONAY        Kullanıcıya ne yapılacağı gösterilir
-    6. CIKIS       Asıl gönderim
+    6. ÇIKIŞ       Asıl gönderim
 
 Adım atlanamaz. Bir adım kalırsa zincir durur ve sebebi yazar.
 

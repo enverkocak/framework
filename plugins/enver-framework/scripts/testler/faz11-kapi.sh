@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 11 kapi kontrolu - cihaza gore tasarim (E20)
+# Faz 11 kapı kontrolü - cihaza göre tasarım (E20)
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -71,7 +71,7 @@ done
 
 python - << 'PY' 2>/dev/null && kontrol "Cihazin kendisi de taniniyor" 0 || kontrol "Cihazin kendisi de taniniyor" 1
 icerik = open("_calisma/cihaz.css", encoding="utf-8").read()
-# Ekran genisligi tek olcut degil
+# Ekran genişliği tek ölçüt değil
 for ozellik in ["hover: none", "pointer: coarse", "hover: hover", "pointer: fine",
                 "orientation: landscape", "prefers-reduced-motion",
                 "min-resolution"]:
@@ -88,7 +88,7 @@ python - << 'PY' 2>/dev/null && kontrol "Dokunma hedefi ve okuma genisligi tanim
 icerik = open("_calisma/cihaz.css", encoding="utf-8").read()
 assert "--dokunma-hedefi: 44px" in icerik, "dokunma hedefi yok"
 assert "--okuma-genisligi" in icerik
-# Dokunmatikte hedef buyumeli
+# Dokunmatikte hedef büyümeli
 assert "--dokunma-hedefi: 48px" in icerik, "dokunmatikte hedef buyumuyor"
 PY
 
@@ -146,10 +146,10 @@ python - << PY 2>/dev/null && kontrol "Kesme noktasi sabit genislik sanilmiyor" 
 $YOL_EKLE
 import cihaz, re
 desen = [d[3] for d in cihaz.DENETIMLER if d[0] == "sabit-genislik"][0]
-# min-width ve max-width kesme noktasidir, sabit genislik degil
+# min-width ve max-width kesme noktasıdır, sabit genişlik değil
 assert not desen.search("@media (min-width: 768px) {")
 assert not desen.search(".k { max-width: 1320px; }")
-# Ama sabit width yakalanmali
+# Ama sabit width yakalanmalı
 assert desen.search(".k { width: 1200px; }")
 PY
 

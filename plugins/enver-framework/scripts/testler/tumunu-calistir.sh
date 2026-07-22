@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Komple test - butun kapi testleri, senaryolar ve saglik kontrolu
+# Komple test - bütün kapı testleri, senaryolar ve sağlık kontrolü
 #
-# Her test BIR KEZ calisir. Faz testleri normalde kendinden oncekileri de
-# calistirir; burada ENVER_GERILEME_ATLA ile o tekrar kapatilir.
+# Her test BIR KEZ çalışır. Faz testleri normalde kendinden öncekileri de
+# çalıştırır; burada ENVER_GERILEME_ATLA ile o tekrar kapatılır.
 #
-# Kullanim:
-#   bash tumunu-calistir.sh [proje-koku]
+# Kullanım:
+#   bash tümünü-çalıştır.sh [proje-kökü]
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -15,10 +15,10 @@ mkdir -p _calisma/komple
 
 export ENVER_GERILEME_ATLA=1
 
-# Kurulmamis kopyada kullanim durumu testleri anlamsizdir.
-# Hafiza, arsiv, tasarim kimligi ve ayar dosyasi kurulumda ve
-# kullanimda olusur; yoklari bozukluk degil, henuz kurulmamisliktir.
-# Bunu 62 "hata" olarak raporlamak yeni kullaniciyi yaniltir.
+# Kurulmamış kopyada kullanım durumu testleri anlamsızdır.
+# Hafıza, arşiv, tasarım kimliği ve ayar dosyası kurulumda ve
+# kullanımda oluşur; yokları bozukluk değil, henüz kurulmamışlıktır.
+# Bunu 62 "hata" olarak raporlamak yeni kullanıcıyı yanıltır.
 YAPISAL_MI=0
 if [ ! -f ".claude/settings.json" ]; then
   YAPISAL_MI=1
@@ -39,7 +39,7 @@ echo " Tarih : $(date '+%Y-%m-%d %H:%M')"
 echo "=================================================================="
 echo ""
 
-# ---------------------------------------------------------------- kapi testleri
+# ---------------------------------------------------------------- kapı testleri
 
 echo "FAZ KAPI TESTLERI"
 echo "------------------------------------------------------------------"
@@ -122,7 +122,27 @@ senaryo "Korumalar" "$T/koruma-testleri.py" "koruma"
 senaryo "Turkce yazim" "$T/yazim-testleri.py" "yazim"
 senaryo "Tam yetki guvenligi" "$T/tam-yetki-testleri.py" "tam-yetki"
 
-# ---------------------------------------------------------------- saglik
+# ------------------------------------------------------------ belge yolları
+
+# Yol denetimi kurulum durumundan bağımsızdır: belgelerin doğruluğu
+# kurulmuş olmayı gerektirmez. Taze kopyada da çalışır.
+echo ""
+echo "BELGE YOLLARI"
+echo "------------------------------------------------------------------"
+python "$T/yol-denetim.py" "$KOK" > _calisma/komple/yol.txt 2>&1
+if [ $? -eq 0 ]; then
+  printf "  [GECTI ] Belgelerdeki yollar dogru
+"
+  TOPLAM_GECEN=$((TOPLAM_GECEN + 1))
+else
+  printf "  [KALDI ] Belgelerde hatali yol var
+"
+  grep -A 2 "satır" _calisma/komple/yol.txt | head -12
+  TOPLAM_KALAN=$((TOPLAM_KALAN + 1))
+  BOZUK_BOLUMLER="$BOZUK_BOLUMLER yol"
+fi
+
+# ---------------------------------------------------------------- sağlık
 
 echo ""
 echo "SAGLIK KONTROLU"
@@ -146,15 +166,15 @@ else
 fi
 fi
 
-# ---------------------------------------------------------------- islevsel
+# ---------------------------------------------------------------- işlevsel
 
 echo ""
 echo "ISLEVSEL DENETIMLER"
 echo "------------------------------------------------------------------"
 
-# Bazi komutlar cikis kodunu HATA degil SINYAL olarak kullanir:
-# takvim.py acil kayit varsa 1 doner, kontrol.py bulgu varsa 1 doner.
-# Bu komutlar icin olculecek sey CALISIP calismadigi, ne dondugu degil.
+# Bazı komutlar çıkış kodunu HATA değil SINYAL olarak kullanır:
+# takvim.py acil kayıt varsa 1 döner, kontrol.py bulgu varsa 1 döner.
+# Bu komutlar için ölçülecek şey ÇALIŞIP çalışmadığı, ne döndüğü değil.
 islevsel_sinyal() {
   ADI="$1"
   shift
@@ -206,7 +226,7 @@ islevsel "Senkron durumu okunuyor" python "$P/scripts/senkron/senkron.py" durum
 islevsel "Makine taniniyor" python "$P/scripts/senkron/makine.py" durum
 fi
 
-# ---------------------------------------------------------------- guvenlik
+# ---------------------------------------------------------------- güvenlik
 
 echo ""
 echo "GUVENLIK DOGRULAMALARI"
@@ -225,7 +245,7 @@ guvenlik() {
   fi
 }
 
-# Bu komutlar BASARISIZ olmali
+# Bu komutlar BAŞARISIZ olmalı
 guvenlik "Kasa parolasiz acilmiyor" python "$P/scripts/kasa/kasa.py" liste
 guvenlik "Kasa yanlis parolayi reddediyor" python "$P/scripts/kasa/kasa.py" ac --parola "kesinlikle-yanlis-parola-98765"
 
@@ -233,7 +253,7 @@ python - << 'PY' > /dev/null 2>&1
 import subprocess, sys
 from pathlib import Path
 kok = Path(".")
-# Kasa ve gunluk depoda izlenmemeli
+# Kasa ve günlük depoda izlenmemeli
 sonuc = subprocess.run(["git", "ls-files"], capture_output=True, text=True, encoding="utf-8")
 izlenen = sonuc.stdout.splitlines()
 for yol in izlenen:
@@ -277,7 +297,7 @@ else
   BOZUK_BOLUMLER="$BOZUK_BOLUMLER guvenlik"
 fi
 
-# ---------------------------------------------------------------- sonuc
+# ---------------------------------------------------------------- sonuç
 
 BITIS=$(date +%s)
 SURE=$((BITIS - BASLANGIC))

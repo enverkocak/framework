@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""PostToolUse kancasi: Yazilan dosyalarda arac izi kontrolu.
+"""PostToolUse kancası: Yazılan dosyalarda araç izi kontrolü.
 
-Kural: Kodda, yorumlarda, dokumantasyonda hicbir arac/uretici izi kalmaz.
-Gelistirici bilgisi her zaman: Enver KOCAK
+Kural: Kodda, yorumlarda, dokümantasyonda hiçbir araç/üretici izi kalmaz.
+Geliştirici bilgisi her zaman: Enver KOCAK
 
-Yazma/duzenleme sonrasi dosyayi tarar, iz bulursa uyari dondurur.
+Yazma/düzenleme sonrası dosyayı tarar, iz bulursa uyarı döndürür.
 """
 
 import sys
@@ -12,7 +12,7 @@ import json
 import os
 import re
 
-# Aranacak iz desenleri (buyuk/kucuk harf duyarsiz)
+# Aranacak iz desenleri (büyük/küçük harf duyarsız)
 IZ_DESENLERI = [
     r"\bclaude\b",
     r"\banthropic\b",
@@ -28,7 +28,7 @@ IZ_DESENLERI = [
     r"\bgenerated with\b",
 ]
 
-# Taranmayacak uzantilar (metin olmayan dosyalar)
+# Taranmayacak uzantılar (metin olmayan dosyalar)
 MUAF_UZANTILAR = {
     ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico", ".webp",
     ".woff", ".woff2", ".ttf", ".eot",
@@ -37,21 +37,21 @@ MUAF_UZANTILAR = {
     ".lock", ".map", ".pdf",
 }
 
-# Taranmayacak dosya adlari (framework'un kendi kural dosyalari)
+# Taranmayacak dosya adları (framework'un kendi kural dosyaları)
 MUAF_DOSYALAR = {"claude.md", "memory.md", "plugin.json", "iz-kontrol.py"}
 
-# Taranmayacak dizin parcalari
+# Taranmayacak dizin parçaları
 MUAF_DIZINLER = ("/.claude/", "/.git/", "/gelistirme-arastirmasi/", "/_arsiv/")
 
-# Depo kokunde bu dosya varsa, o depo tamamen taramadan muaftir.
-# Kullanim: framework'un kendi depolari icin. MUSTERI PROJELERINE ASLA KONULMAZ.
+# Depo kökünde bu dosya varsa, o depo tamamen taramadan muaftır.
+# Kullanım: framework'un kendi depoları için. MÜŞTERİ PROJELERINE ASLA KONULMAZ.
 MUAFIYET_ISARETI = ".iz-muaf"
 
 
 def depo_muaf_mi(dosya_yolu):
-    """Dosyanin bulundugu depo muafiyet isareti tasiyor mu?
+    """Dosyanın bulunduğu depo muafiyet işareti taşıyor mu?
 
-    Dosyadan yukari dogru cikarak isaret dosyasi aranir.
+    Dosyadan yukarı doğru çıkarak işaret dosyası aranır.
     """
     dizin = os.path.dirname(os.path.abspath(dosya_yolu))
 
@@ -66,7 +66,7 @@ def depo_muaf_mi(dosya_yolu):
 
 
 def muaf_mi(dosya_yolu):
-    """Bu dosya taramadan muaf mi?"""
+    """Bu dosya taramadan muaf mı?"""
     duz_yol = dosya_yolu.replace("\\", "/").lower()
 
     if any(parca in duz_yol for parca in MUAF_DIZINLER):
@@ -85,7 +85,7 @@ def muaf_mi(dosya_yolu):
 
 
 def dosya_tara(dosya_yolu):
-    """Dosya iceriginde iz ara, bulursa uyari sozlugu dondur."""
+    """Dosya içeriğinde iz ara, bulursa uyarı sözlüğü döndür."""
     if not dosya_yolu or not os.path.isfile(dosya_yolu):
         return None
 

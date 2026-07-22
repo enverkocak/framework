@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Framework ayarlari - okuma ve yazma.
+"""Framework ayarları - okuma ve yazma.
 
 Ayarlar iki katmanda tutulur:
-  1. Kullanici katmani : ~/.claude/enver/ayarlar.json  (butun projeler icin gecerli)
-  2. Proje katmani     : <proje>/.claude/enver-ayarlar.json  (o projeye ozel, ustun gelir)
+  1. Kullanıcı katmanı : ~/.claude/enver/ayarlar.json  (bütün projeler için geçerli)
+  2. Proje katmanı     : <proje>/.claude/enver-ayarlar.json  (o projeye özel, üstün gelir)
 
-Gelistirici: Enver KOCAK
+Geliştirici: Enver KOCAK
 """
 
 import os
@@ -25,7 +25,7 @@ PROJE_AYAR_ADI = "enver-ayarlar.json"
 
 
 def _guvenli_oku(yol):
-    """JSON dosyasini oku, okunamazsa bos sozluk dondur."""
+    """JSON dosyasını oku, okunamazsa boş sözlük döndür."""
     try:
         with open(yol, "r", encoding="utf-8") as dosya:
             veri = json.load(dosya)
@@ -35,14 +35,14 @@ def _guvenli_oku(yol):
 
 
 def proje_ayar_yolu(proje_kok):
-    """Proje katmanindaki ayar dosyasinin yolu."""
+    """Proje katmanındaki ayar dosyasının yolu."""
     return Path(proje_kok) / ".claude" / PROJE_AYAR_ADI
 
 
 def oku(proje_kok=None):
-    """Butun katmanlari birlestirip etkin ayarlari dondur.
+    """Bütün katmanları birleştirip etkin ayarları döndür.
 
-    Oncelik: varsayilan < kullanici < proje
+    Öncelik: varsayılan < kullanıcı < proje
     """
     ayarlar = dict(VARSAYILAN_AYARLAR)
     ayarlar.update(_guvenli_oku(KULLANICI_AYAR_YOLU))
@@ -54,9 +54,9 @@ def oku(proje_kok=None):
 
 
 def yaz(yeni_degerler, proje_kok=None):
-    """Ayarlari kaydet.
+    """Ayarları kaydet.
 
-    proje_kok verilirse proje katmanina, verilmezse kullanici katmanina yazar.
+    proje_kök verilirse proje katmanına, verilmezse kullanıcı katmanına yazar.
     """
     if proje_kok:
         hedef = proje_ayar_yolu(proje_kok)
@@ -85,10 +85,10 @@ VARSAYILAN_KIMLIK = {
 
 
 def kimlik(proje_kok=None):
-    """Gelistirici kimligi.
+    """Geliştirici kimliği.
 
-    Koda gomulmez; kurulum sirasinda kaydedilir. Boylece framework'u
-    baskasi kullandiginda kendi bilgisi gorunur.
+    Koda gömülmez; kurulum sırasında kaydedilir. Böylece framework'u
+    başkası kullandığında kendi bilgisi görünür.
     """
     kayit = dict(VARSAYILAN_KIMLIK)
     kayit.update(oku(proje_kok).get("kimlik", {}) or {})
@@ -96,7 +96,7 @@ def kimlik(proje_kok=None):
 
 
 def kimlik_satiri(proje_kok=None):
-    """Belgelerde kullanilacak tek satirlik kimlik."""
+    """Belgelerde kullanılacak tek satırlık kimlik."""
     k = kimlik(proje_kok)
     parcalar = [k.get("gelistirici"), k.get("site"), k.get("eposta")]
     dolu = [p for p in parcalar if p]
@@ -104,7 +104,7 @@ def kimlik_satiri(proje_kok=None):
 
 
 def dil_kodu(proje_kok=None):
-    """Etkin dil kodunu dondur."""
+    """Etkin dil kodunu döndür."""
     return oku(proje_kok).get("dil", "tr")
 
 

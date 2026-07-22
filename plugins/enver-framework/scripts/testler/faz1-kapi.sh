@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 1 kapi kontrolu - cekirdek iskelet
+# Faz 1 kapı kontrolü - çekirdek iskelet
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -132,7 +132,7 @@ python -c "
 import json
 p=json.load(open('$KOK/plugins/.claude-plugin/plugin.json',encoding='utf-8'))
 m=json.load(open('$KOK/plugins/.claude-plugin/marketplace.json',encoding='utf-8'))
-# Surum sabit degil: uc dosyanin ayni surumu tasidigi dogrulanir
+# Sürüm sabit değil: uç dosyanın aynı sürümü taşıdığı doğrulanır
 readme = open('$KOK/README.md', encoding='utf-8').readline()
 import re
 r = re.search(r'v(\d+\.\d+\.\d+)', readme).group(1)

@@ -12,8 +12,8 @@ Yerleşim, bağlantı yönüne göre katmanlanır: kimseden veri almayan
 projeler solda, onlardan besleneler sağda. Böylece akış soldan sağa okunur.
 
 Komutlar:
-    uret     Şemayı üret
-    ozet     Şemayı metin olarak özetle
+    üret     Şemayı üret
+    özet     Şemayı metin olarak özetle
 
 Geliştirici: Enver KOCAK
 """

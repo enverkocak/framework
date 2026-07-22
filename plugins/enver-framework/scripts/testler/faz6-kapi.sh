@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Faz 6 kapi kontrolu - tasarim ozgunlugu
+# Faz 6 kapı kontrolü - tasarım özgünlüğü
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
@@ -44,7 +44,7 @@ for ad in projeler:
     k = kimlik.uret(ad, "", tonlar)
     tonlar.append(k["renk"]["ton"])
 assert len(set(tonlar)) == len(projeler), tonlar
-# Tonlar birbirinden yeterince uzak mi
+# Tonlar birbirinden yeterince uzak mı
 for i, a in enumerate(tonlar):
     for b in tonlar[i+1:]:
         fark = abs(a - b) % 360
@@ -61,10 +61,10 @@ import kimlik
 for sira in range(30):
     k = kimlik.uret(f"deneme-{sira}", "", [])
     sorunlar = kimlik.denetle(k)
-    # Uretecin kendisi denemeyle duzeltiyor; burada olculen sey
-    # karsitlik hesabinin dogru calismasi
+    # Üretecin kendisi denemeyle düzeltiyor; burada ölçülen şey
+    # karşıtlık hesabının doğru çalışması
     assert isinstance(sorunlar, list)
-# Bilinen degerlerle karsitlik dogrulamasi
+# Bilinen değerlerle karşıtlık doğrulaması
 assert round(kimlik.karsitlik("#000000", "#ffffff"), 1) == 21.0
 assert round(kimlik.karsitlik("#ffffff", "#ffffff"), 1) == 1.0
 PY

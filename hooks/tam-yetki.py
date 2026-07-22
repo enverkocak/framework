@@ -129,7 +129,7 @@ def main():
     ad = istisna_mi(incelenecek)
 
     if ad:
-        # Karar verme; normal izin akışına birak
+        # Karar verme; normal izin akışına bırak
         print(json.dumps({}))
         return
 
@@ -149,6 +149,6 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as hata:
-        # Kanca cokerse tam yetki kendiliginden devre disi kalir - guvenli taraf
+        # Kanca çökerse tam yetki kendiliğinden devre dışı kalır - güvenli taraf
         print(json.dumps({"systemMessage": f"Tam yetki kancasi hatasi: {hata}"}))
     sys.exit(0)
