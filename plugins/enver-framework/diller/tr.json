@@ -1,0 +1,75 @@
+{
+  "dil_adi": "Türkçe",
+  "dil_kodu": "tr",
+
+  "genel": {
+    "tamam": "Tamam",
+    "hata": "Hata",
+    "uyari": "Uyarı",
+    "bilgi": "Bilgi",
+    "basarili": "Başarılı",
+    "basarisiz": "Başarısız",
+    "iptal": "İptal edildi",
+    "bulunamadi": "Bulunamadı",
+    "devam": "Devam ediliyor",
+    "bekleniyor": "Bekleniyor",
+    "tamamlandi": "Tamamlandı",
+    "gelistirici": "Geliştirici"
+  },
+
+  "index": {
+    "baslik": "Enver Framework — Komut Rehberi",
+    "altbaslik": "Tüm komutlar, ne işe yaradıkları ve nasıl kullanıldıkları",
+    "komutlar": "Komutlar",
+    "ajanlar": "Ajanlar",
+    "korumalar": "Korumalar",
+    "kullanim": "Kullanım",
+    "ornek": "Örnek",
+    "aciklama": "Açıklama",
+    "kategori": "Kategori",
+    "toplam": "Toplam"
+  },
+
+  "arsiv": {
+    "arsivlendi": "Arşive taşındı",
+    "arsiv_hedefi": "Arşiv hedefi",
+    "neden_sorusu": "Bu iş ne için yapıldı?",
+    "neden_yazildi": "Arşiv notu yazıldı",
+    "silme_engellendi": "Silme engellendi — veri arşive taşındı",
+    "silme_kurali": "Kural: Hiçbir veri silinmez. Her şey notuyla arşivlenir.",
+    "calisma_alani": "Geçici işler çalışma alanında yapılır",
+    "ana_dizin_temiz": "Ana dizinde geçici dosya bırakılmaz"
+  },
+
+  "korumalar": {
+    "engellendi": "ENGELLENDİ",
+    "izin_gerekli": "İzin gerekli",
+    "neden": "Neden",
+    "ne_yapilacak": "Ne yapılacak",
+    "nasil_duzeltilir": "Nasıl düzeltilir",
+    "sunucu_disari": "Bu komut, çalışma izni olan proje dizininin dışına erişiyor. Sunucuda başka müşterilerin siteleri var, onlara dokunulmaz.",
+    "depo_gizli": "Bütün depolar gizli (private) olur. Açmak gerekirse depo arayüzünden elle açılır.",
+    "iz_bulundu": "Yazılan dosyada araç izi bulundu. Kodda, yorumlarda ve dokümantasyonda iz kalmaz.",
+    "kasa_kilitli": "Kasa kilitli. Devam etmek için parola gerekli.",
+    "yikici_komut": "Bu komut geri dönüşü olmayan bir işlem yapıyor."
+  },
+
+  "faz": {
+    "aktif_faz": "Aktif faz",
+    "kapi_kontrolu": "Kapı kontrolü",
+    "kapi_acik": "Kapı açık — sonraki faza geçilebilir",
+    "kapi_kapali": "Kapı kapalı — önce sorunlar giderilmeli",
+    "gecti": "geçti",
+    "kaldi": "kaldı",
+    "sonuc": "Sonuç"
+  },
+
+  "hatalar": {
+    "dosya_yok": "Dosya bulunamadı",
+    "dizin_yok": "Dizin bulunamadı",
+    "yetki_yok": "Yetki yok",
+    "gecersiz_bicim": "Geçersiz biçim",
+    "ayar_okunamadi": "Ayarlar okunamadı",
+    "dil_bulunamadi": "Dil dosyası bulunamadı, Türkçeye dönüldü"
+  }
+}

@@ -1,0 +1,56 @@
+# ============================================
+# KASA - ASLA GIT'E GIRMEZ
+# ============================================
+# Kok dizine sabitlendi (bastaki egik cizgi). Sabitlenmezse alt dizinlerdeki
+# ayni adli klasorler de dislaniyordu - ornek: scripts/kasa/ (kasa motorunun
+# kendi kaynak kodu), ki onun git'te olmasi gerekir.
+/vault/
+/kasa/
+*.vault
+.env
+.env.*
+credentials*
+*credentials*
+*.pem
+*.key
+*.p12
+*_secret*
+*_sifre*
+sifreler*
+
+# ============================================
+# CALISMA VE ARSIV ALANLARI
+# ============================================
+/_calisma/
+/_arsiv/
+/gunluk/
+
+# ============================================
+# GECICI DOSYALAR
+# ============================================
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*~
+
+# ============================================
+# ISLETIM SISTEMI
+# ============================================
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ============================================
+# BAGIMLILIKLAR VE URETIM CIKTILARI
+# ============================================
+node_modules/
+vendor/
+__pycache__/
+*.pyc
+dist/
+build/
+
+# Tarayici otomasyonu ciktilari - ekran goruntusu ve sayfa dokumu
+.playwright-mcp/

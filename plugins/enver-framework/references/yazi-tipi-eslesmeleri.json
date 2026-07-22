@@ -1,0 +1,178 @@
+{
+  "_aciklama": [
+    "Yazi tipi eslesmeleri katalogu. Her eslesme bir KARAKTER tasir;",
+    "amac ayni tipografiyi her projede tekrarlamamak.",
+    "",
+    "Kaynak: Google Fonts. Yuklemek icin anahtar gerekmez, CSS adresi yeterli.",
+    "Her kayitta yedek yigin da var; ag erisimi yoksa site yine dogru gorunur.",
+    "",
+    "Yeni eslesme eklerken KARAKTER alanina dikkat: ayni karakterden",
+    "cok sayida kayit olursa cesitlilik azalir."
+  ],
+
+  "surum": 1,
+  "kaynak_adresi": "https://fonts.googleapis.com/css2",
+
+  "eslesmeler": [
+    {
+      "ad": "editoryal-klasik", "karakter": "editoryal",
+      "baslik": "Playfair Display", "baslik_agirlik": "600,700",
+      "govde": "Source Sans 3", "govde_agirlik": "400,600",
+      "yedek_baslik": "Georgia, 'Times New Roman', serif",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.333, "his": "Dergi kapagi, guclu baslik, sakin govde"
+    },
+    {
+      "ad": "editoryal-modern", "karakter": "editoryal",
+      "baslik": "Fraunces", "baslik_agirlik": "600,900",
+      "govde": "Inter", "govde_agirlik": "400,500",
+      "yedek_baslik": "Georgia, serif",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.25, "his": "Karakterli serif, notr govde"
+    },
+    {
+      "ad": "geometrik-net", "karakter": "geometrik",
+      "baslik": "Poppins", "baslik_agirlik": "600,700",
+      "govde": "Karla", "govde_agirlik": "400,500",
+      "yedek_baslik": "'Century Gothic', Futura, sans-serif",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.25, "his": "Yuvarlak geometri, ferah"
+    },
+    {
+      "ad": "geometrik-teknik", "karakter": "geometrik",
+      "baslik": "Space Grotesk", "baslik_agirlik": "500,700",
+      "govde": "IBM Plex Sans", "govde_agirlik": "400,500",
+      "yedek_baslik": "'Segoe UI', system-ui, sans-serif",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.2, "his": "Teknik, hafif tuhaf, akilda kalir"
+    },
+    {
+      "ad": "humanist-sicak", "karakter": "humanist",
+      "baslik": "Bitter", "baslik_agirlik": "600,700",
+      "govde": "Nunito Sans", "govde_agirlik": "400,600",
+      "yedek_baslik": "Georgia, serif",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.2, "his": "Yakin, sicak, guven veren"
+    },
+    {
+      "ad": "humanist-sade", "karakter": "humanist",
+      "baslik": "Work Sans", "baslik_agirlik": "600,700",
+      "govde": "Lora", "govde_agirlik": "400,500",
+      "yedek_baslik": "'Segoe UI', system-ui, sans-serif",
+      "yedek_govde": "Georgia, serif",
+      "olcek": 1.25, "his": "Modern baslik, okunakli serif govde"
+    },
+    {
+      "ad": "dar-iddiali", "karakter": "dar",
+      "baslik": "Oswald", "baslik_agirlik": "500,700",
+      "govde": "Roboto", "govde_agirlik": "400,500",
+      "yedek_baslik": "'Arial Narrow', Impact, sans-serif",
+      "yedek_govde": "Arial, sans-serif",
+      "olcek": 1.5, "his": "Dikkat ceken, spor ve haber hissi"
+    },
+    {
+      "ad": "dar-zarif", "karakter": "dar",
+      "baslik": "Archivo Narrow", "baslik_agirlik": "600,700",
+      "govde": "Assistant", "govde_agirlik": "400,600",
+      "yedek_baslik": "'Arial Narrow', sans-serif",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.414, "his": "Sikisik ama zarif"
+    },
+    {
+      "ad": "teknik-mono", "karakter": "teknik",
+      "baslik": "JetBrains Mono", "baslik_agirlik": "500,700",
+      "govde": "Inter", "govde_agirlik": "400,500",
+      "yedek_baslik": "Consolas, 'SF Mono', monospace",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.2, "his": "Gelistirici araci, panel, veri"
+    },
+    {
+      "ad": "teknik-endustri", "karakter": "teknik",
+      "baslik": "Chakra Petch", "baslik_agirlik": "500,700",
+      "govde": "Rubik", "govde_agirlik": "400,500",
+      "yedek_baslik": "'Segoe UI', sans-serif",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.25, "his": "Endustriyel, kesin, teknik"
+    },
+    {
+      "ad": "luks-ince", "karakter": "luks",
+      "baslik": "Cormorant Garamond", "baslik_agirlik": "500,600",
+      "govde": "Montserrat", "govde_agirlik": "300,400",
+      "yedek_baslik": "'Palatino Linotype', Palatino, serif",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.414, "his": "Ince, pahali, sakin"
+    },
+    {
+      "ad": "luks-modern", "karakter": "luks",
+      "baslik": "Marcellus", "baslik_agirlik": "400",
+      "govde": "Jost", "govde_agirlik": "300,400",
+      "yedek_baslik": "'Times New Roman', serif",
+      "yedek_govde": "'Century Gothic', sans-serif",
+      "olcek": 1.333, "his": "Mimari, olculu, gosterissiz luks"
+    },
+    {
+      "ad": "yumusak-samimi", "karakter": "yumusak",
+      "baslik": "Quicksand", "baslik_agirlik": "500,700",
+      "govde": "Mulish", "govde_agirlik": "400,600",
+      "yedek_baslik": "'Trebuchet MS', sans-serif",
+      "yedek_govde": "Verdana, sans-serif",
+      "olcek": 1.2, "his": "Samimi, yumusak, tehditsiz"
+    },
+    {
+      "ad": "yumusak-cocuk", "karakter": "yumusak",
+      "baslik": "Baloo 2", "baslik_agirlik": "600,700",
+      "govde": "Nunito", "govde_agirlik": "400,600",
+      "yedek_baslik": "'Trebuchet MS', sans-serif",
+      "yedek_govde": "Verdana, sans-serif",
+      "olcek": 1.25, "his": "Neseli, oyuncu, egitim"
+    },
+    {
+      "ad": "keskin-guclu", "karakter": "keskin",
+      "baslik": "Anton", "baslik_agirlik": "400",
+      "govde": "Barlow", "govde_agirlik": "400,600",
+      "yedek_baslik": "'Arial Black', Impact, sans-serif",
+      "yedek_govde": "Arial, sans-serif",
+      "olcek": 1.5, "his": "Yuksek sesli, kampanya, duyuru"
+    },
+    {
+      "ad": "keskin-brutal", "karakter": "keskin",
+      "baslik": "Archivo Black", "baslik_agirlik": "400",
+      "govde": "Archivo", "govde_agirlik": "400,600",
+      "yedek_baslik": "'Arial Black', sans-serif",
+      "yedek_govde": "Arial, sans-serif",
+      "olcek": 1.414, "his": "Ham, dogrudan, tavizsiz"
+    },
+    {
+      "ad": "resmi-kurumsal", "karakter": "resmi",
+      "baslik": "Libre Baskerville", "baslik_agirlik": "700",
+      "govde": "Libre Franklin", "govde_agirlik": "400,600",
+      "yedek_baslik": "Georgia, serif",
+      "yedek_govde": "Arial, sans-serif",
+      "olcek": 1.25, "his": "Kurumsal, guvenilir, olculu"
+    },
+    {
+      "ad": "resmi-hukuk", "karakter": "resmi",
+      "baslik": "Crimson Pro", "baslik_agirlik": "600,700",
+      "govde": "Source Serif 4", "govde_agirlik": "400",
+      "yedek_baslik": "'Times New Roman', serif",
+      "yedek_govde": "Georgia, serif",
+      "olcek": 1.2, "his": "Belge, hukuk, akademi"
+    },
+    {
+      "ad": "el-yazisi-vurgu", "karakter": "sicak",
+      "baslik": "Caveat", "baslik_agirlik": "600,700",
+      "govde": "Figtree", "govde_agirlik": "400,500",
+      "yedek_baslik": "'Comic Sans MS', cursive",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.333, "his": "Kisisel, el yapimi, butik"
+    },
+    {
+      "ad": "sicak-yerel", "karakter": "sicak",
+      "baslik": "Alegreya", "baslik_agirlik": "600,700",
+      "govde": "Alegreya Sans", "govde_agirlik": "400,500",
+      "yedek_baslik": "Georgia, serif",
+      "yedek_govde": "'Segoe UI', system-ui, sans-serif",
+      "olcek": 1.25, "his": "Yerel, kulturel, anlatiya uygun"
+    }
+  ]
+}

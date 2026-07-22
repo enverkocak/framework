@@ -1,0 +1,49 @@
+{
+  "_aciklama": [
+    "Ana dizinde ne bulunabilecegini tanimlar. Kapi testleri bu dosyayi okur.",
+    "Yeni bir ust duzey klasor eklendiginde SADECE burasi guncellenir;",
+    "testlerin icinde ayri ayri liste tutulmaz.",
+    "",
+    "Burada olmayan bir sey ana dizinde duruyorsa, ya buraya eklenmeli",
+    "ya da calisma alanina/arsive tasinmali."
+  ],
+  "surum": 1,
+  "kalici": {
+    ".git": "Depo verisi",
+    ".gitignore": "Depoya girmeyecek yollar",
+    ".claude": "Kanca ve durum satiri ayarlari",
+    ".iz-muaf": "Bu deponun iz taramasindan muaf oldugunu belirten isaret",
+    "CLAUDE.md": "Global kurallar",
+    "README.md": "Tanitim ve kurulum",
+    "DEGISIKLIKLER.md": "Surum gecmisi - ne degisti ve neden",
+    "hooks": "Korumalar",
+    "plugins": "Eklenti govdesi - komutlar, beceriler, betikler",
+    "bilgi": "Statik bilgi notlari",
+    "sablonlar": "Proje sablonlari",
+    "kurulum.sh": "Kurulum (Linux, Mac)",
+    "kurulum.ps1": "Kurulum (Windows)",
+    "guncelle.sh": "Guncelleme (Linux, Mac)",
+    "guncelle.ps1": "Guncelleme (Windows)",
+    "gelistirme-arastirmasi": "Yeniden yapilanma notlari ve plan",
+    "KULLANIM-KILAVUZU.md": "Gunluk kullanim - komutlar, akislar, kurallar",
+    "KURULUM-KILAVUZU.md": "Sifirdan kurulum - gereksinimler, adimlar, sorun giderme",
+    "CLAUDE.ornek.md": "Kurallarin ornek surumu - paylasilan kopyada CLAUDE.md yerine gecer",
+    "README.ornek.md": "Tanitimin ornek surumu - paylasilan kopyada README.md yerine gecer",
+    "LICENSE": "MIT lisans metni - telif Enver KOCAK"
+  },
+  "uretilen": {
+    "hafiza": "Kalici hafiza - depoya girer, makineler arasinda senkron olur",
+    "gunluk": "Ham oturum kaydi - makineye ozel, depoya girmez",
+    "kasa": "Sifreli kasa - depoya girmez",
+    "vault": "Duz metin kasa kaynagi - kasaya alindiktan sonra arsivlenir",
+    "_calisma": "Gecici isler - depoya girmez",
+    "_arsiv": "Isi biten her sey, notuyla - depoya girmez",
+    "ICINDEKILER.md": "Otomatik uretilen klasor icerigi"
+  },
+  "ana_dizinde_durmaz": [
+    "Gecici ve test amacli dosyalar",
+    "Cikti ve rapor dosyalari",
+    "Yedek kopyalar",
+    "Indirilmis veya uretilmis ara dosyalar"
+  ]
+}

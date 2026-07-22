@@ -1,0 +1,51 @@
+{
+  "_aciklama": [
+    "ORNEK DOSYA. Kendi sunucularini tanimlayip",
+    "sunucu-haritasi.json olarak kaydet.",
+    "",
+    "Sunucu ve proje haritasi. Hangi sitenin hangi dizinde, hangi",
+    "veritabaniyla calistigi burada durur. Sunucu korumasi bu dosyayi okur",
+    "ve burada tanimli olmayan bir dizine erisimi ENGELLER.",
+    "",
+    "BU DOSYAYA PAROLA, ANAHTAR VEYA KIMLIK BILGISI YAZILMAZ.",
+    "Sirlar kasada durur; buradaki 'kasa_anahtari' alani kasadaki kaydi",
+    "isaret eder.",
+    "",
+    "Yeni proje eklerken dizin yolunu tam yaz, sonunda / birak."
+  ],
+
+  "surum": 1,
+
+  "sunucular": [
+    {
+      "ad": "ornek-sunucu",
+      "adres": "0.0.0.0",
+      "aciklama": "Buraya sunucunun ne ise yaradigini yaz",
+      "kasa_anahtari": "sunucu.md",
+
+      "ortak_izinli_dizinler": [
+        "/tmp/"
+      ],
+
+      "projeler": [
+        {
+          "ad": "ornek-proje",
+          "musteri": "Ornek Musteri",
+          "dizin": "/var/www/vhosts/ornek.com/",
+          "alan_adi": "ornek.com",
+          "alt_alan_adlari": [],
+          "veritabani": "ornek_db",
+          "kasa_anahtari": "musteriler/ornek.md",
+          "notlar": "Bu proje hakkinda bilinmesi gerekenler"
+        }
+      ]
+    }
+  ],
+
+  "korunan_kok_dizinler": [
+    "/var/www/vhosts/",
+    "/var/www/html/",
+    "/home/",
+    "/srv/"
+  ]
+}

@@ -1,0 +1,219 @@
+# Değişiklikler
+
+Enver Framework'ün sürüm geçmişi.
+
+Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
+"Ne" olmadan geçmiş anlamsız, "neden" olmadan öğretici değildir.
+
+---
+
+## 2.12.0 — Cihaza göre tasarım
+
+**Faz 11.** Enver'in isteği (E20): her projede mobil, tablet, web ve
+masaüstü için ayrı tasarım.
+
+- **Beş cihaz sınıfı** — mobil, büyük mobil, tablet, web, masaüstü.
+  Her birinin kendi yerleşimi, dokunma hedefi ve okuma genişliği var.
+- **Cihazın kendisi de tanınıyor** — dokunmatik mı ince imleç mi, yatay mı
+  dikey mi, hareket azaltma isteniyor mu, ekran yoğunluğu ne.
+- **Cihaz uyumu denetimi** — görüntü alanı etiketi, ölçek kilidi, sabit
+  genişlik, kesme noktası, dokunma hedefi, üzerine gelmeye bağımlı içerik.
+- **Sayfa iskeleti** — üretilen iskelet kendi denetiminden geçiyor.
+
+### Neden
+
+Tek bir düzeni küçültüp büyütmek yeterli değil. 1024px'lik bir dokunmatik
+ekran, aynı genişlikteki bir dizüstünden farklı davranmalı.
+
+### Düzeltmeler
+
+Faz numaraları metin olarak saklanıyordu; sıralama alfabetik oluyor ve
+`0, 1, 10, 11, 2, 3...` sırası çıkıyordu. Bu, aktif fazın yanlış
+hesaplanmasına yol açabilirdi. Numaralar sayıya çevrildi, eski kayıtları
+onaran bir düzeltme eklendi, teste koruma kondu.
+
+Faz 5 testi sabit "11 faz" bekliyordu; yeni faz eklenince bozuldu.
+Sayı yerine yapı doğrulanıyor artık.
+
+---
+
+## 2.11.0 — Sağlık ve paylaşım
+
+**Faz 10 tamamlandı. 11 fazın tamamı bitti.**
+
+- **Sağlık kontrolü** — korumaların yalnız kayıtlı değil, gerçekten
+  **çalıştığı** ölçülüyor. Her korumaya gerçek girdi verilip beklenen kararı
+  verip vermediğine bakılıyor.
+- **Çakışma denetimi** — aynı adlı komut, harf farkıyla çakışan dosya,
+  aynı açıklamayı taşıyan komutlar yakalanıyor.
+- **Kurulum sihirbazı** — ortam kontrolü, kimlik kaydı, koruma kaydı.
+- **Paylaşıma hazırlama** — kişisel veri içermeyen temiz kopya üretiyor.
+- **Dil dosyası tutarlılığı** — diller aynı anahtarları taşıyor mu denetleniyor.
+
+### Neden
+
+Korumalar aylarca yazılıydı ama ayar dosyasına kaydedilmedikleri için
+**hiçbiri çalışmıyordu.** Kimse fark etmedi çünkü kimse bakmadı.
+Sağlık kontrolü bu durumun tekrar etmemesi için var.
+
+Paylaşım tarafında ince bir ayrım çıktı: `hafiza/` kendi kullanımda depoya
+girmeli (çoklu bilgisayar senkronu buna dayanıyor), ama içinde müşteri adları
+ve cihaz adresleri var. Paylaşılan kopyada bulunmamalı.
+
+---
+
+## 2.10.0 — Sektör ve veri araçları
+
+- **Keşif motoru** — kodlamadan önce dört aşama: istek toplama, araştırma,
+  netleştirme, plan. Aşama atlanamaz; keşif bitmeden "kodlamaya geçilmez" der.
+- **Cihaz envanteri** — kamera, kayıt cihazı, ağ donanımı kayıtları.
+  Envantere parola yazılamıyor; kod düzeyinde engelli.
+- **Toplu dosya işlemleri** — adlandırma ve türe göre ayırma.
+  Her işlem önce deneme olarak çalışıyor.
+
+### Neden
+
+Yarım anlaşılmış bir işe başlayıp sonra baştan yazmak en pahalı hatadır.
+Envanter dosyası paylaşılabilir olmalı; parola içeren bir dosya paylaşılamaz.
+Yüz dosyayı yanlış adlandırmak, doğru adlandırmaktan kolaydır.
+
+---
+
+## 2.9.0 — İş ve müşteri katmanı
+
+- **Görev takibi** — her görevin kaynağı yazılıyor: müşteri isteği,
+  kendi kararımız, bulunan hata, bakım işi.
+- **Hizmet takvimi** — hosting, alan adı, sertifika, bakım tarihleri.
+  Sertifika taramasının sonuçları takvime besleniyor.
+- **Müşteri teslim paketi** — kılavuz, teknik belge, erişim bilgileri,
+  teslim tutanağı, kişisel veri kontrol listesi.
+
+### Neden
+
+Erişim belgesine parola yazılmıyor; belge bilginin **nerede** durduğunu
+söylüyor. Teslim belgeleri e-postayla dolaşır, parola dolaşmamalı.
+
+---
+
+## 2.8.0 — Operasyon ve sunucu
+
+- **Yedek ve geri dönüş** — geri dönüşün kendisi de geri alınabiliyor.
+- **Sertifika takibi** — 30 gün dikkat, 14 gün acil.
+- **Deploy güvenlik zinciri** — hazırlık, denetim, yedek, test, onay.
+  Bir adım kalırsa zincir durur.
+- **Teslim öncesi denetimler** — güvenlik, erişilebilirlik, arama, başarım.
+
+### Neden
+
+Deploy betiği **asıl gönderimi kendisi yapmıyor.** Canlıya çıkış açık bir
+insan kararı olmalı; otomatik gönderim zincirin bütün güvencesini tek bir
+hatalı çalıştırmayla boşa çıkarabilir.
+
+Kapı testleri üstel olarak tekrarlıyordu (her faz kendinden öncekileri,
+onlar da kendi öncekilerini). Süre 2 dakikadan 22 saniyeye düştü.
+
+---
+
+## 2.7.0 — Tasarım özgünlüğü
+
+- **Tasarım kimliği üreteci** — her projeye renk, tipografi, boşluk, köşe,
+  derinlik ve karakter. Kullanılmış tonlardan en az 28 derece uzak durur.
+- **Yazı tipi kataloğu** — 20 eşleşme, 10 karakter. Ağ yoksa yedek yığın.
+- **Örnek site çözümlemesi** — yön tarifi çıkarır, kopyalama reçetesi değil.
+- **Kalıp denetimi** — 15 kural. Şablon sayfada 13 bulgu, özgün sayfada sıfır.
+- **İz kimliği** — beş biçim, her projeye en az kullanılmış olanı.
+  Şirket bilgisi projeye göre değişebiliyor.
+
+### Neden
+
+Projelere bakanlar "bu otomatik üretilmiş" diyordu çünkü tasarımlar hep aynıydı.
+Kopya hem etik değil hem de zaten aynılaşmaya götürüyor.
+
+---
+
+## 2.6.0 — Faz motoru ve tam yetki
+
+- **Faz motoru** — plan, ilerleme, kapı kontrolü. "Bitti" bir görüş değil,
+  ölçüm sonucu.
+- **Tam yetki modu** — faz bitene kadar soru sorulmuyor.
+- **Çalışma modları** — dikkatli, hızlı, sunucuda, tam yetki.
+- **Kalite kapısı** — tam yetkide "bitti" demeyi kapıya bağlıyor.
+- **İzole deneme alanı** — riskli değişiklik ayrı kopyada.
+
+### Neden
+
+Tam yetki **hız demek, kontrolsüzlük değil.** İstisna listesindeki işlemlerde
+kanca karar vermiyor, sessiz kalıyor; kararı ilgili koruma veriyor.
+Reddetme izin vermeye üstün olduğu için tam yetki hiçbir korumayı aşamıyor.
+
+---
+
+## 2.5.0 — Projeler beyni ve sistem şeması
+
+- **Proje tanımı** — her proje kendini anlatıyor.
+- **Çift kayıt** — asıl kayıt projede, yansıması framework hafızasında.
+- **Merkezi pano** — bütün projeler durum sırasına göre.
+- **Geçmeden sorgu** — başka projeye geçmeden bilgi alınabiliyor.
+- **Görsel sistem şeması** — tek dosyalık HTML, dış kaynak yok.
+- **Otomatik tanıma** — 23 projenin teknolojisi ve durumu çıkarıldı.
+- **Tek arama** — hafıza, proje tanımları, notlar ve içindekiler birlikte.
+
+---
+
+## 2.4.0 — Hafıza ve süreklilik
+
+- **Alan ayrımı** — `hafiza/` senkron olur, `gunluk/` makinede kalır.
+- **Çoklu bilgisayar** — makine kimliği, çekme/gönderme, çakışma koruması.
+- **Oturum hafızası** — parolalar kayda geçmeden gizleniyor.
+- **Defterler** — karar defteri ve hata kütüphanesi.
+- **Proje içi içindekiler** — açıklamalar dosyaların kendisinden okunuyor.
+- **Durum satırı** — proje, makine, faz, kasa, maliyet.
+
+### Neden
+
+Üretilen belgenin adı önce `INDEX.md` idi. Windows dosya sistemi büyük/küçük
+harf ayırmadığı için `bilgi/index.md`, `sablonlar/index.md` ve
+`commands/index.md` üzerine yazıldı ve içerikleri kayboldu. Depodan geri alındı,
+ad `ICINDEKILER.md` yapıldı, üretece çakışma kontrolü eklendi.
+
+---
+
+## 2.3.0 — Koruma kalkanı
+
+- **Şifre kasası** — scrypt + Fernet. Çözülmüş içerik diske yazılmıyor.
+- **Veri koruması** — silme engelleniyor, yıkıcı komutlarda onay isteniyor.
+- **Kasa ve sır koruması** — koda sır yazılması engelleniyor.
+- **Türkçe yazım denetimi** — kimliklerde ASCII, metinlerde tam Türkçe.
+- **Sunucu haritası** — koruma sabit kod yerine haritadan okuyor.
+- **Türkçe gerekçe standardı** — her engelleme aynı biçimde konuşuyor.
+- **Sanal deneme** — komut çalışmadan gerçek korumalara soruluyor.
+
+---
+
+## 2.2.0 — Çekirdek iskelet
+
+- **Dil katmanı** — kullanıcı metinleri koddan ayrıldı.
+- **Betik katmanı** — deterministik işler kod oldu.
+- **Arşivleme motoru** — tarihli klasör, neden notu, otomatik dizin.
+- **Komut rehberi** — liste elle tutulmuyor, dizinler taranarak üretiliyor.
+- **Windows desteği** — kurulum ve güncelleme betikleri.
+
+### Neden
+
+Eski kurulum betiği korumaları kopyalıyor ama **kaydetmiyordu.**
+"Hiçbir koruma çalışmıyor" durumunun sebebi buydu.
+
+---
+
+## 2.1.0 — Acil temizlik
+
+- Kasa depo geçmişinden çıkarıldı.
+- Korumalar ayar dosyasına kaydedildi (daha önce hiç çalışmıyorlardı).
+- Depo gizlilik kuralı eklendi.
+- Duplikat komut arşivlendi.
+- Sürümler tek noktada birleştirildi.
+
+### Neden
+
+Kasa dosyaları depo geçmişinde duruyordu. Depo gizli olduğu için dışarı
+sızmadı, ancak geçmiş tamamen sıfırlandı ve tek temiz commit ile başlandı.

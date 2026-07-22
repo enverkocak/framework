@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "enver-local",
+  "description": "Enver KOCAK lokal plugin koleksiyonu",
+  "owner": {
+    "name": "<adin>",
+    "email": "<e-postan>"
+  },
+  "plugins": [
+    {
+      "name": "enver-framework",
+      "description": "Proje yonetim framework'u - komut rehberi, betik katmani, arsivleme, sunucu ve depo korumalari, cok dil, Windows destegi",
+      "version": "2.12.0",
+      "author": {
+        "name": "<adin>",
+        "email": "<e-postan>"
+      },
+      "source": "./enver-framework",
+      "category": "development"
+    }
+  ],
+  "_aciklama": "ORNEK DOSYA. Kendi bilgilerinle doldurup .ornek olmadan kaydet."
+}

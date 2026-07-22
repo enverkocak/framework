@@ -1,0 +1,75 @@
+{
+  "dil_adi": "English",
+  "dil_kodu": "en",
+
+  "genel": {
+    "tamam": "OK",
+    "hata": "Error",
+    "uyari": "Warning",
+    "bilgi": "Info",
+    "basarili": "Success",
+    "basarisiz": "Failed",
+    "iptal": "Cancelled",
+    "bulunamadi": "Not found",
+    "devam": "Continuing",
+    "bekleniyor": "Pending",
+    "tamamlandi": "Completed",
+    "gelistirici": "Developer"
+  },
+
+  "index": {
+    "baslik": "Enver Framework — Command Guide",
+    "altbaslik": "All commands, what they do and how to use them",
+    "komutlar": "Commands",
+    "ajanlar": "Agents",
+    "korumalar": "Guards",
+    "kullanim": "Usage",
+    "ornek": "Example",
+    "aciklama": "Description",
+    "kategori": "Category",
+    "toplam": "Total"
+  },
+
+  "arsiv": {
+    "arsivlendi": "Moved to archive",
+    "arsiv_hedefi": "Archive target",
+    "neden_sorusu": "What was this work for?",
+    "neden_yazildi": "Archive note written",
+    "silme_engellendi": "Deletion blocked — data moved to archive",
+    "silme_kurali": "Rule: No data is ever deleted. Everything is archived with a note.",
+    "calisma_alani": "Temporary work happens in the working area",
+    "ana_dizin_temiz": "No temporary files are left in the root directory"
+  },
+
+  "korumalar": {
+    "engellendi": "BLOCKED",
+    "izin_gerekli": "Permission required",
+    "neden": "Reason",
+    "ne_yapilacak": "What will happen",
+    "nasil_duzeltilir": "How to fix",
+    "sunucu_disari": "This command reaches outside the permitted project directory. Other customers' sites live on this server and must not be touched.",
+    "depo_gizli": "All repositories are private. If one must be opened, do it manually from the repository interface.",
+    "iz_bulundu": "A tool trace was found in the written file. No traces are left in code, comments or documentation.",
+    "kasa_kilitli": "The vault is locked. A password is required to continue.",
+    "yikici_komut": "This command performs an irreversible operation."
+  },
+
+  "faz": {
+    "aktif_faz": "Active phase",
+    "kapi_kontrolu": "Gate check",
+    "kapi_acik": "Gate open — you may proceed to the next phase",
+    "kapi_kapali": "Gate closed — fix the issues first",
+    "gecti": "passed",
+    "kaldi": "failed",
+    "sonuc": "Result"
+  },
+
+  "hatalar": {
+    "dosya_yok": "File not found",
+    "dizin_yok": "Directory not found",
+    "yetki_yok": "Permission denied",
+    "gecersiz_bicim": "Invalid format",
+    "ayar_okunamadi": "Settings could not be read",
+    "dil_bulunamadi": "Language file not found, fell back to Turkish"
+  }
+}
