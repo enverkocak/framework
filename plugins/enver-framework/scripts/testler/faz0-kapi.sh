@@ -169,17 +169,24 @@ kontrol "En az 16 benzersiz komut var (bulunan: $KOMUT)" GECMELI $S
 echo ""
 echo "--- 6. ARSIV VE YEDEK ---"
 
-[ -d "D:/Projeler/_arsiv/2026-07-21_git-gecmisi-yedegi/git-klasoru" ] && S=0 || S=1
-kontrol "Git gecmisi yedegi duruyor" GECMELI $S
-
-[ -f "D:/Projeler/_arsiv/2026-07-21_git-gecmisi-yedegi/NEDEN.md" ] && S=0 || S=1
-kontrol "Yedegin NEDEN notu var" GECMELI $S
-
-[ -f "D:/Projeler/_arsiv/2026-07-21_faz0-temizlik/panel-enver.md" ] && S=0 || S=1
-kontrol "Duplikat arsivde duruyor (silinmedi)" GECMELI $S
-
-[ -f "D:/Projeler/_arsiv/2026-07-21_faz0-temizlik/NEDEN.md" ] && S=0 || S=1
-kontrol "Faz 0 arsivinin NEDEN notu var" GECMELI $S
+# Bu yedekler Faz 0 temizliginde ENVER'in makinesinde olusturuldu; o makineye
+# ozgu tarihsel kayittir. Baska bir bilgisayarda, taze klonda ya da CI'da
+# bulunmazlar - yokluklari bir eksiklik degil. (Yerelde gecip CI'da kaldilar,
+# cunku sabit D:/Projeler/_arsiv yolu yalniz gelistirme makinesinde var.)
+YEDEK_KOK="D:/Projeler/_arsiv/2026-07-21_git-gecmisi-yedegi"
+if [ -d "$YEDEK_KOK" ]; then
+  [ -d "$YEDEK_KOK/git-klasoru" ] && S=0 || S=1
+  kontrol "Git gecmisi yedegi duruyor" GECMELI $S
+  [ -f "$YEDEK_KOK/NEDEN.md" ] && S=0 || S=1
+  kontrol "Yedegin NEDEN notu var" GECMELI $S
+  [ -f "D:/Projeler/_arsiv/2026-07-21_faz0-temizlik/panel-enver.md" ] && S=0 || S=1
+  kontrol "Duplikat arsivde duruyor (silinmedi)" GECMELI $S
+  [ -f "D:/Projeler/_arsiv/2026-07-21_faz0-temizlik/NEDEN.md" ] && S=0 || S=1
+  kontrol "Faz 0 arsivinin NEDEN notu var" GECMELI $S
+else
+  kontrol "Gelistirme makinesi yedegi yok - baska ortam (atlandi)" GECMELI 0
+  kontrol "Tarihsel yedek kontrolu atlandi (bu makineye ozgu)" GECMELI 0
+fi
 
 echo ""
 echo "--- 7. ANA DIZIN DUZENI ---"

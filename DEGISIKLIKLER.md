@@ -7,6 +7,22 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 2.15.1 — CI düzeltmeleri (satır sonu + makineye özgü test)
+
+İlk CI koşuları kırmızıydı. İki ayrı sebep:
+
+- **Satır sonları.** Windows runner `.sh` dosyalarını `autocrlf=true` ile
+  CRLF olarak checkout ediyordu; Git Bash `\r` yüzünden bütün testi
+  düşürüyordu. `.gitattributes` ile tüm metin dosyaları LF'e sabitlendi.
+- **Makineye özgü test.** `faz0`'ın "arşiv ve yedek" bölümü Enver'in
+  makinesindeki sabit `D:/Projeler/_arsiv/...` yollarını doğruluyordu.
+  Yerelde geçiyordu (o klasörler burada var), CI'da ve başka makinede
+  kalıyordu. Artık o klasör yoksa kontrol atlanıyor — yokluğu bir eksiklik
+  değil, "bu makineye özgü tarihsel kayıt".
+
+Ders (yine): sabit makine yolu taşıyan bir test yalnız o makinede geçer.
+"Kurulmamışlık bozukluk değildir" ilkesinin test tarafındaki karşılığı.
+
 ## 2.15.0 — Dünyaya açılış: İngilizce belge, CI, katkı altyapısı
 
 Herkese açık depo yayında ama dışarıdan bakınca eksikti: keşfedilir değildi,
