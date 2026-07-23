@@ -11,6 +11,7 @@
   "kalici": {
     ".git": "Depo verisi",
     ".gitignore": "Depoya girmeyecek yollar",
+    ".gitattributes": "Satir sonu kurali - kabuk betikleri her yerde LF",
     ".claude": "Kanca ve durum satiri ayarlari",
     ".iz-muaf": "Bu deponun iz taramasindan muaf oldugunu belirten isaret",
     "CLAUDE.md": "Global kurallar",

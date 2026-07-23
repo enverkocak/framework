@@ -1,0 +1,13 @@
+# Satır sonları her yerde LF olsun.
+#
+# Neden: kabuk betikleri (.sh) CRLF ile bozulur. Windows CI runner'ı
+# autocrlf=true ile checkout ettiğinde .sh dosyaları CRLF'e dönüyor,
+# Git Bash '\r' yüzünden "command not found" verip bütün testi düşürüyor.
+# Bu yüzden bütün metin dosyaları LF'e sabitlenir - platform fark etmez.
+* text=auto eol=lf
+
+# İkili dosyalar dokunulmaz (şu an yok ama ileride eklenirse güvenli).
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
