@@ -29,6 +29,10 @@
     "KURULUM-KILAVUZU.md": "Sifirdan kurulum - gereksinimler, adimlar, sorun giderme",
     "CLAUDE.ornek.md": "Kurallarin ornek surumu - paylasilan kopyada CLAUDE.md yerine gecer",
     "README.ornek.md": "Tanitimin ornek surumu - paylasilan kopyada README.md yerine gecer",
+    "README.en.md": "Ingilizce tanitim - uluslararasi erisim",
+    "CONTRIBUTING.md": "Katki rehberi (Turkce + Ingilizce)",
+    "SECURITY.md": "Guvenlik acigi bildirme yolu (Turkce + Ingilizce)",
+    ".github": "Issue/PR sablonlari ve CI is akislari",
     "LICENSE": "MIT lisans metni - telif Enver KOCAK"
   },
   "uretilen": {

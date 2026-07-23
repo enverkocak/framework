@@ -1,11 +1,20 @@
-# Framework v2.14.0
+**Türkçe** · [English](README.en.md)
 
-Türkçe proje yönetim çerçevesi. Ücretsiz ve açık kaynak.
+# Framework — Claude Code için Türkçe geliştirme çerçevesi
+
+[![Testler](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
+[![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-green.svg)](LICENSE)
+![Sürüm](https://img.shields.io/badge/sürüm-2.15.0-blue.svg)
+![Claude Code](https://img.shields.io/badge/Claude%20Code-eklenti-8A2BE2)
+![Dil](https://img.shields.io/badge/belge-Türkçe%20%7C%20English-orange)
+
+[Claude Code](https://claude.com/claude-code) için proje yönetim çerçevesi:
+komutlar, beceriler, ajanlar ve **koruma kancaları**. Ücretsiz ve açık kaynak.
 
 Bir projede nerede kaldığını hatırlar, veri kaybını önler, fazları sırayla
 yürütür ve her projeye kendine özgü bir tasarım kimliği üretir.
 
-**Geliştirici:** Enver KOCAK · enverkocak.com · mail@enverkocak.com
+**Geliştirici:** Enver KOCAK · [enverkocak.com](https://enverkocak.com) · mail@enverkocak.com
 **Lisans:** MIT — serbestçe kullanabilir, değiştirebilir, dağıtabilirsin.
 
 ---
@@ -95,11 +104,21 @@ Onunun tamamı ve nasıl gevşetileceği kılavuzda anlatılır.
 
 ## Nasıl çalışır
 
-```
-Oturum açılır      →  nerede kaldığın özetlenir
-Çalışırsın         →  korumalar sessizce arkada durur
-Faz biter          →  kapı kontrolü çalışır, geçmezse ilerlenmez
-Oturum kapanır     →  yapılanlar, kararlar ve hatalar kaydedilir
+```mermaid
+flowchart TD
+    A[Oturum açılır] --> B[Brifing: nerede kaldın]
+    B --> C[Çalışırsın]
+    C --> D{Araç çağrısı}
+    D -->|rutin| E[Korumalar susar, iş akar]
+    D -->|silme / kasa / açık depo| F[Sert engel, yönlendirilir]
+    D -->|yıkıcı| G[Onay ister]
+    C --> H[Faz biter]
+    H --> I{Kapı kontrolü}
+    I -->|geçer| J[Sonraki faza geç]
+    I -->|kalır| H
+    C --> K[Oturum kapanır]
+    K --> L[Yapılanlar, kararlar, hatalar kaydedilir]
+    L -.git push / pull.-> B
 ```
 
 Hafıza depoya girdiği için başka bir bilgisayarda `git pull` yaptığında

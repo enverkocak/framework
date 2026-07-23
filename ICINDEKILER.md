@@ -21,6 +21,7 @@
 | `.iz-muaf` | - |
 | `CLAUDE.md` | 1. Kodda, yorumlarda, commit'lerde, dokumantasyonda Claude, AI, yapay zeka, LLM, Copilot, GPT vb. IFADELER YASAK. |
 | `CLAUDE.ornek.md` | 1. Kodda, yorumlarda, commit'lerde ve dokümantasyonda **üretim aracı izi |
+| `CONTRIBUTING.md` | Türkçe aşağıda · English below. |
 | `DEGISIKLIKLER.md` | Enver Framework'ün sürüm geçmişi. |
 | `guncelle.ps1` | Enver Framework - Guncelleme (Windows) |
 | `guncelle.sh` | Enver Framework - Güncelleme |
@@ -29,8 +30,10 @@
 | `kurulum.ps1` | Enver Framework - Kurulum (Windows) |
 | `kurulum.sh` | Enver Framework - Otomatik Kurulum |
 | `LICENSE` | - |
+| `README.en.md` | [Türkçe](README.md) · **English** |
 | `README.md` | Tum projelerde kullanilan proje yonetim framework'u. |
-| `README.ornek.md` | Türkçe proje yönetim çerçevesi. Ücretsiz ve açık kaynak. |
+| `README.ornek.md` | [![Testler](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/t |
+| `SECURITY.md` | Bir güvenlik açığı bulduysan **herkese açık konu (issue) açma.** Doğrudan yaz: |
 
 ---
 

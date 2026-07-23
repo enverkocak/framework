@@ -153,7 +153,9 @@ echo "--- 5. SURUM VE DUPLIKAT ---"
 
 P=$(python -c "import json;print(json.load(open('plugins/.claude-plugin/plugin.json'))['version'])" 2>/dev/null)
 M=$(python -c "import json;print(json.load(open('plugins/.claude-plugin/marketplace.json'))['plugins'][0]['version'])" 2>/dev/null)
-R=$(head -1 README.md | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+")
+# Surum README'de ilk satirda olmayabilir (dil gecisi satiri var);
+# rozette ya da baslikta. Dosyadaki ilk X.Y.Z'yi al.
+R=$(grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+" README.md | head -1)
 [ "$P" = "$M" ] && [ "$M" = "$R" ] && S=0 || S=1
 kontrol "Surumler ayni (plugin=$P marketplace=$M readme=$R)" GECMELI $S
 

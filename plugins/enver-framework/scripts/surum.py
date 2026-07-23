@@ -42,8 +42,9 @@ SURUM_YERLERI = [
     (KOK / "plugins" / ".claude-plugin" / "marketplace.json", "json"),
     (KOK / "plugins" / ".claude-plugin" / "plugin.ornek.json", "json"),
     (KOK / "plugins" / ".claude-plugin" / "marketplace.ornek.json", "json"),
-    (KOK / "README.md", "baslik"),
-    (KOK / "README.ornek.md", "baslik"),
+    (KOK / "README.md", "readme"),
+    (KOK / "README.ornek.md", "readme"),
+    (KOK / "README.en.md", "readme"),
 ]
 
 DEGISIKLIKLER = KOK / "DEGISIKLIKLER.md"
@@ -81,13 +82,14 @@ def _json_degistir(metin, yeni):
                   rf"\g<1>{yeni}\g<2>", metin)
 
 
-def _baslik_degistir(metin, yeni):
-    """İlk satırdaki (# ... vX.Y.Z) sürümü çeker; gerisine dokunmaz."""
-    satirlar = metin.split("\n")
-    if satirlar:
-        satirlar[0] = re.sub(r"(v)\d+\.\d+\.\d+", rf"\g<1>{yeni}",
-                             satirlar[0], count=1)
-    return "\n".join(satirlar)
+def _readme_degistir(metin, yeni):
+    """README'deki bütün X.Y.Z sürümlerini yeniye çeker.
+
+    Sürüm README'de iki yerde geçebiliyor: başlıkta (vX.Y.Z) ve rozet
+    URL'inde (sürüm-X.Y.Z). İkisini de aynı anda güncellemek için hepsini
+    değiştiririz. README'de üç parçalı başka bir sürüm numarası yok
+    (Python "3.9" iki parçalı, desene uymaz), o yüzden güvenli."""
+    return SURUM_DESENI.sub(yeni, metin)
 
 
 def dosyalari_yukselt(yeni):
@@ -98,7 +100,7 @@ def dosyalari_yukselt(yeni):
             atlanan.append(yol.name)
             continue
         metin = yol.read_text(encoding="utf-8")
-        yeni_metin = (_json_degistir if tur == "json" else _baslik_degistir)(metin, yeni)
+        yeni_metin = (_json_degistir if tur == "json" else _readme_degistir)(metin, yeni)
         if yeni_metin != metin:
             yol.write_text(yeni_metin, encoding="utf-8", newline="\n")
             degisen.append(yol.name)
@@ -140,7 +142,9 @@ def tutarli_mi():
         if tur == "json":
             m = re.search(r'"version"\s*:\s*"(\d+\.\d+\.\d+)"', metin)
         else:
-            m = SURUM_DESENI.search(metin.split("\n")[0])
+            # README'de sürüm ilk satırda değil (orada dil geçişi var);
+            # rozette ya da başlıkta. Tüm dosyada ilk X.Y.Z'yi al.
+            m = SURUM_DESENI.search(metin)
         bulunan[yol.name] = m.group(1) if m else "YOK"
     benzersiz = set(bulunan.values())
     return len(benzersiz) == 1, bulunan

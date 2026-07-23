@@ -7,6 +7,37 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 2.15.0 — Dünyaya açılış: İngilizce belge, CI, katkı altyapısı
+
+Herkese açık depo yayında ama dışarıdan bakınca eksikti: keşfedilir değildi,
+yalnız Türkçeydi, "canlı proje" görünmüyordu. Bu sürüm onu gerçek bir açık
+kaynak projesine dönüştürür.
+
+- **İngilizce README (`README.en.md`)** + iki README'nin başında
+  "Türkçe | English" geçişi. **Neden:** sadece Türkçe = sadece Türkiye;
+  dünyanın büyük kısmı ve arama motorları dışarıda kalıyordu. E18 dil
+  niyetinin doğal devamı.
+- **Rozetler ve akış diyagramı** — lisans, sürüm, CI rozetleri; "nasıl
+  çalışır" artık mermaid diyagramı (GitHub yerel olarak çiziyor, resim
+  gerektirmez).
+- **Sürekli tümleştirme (CI)** — `.github/workflows/test.yml`: her push ve
+  PR'da bütün test takımı Windows runner'da çalışır. Yeşil "passing" rozeti
+  bir bakışta güven verir. **Neden Windows:** testler orada kanıtlandı.
+- **Katkı altyapısı** — `CONTRIBUTING.md`, `SECURITY.md`, issue şablonları
+  (hata/öneri, iki dilli), PR şablonu. İnsanların nasıl katkı ve bildirim
+  yapacağı belli.
+- **Sürüm aracı sağlamlaştırıldı** — README'lerde sürüm artık ilk satırda
+  değil (orada dil geçişi var), rozette. `surum.py` ve `faz0` sürümü ilk
+  satırda değil, dosyanın herhangi bir yerinde arıyor. Kendi üzerinde
+  denenince çıkan bir hataydı, düzeltildi (dogfooding).
+
+### Neden mermaid, İngilizce, CI hep birlikte
+
+Keşfedilebilirlik tek bir şeye bağlı değil: arama motorları İngilizce
+içeriği indeksler, GitHub konu etiketlerini sıralar, geliştiriciler yeşil
+CI rozetine ve net bir README'ye güvenir. Hepsi birden olmadan "çok kişiye
+ulaş" gerçekleşmiyor.
+
 ## 2.14.0 — Tek komutla sürüm yükseltme
 
 Sürüm numarası altı dosyada geçiyordu: `plugin.json`, `marketplace.json`,

@@ -1,0 +1,28 @@
+name: Testler
+
+# Her push ve PR'da bütün test takımını çalıştırır.
+# Windows runner: testlerin kanıtlandığı ortam (Git Bash + Python).
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Bağımlılıklar
+        run: pip install cryptography
+
+      - name: Test takımı
+        shell: bash
+        run: bash plugins/enver-framework/scripts/testler/tumunu-calistir.sh

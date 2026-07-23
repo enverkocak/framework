@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Güvenlik açığı / Security issue
+    url: https://github.com/enverkocak/framework/security/policy
+    about: Güvenlik açıklarını herkese açık konu yerine e-postayla bildir. Report security issues by email, not a public issue.
+  - name: Kullanım kılavuzu / Usage guide
+    url: https://github.com/enverkocak/framework/blob/main/KULLANIM-KILAVUZU.md
+    about: Sorundan önce kılavuza bak. Check the guide before opening an issue.
