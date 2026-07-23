@@ -7,6 +7,28 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 2.14.0 — Tek komutla sürüm yükseltme
+
+Sürüm numarası altı dosyada geçiyordu: `plugin.json`, `marketplace.json`,
+ikisinin `.ornek` kopyası ve iki README. Elle değiştirince biri unutuluyor,
+`faz0` testi tutarsızlığı yakalayıp kapıyı kapatıyordu — ama önce hatayı
+yapmak gerekiyordu.
+
+- **`surum.py yukselt kucuk|orta|buyuk`** — altı yeri aynı anda yükseltir,
+  hiçbiri unutulmaz. **Neden:** "her yayında sürüm + not" disiplinini elle
+  sürdürmek altı ayrı düzenleme demekti; bir yeri atlamak kolaydı.
+- **DEGISIKLIKLER'e taslak başlık** — yükseltme, tarihli boş bir sürüm
+  başlığı açar; "ne + neden"i sen doldurursun. Not zorunlu kalır.
+- **Tutarlılık kontrolü** — `surum.py durum` altı yerin aynı sürümde
+  olduğunu doğrular. Yayın öncesi güvenlik ağı.
+- **`/surum`** komutu eklendi.
+
+### Not (sürümleme kuralı)
+
+Her commit sürüm artırmaz. Sürüm **yayını** işaretler: yeni özellik → orta,
+düzeltme → küçük, kırıcı değişim → büyük. Yalnız mevcut sürümü belgeleyen
+değişiklikler (kılavuz, README sayısı) sürüm artırmaz.
+
 ## 2.13.0 — Tam yetki susar, güncelleme haber verir
 
 İki gerçek istek: tam yetki modu soru sormaya devam ediyordu; kullananlar

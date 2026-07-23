@@ -227,6 +227,8 @@ islevsel "Makine taniniyor" python "$P/scripts/senkron/makine.py" durum
 # Guncelleme kontrolu: aga bagimli olmayan kismi olculur (import + surum).
 # Banner ve fetch aga bagli oldugu icin burada zorlanmaz.
 islevsel "Guncelleme modulu okunuyor" python -c "import sys; sys.path.insert(0, r'$P/scripts'); import guncelleme; assert guncelleme.yerel_surum(); assert callable(guncelleme.banner)"
+# Surum araci: alti yerdeki surum tutarli mi (yayin oncesi guvenlik agi).
+islevsel "Surum tutarli" python "$P/scripts/surum.py" durum
 fi
 
 # ---------------------------------------------------------------- güvenlik

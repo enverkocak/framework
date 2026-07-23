@@ -31,6 +31,7 @@
 | `saglik.md` | Framework saglik kontrolu - korumalar gercekten calisiyor mu, cakisma var mi, paylasima hazir mi |
 | `sema.md` | Gorsel sistem semasi - hangi projede ne calisiyor, ne amacla, hangi projeye bagli |
 | `senkron.md` | Coklu bilgisayar senkronu - makine tanitma, hafizayi cekme ve gonderme, cakisma kontrolu |
+| `surum.md` | Sürümü tek komutla yükseltir - altı yeri birden günceller, DEGISIKLIKLER'e başlık açar |
 | `tasarim.md` | Ozgun tasarim - kimlik uretimi, ilham kaynaklari, kalip denetimi ve iz imzasi |
 | `temizlik.md` | Memory, plan ve gecici dosyalari temizler - duplikatlari siler, arsivler |
 | `toplu-islemler.md` | Toplu islemler - ESLint auto-fix, import temizle, TODO listele, paket guncelle, dead code bul |

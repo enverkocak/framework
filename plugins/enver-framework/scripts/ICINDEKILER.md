@@ -32,6 +32,7 @@
 | `index-uret.py` | Dosyanın açıklamasını bul: önce on bilgi, sonra ilk anlamlı satır. |
 | `kuru-deneme.py` | Bir korumaya komutu sor, kararını döndür. |
 | `statusline.py` | Kasa açık mı kilitli mi, kalan süre ne kadar. |
+| `surum.py` | Altı yerdeki sürüm aynı mı? Yayın öncesi güvenlik ağı. |
 
 ---
 

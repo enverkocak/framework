@@ -1,4 +1,4 @@
-# Framework v2.13.0
+# Framework v2.14.0
 
 Türkçe proje yönetim çerçevesi. Ücretsiz ve açık kaynak.
 
@@ -59,7 +59,7 @@ Kurulumdan sonra:
 
 ## İçinde ne var
 
-**28 komut** · **3 beceri** · **4 ajan** · **10 koruma** · **47 betik**
+**29 komut** · **3 beceri** · **4 ajan** · **10 koruma** · **48 betik**
 
 ### Sık kullanılanlar
 
