@@ -55,3 +55,4 @@
 | `/hafiza` | Nerede kaldık, kararlar, hatalar |
 | `/kasa` | Şifreler ve anahtarlar |
 | `/saglik` | Framework gerçekten çalışıyor mu |
+| `/guncelle` | Yeni sürüme tek komutla geç |

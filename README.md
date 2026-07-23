@@ -59,7 +59,7 @@ Kurulumdan sonra:
 
 ## İçinde ne var
 
-**27 komut** · **3 beceri** · **4 ajan** · **10 koruma** · **44 betik**
+**28 komut** · **3 beceri** · **4 ajan** · **10 koruma** · **47 betik**
 
 ### Sık kullanılanlar
 
@@ -71,6 +71,7 @@ Kurulumdan sonra:
 | `/faz-kontrol` | Aktif fazın kapı kontrollerini çalıştır |
 | `/guvenlik-tara` | Güvenlik taraması |
 | `/saglik` | Çerçevenin kendi sağlık raporu |
+| `/guncelle` | Yeni sürüme tek komutla geç |
 
 Tam liste: [KULLANIM-KILAVUZU.md](KULLANIM-KILAVUZU.md)
 

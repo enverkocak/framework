@@ -18,7 +18,8 @@ hangi kuralın neden var olduğunu anlatır.
 7. [Faz motoru ve tam yetki](#faz-motoru-ve-tam-yetki)
 8. [Tasarım](#tasarım)
 9. [Teslim](#teslim)
-10. [Sorun giderme](#sorun-giderme)
+10. [Güncelleme](#güncelleme)
+11. [Sorun giderme](#sorun-giderme)
 
 ---
 
@@ -165,6 +166,7 @@ Bütün komutlar: `/index`
 | `/saglik` | Framework gerçekten çalışıyor mu |
 | `/senkron` | Bilgisayar değiştirirken |
 | `/guvenlik-tara` | Teslimden önce |
+| `/guncelle` | Açılışta "GÜNCELLEME VAR" görünce |
 
 ### Sunucu ve operasyon
 
@@ -300,30 +302,39 @@ python "$F/mod.py" tam-yetki  # aç
 python "$F/mod.py" dikkatli   # varsayılana dön
 ```
 
+```bash
+python "$F/mod.py" durum      # açık mı, hangi mod?
+```
+
 | Mod | Ne yapar |
 |-----|----------|
 | `dikkatli` | Varsayılan. Riskli işlemlerde onay ister |
 | `hizli` | Rutin işlerde soru azalır |
 | `sunucuda` | En temkinli |
-| `tam-yetki` | Faz bitene kadar soru sorulmaz |
+| `tam-yetki` | **Hiç soru sormaz** — izin kutusu çıkmaz |
 
-### Tam yetki — sınırları
+### Tam yetki — ne yapar, neyi yapamaz
 
-**Hız demek, kontrolsüzlük değil.** Bu modda bile duran işlemler:
+Açıkken o **"Do you want to proceed? 1 Yes / 2 Yes all / 3 No"** kutusu
+**hiç çıkmaz.** `git push`, `deploy`, `DROP` dahil her şey sessizce geçer.
+İş baştan sona kesintisiz akar.
 
-- Kasa parolası
-- Silme girişimi
-- Uzak sunucuya erişim
-- Canlıya çıkış ve yayınlama
-- Depo görünürlüğü ayarı
-- Geri alınamaz veritabanı işlemleri
-- Ödeme işlemleri
+**Ama sert engeller delinmez.** Bunlar ayrı korumalarda tanımlı ve tam
+yetki bunları geçemez — "engelle" her zaman "izin ver"i yener:
 
-Bu istisnalarda tam yetki kancası **karar vermez**, sessiz kalır;
-kararı ilgili koruma verir. Reddetme izin vermeye üstündür.
+| Tam yetki açıkken bile durur | Nerede |
+|------------------------------|--------|
+| Dosya silme (`rm`, `Remove-Item`) | veri-koruma (E7) |
+| Kasaya doğrudan erişim | kasa-koruma (E1) |
+| Depoyu herkese açık yapma | git-gizlilik-koruma |
+| Harita dışı sunucu dizini | sunucu-koruma |
 
-> Tam yetki açılacaksa **aktif fazın kapı kontrolü tanımlı olmalı.**
-> Yoksa nerede duracağı belli olmaz; mod bunu uyarır.
+> **Bilinçli seçim:** Tam yetki modunda "her yes'in ne için olduğunu gör"
+> kuralı (E16) kapanır. Yalnız bu modda; `dikkatli`'ye dönünce geri gelir.
+>
+> **Dikkat:** `DROP TABLE` veri siler ama "onay" katmanındaydı, dosya
+> silme gibi "kesin engel" değil — o yüzden tam yetkide sorulmadan çalışır.
+> Dosya silme (`rm`) ise her zaman engellenir.
 
 ---
 
@@ -398,6 +409,53 @@ python "$S/deploy.py" kontrol
 Zorunlu sıra: **hazırlık → denetim → yedek → test → onay**
 
 Betik **asıl gönderimi kendisi yapmaz.** Canlıya çıkış açık bir insan kararıdır.
+
+---
+
+## Güncelleme
+
+Açılışta yeni sürüm varsa brifingin **en üstünde** görürsün:
+
+```
+GÜNCELLEME VAR: 2.13.0 → 2.14.0
+  Ne değişti:
+    - ...
+  Güncellemek için tek komut:  /guncelle
+```
+
+Uzak depo **günde bir kez** yoklanır — her oturumda ağa çıkılmaz. Ağ
+yoksa hiçbir şey gösterilmez, açılış aksamaz.
+
+### Güncellemek
+
+```
+/guncelle
+```
+
+`git pull` yapar, kurulumu yeniler. Bittiğinde **sen** şunu çalıştır:
+
+```
+/reload-plugins
+```
+
+Terminalden aynısı:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/guncelleme.py" yap
+```
+
+### Neden otomatik değil
+
+Sessiz güncelleme çalışırken davranışı değiştirir ve yerel işinle
+çakışabilir. Bu yüzden çerçeve **yalnız haber verir** — uygulamak senin
+kararın. Sadece "var mı?" diye bakmak için:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/guncelleme.py" kontrol
+```
+
+> Bildirim 2.13.0'dan itibaren çalışır. Daha eski bir kurulumu ilk kez
+> elle güncellemen gerekir; ondan sonra kendisi haber verir.
 
 ---
 
