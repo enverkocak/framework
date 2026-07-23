@@ -97,31 +97,46 @@ try:
 
     dene(str(KOK / "README.md"), "allow", "dosya yazma", arac="Write")
 
-    print("\n  Tam yetki AÇIK - istisnalar karar ALMAMALI (normal akışa bırakılır)")
-    istisnalar = [
-        ("rm -rf eski/", "silme"),
-        ("Remove-Item -Recurse x", "silme (PowerShell)"),
-        ("ssh root@sunucu.com ls", "uzak sunucu"),
-        ("scp dosya root@sunucu:/tmp/", "uzak kopyalama"),
+    # Enver'in kararı (23 Temmuz 2026): tam yetki açıkken "Do you want to
+    # proceed" kutusu HİÇ çıkmaz. git push, deploy, DROP dahil her şey
+    # sessizce geçer. Bu yüzden tam-yetki kancası hepsine "allow" der.
+    print("\n  Tam yetki AÇIK - dışa etkili işler de sessizce geçer (allow)")
+    sessiz_gecer = [
         ("git push origin master", "depoya gönderme"),
-        ("gh repo create yeni --private", "depo ayarı"),
+        ("gh repo create yeni --private", "gizli depo"),
         ("git reset --hard HEAD~3", "geri alınamaz işlem"),
         ("psql -c 'DROP TABLE musteri'", "veritabanı düşürme"),
         ("psql -c 'DELETE FROM log'", "veritabanı silme"),
         ("npm publish", "yayınlama"),
-        ("python scripts/kasa/kasa.py ac", "kasa erişimi"),
         ("./deploy.sh", "canlıya çıkış"),
-        ("mkfs.ext4 /dev/sdb", "disk işlemi"),
+        ("ssh root@sunucu.com ls", "uzak sunucu"),
     ]
-    for komut, etiket in istisnalar:
-        dene(komut, "sessiz", f"istisna: {etiket}")
+    for komut, etiket in sessiz_gecer:
+        dene(komut, "allow", f"sessiz geçer: {etiket}")
 
-    print("\n  Tam yetki AÇIK - korumalar hâlâ engelliyor mu?")
-    korumayla_dene("veri-koruma.py", "rm -rf eski/", "silme koruması çalışıyor")
-    korumayla_dene("veri-koruma.py", "git reset --hard", "yıkıcı komut koruması çalışıyor")
+    # Yıkıcı komut ONAYI (DROP, reset --hard) tam yetkide susar: veri-koruma
+    # artık "ask" değil, hiçbir şey döndürmez. Kutu bu yüzden çıkmaz.
+    print("\n  Tam yetki AÇIK - yıkıcı komut onayı susmalı (veri-koruma)")
+    for komut, etiket in [("git reset --hard HEAD~3", "reset --hard"),
+                          ("psql -c 'DROP TABLE x'", "DROP TABLE"),
+                          ("psql -c 'DELETE FROM log'", "DELETE FROM")]:
+        karar = kanca_sor("veri-koruma.py", "Bash", {"command": komut})
+        if karar == "sessiz":
+            print(f"  [GECTI ] {karar:7} <- onay susturuldu: {etiket}")
+            gecen += 1
+        else:
+            print(f"  [HATA  ] {karar:7} (sessiz olmalıydı) <- {etiket}")
+            kalan += 1
+
+    # Sert engeller tam yetkiyi DELMEZ. Bunlar ayrı korumalarda tanımlı ve
+    # "engelle" her zaman "izin ver"i yener. Enver'in kararında da bunlar
+    # "her zaman engelli" olarak listelendi.
+    print("\n  Tam yetki AÇIK - sert engeller yine de durmalı")
+    korumayla_dene("veri-koruma.py", "rm -rf eski/", "silme yasağı (E7)")
+    korumayla_dene("veri-koruma.py", "Remove-Item -Recurse x", "silme (PowerShell)")
     korumayla_dene("git-gizlilik-koruma.py", "gh repo create x --pub" + "lic",
-                   "depo gizlilik koruması çalışıyor")
-    korumayla_dene("kasa-koruma.py", "cat kasa/kasa.kilit", "kasa koruması çalışıyor")
+                   "herkese açık depo engeli")
+    korumayla_dene("kasa-koruma.py", "cat kasa/kasa" + ".kilit", "kasa erişim engeli")
 
 finally:
     mod.mod_ayarla(onceki_mod)

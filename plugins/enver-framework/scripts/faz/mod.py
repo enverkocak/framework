@@ -54,14 +54,14 @@ MODLAR = {
     },
 }
 
+# Tam yetki açıkken bile SERT engelle duran işlemler. Bunlar soru değil,
+# doğrudan blok - ayrı korumalarda tanımlı, tam yetki bunları geçemez.
+# Geri kalan her şey (git push, deploy, DROP dahil) sessizce geçer.
 ISTISNA_LISTESI = [
-    "Kasa parolası istenmesi",
-    "Silme girişimi",
-    "Uzak sunucuya erişim",
-    "Canlıya çıkış ve yayınlama",
-    "Depo görünürlüğü ayarı",
-    "Geri alınamaz veritabanı işlemleri",
-    "Ödeme işlemleri",
+    "Dosya silme (E7 - her zaman engellenir, arşive yönlendirilir)",
+    "Kasaya doğrudan erişim (E1 - parola gerekir)",
+    "Depoyu herkese açık yapma (kesin engel)",
+    "Harita dışı sunucu dizinine erişim (kesin engel)",
 ]
 
 
@@ -150,12 +150,14 @@ def komut_ayarla(args):
 
 def main():
     ayristirici = argparse.ArgumentParser(description="Çalışma modu")
-    ayristirici.add_argument("ad", nargs="?", choices=list(MODLAR),
-                             help="Ayarlanacak mod (boş bırakılırsa durum gösterilir)")
+    # "durum" da kabul edilir: kullanıcı sezgisel olarak onu yazıyor.
+    # Argümansız çağrı da durum gösterir.
+    ayristirici.add_argument("ad", nargs="?", choices=list(MODLAR) + ["durum"],
+                             help="Ayarlanacak mod, ya da 'durum' (boş = durum)")
 
     args = ayristirici.parse_args()
 
-    if args.ad:
+    if args.ad and args.ad != "durum":
         return komut_ayarla(args)
     return komut_durum(args)
 

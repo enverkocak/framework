@@ -26,11 +26,28 @@ import _ortak_yol as ortak_yol  # noqa: E402
 BETIKLER_HAZIR = ortak_yol.hazirla()
 
 if BETIKLER_HAZIR:
+    import ayarlar
     import gerekce
     import yollar
 else:
+    ayarlar = None
     gerekce = None
     yollar = None
+
+
+def tam_yetki_acik():
+    """Tam yetki modu açık mı?
+
+    Açıkken 'yıkıcı komut' onayı (DROP, reset --hard, push --force gibi)
+    susturulur; iş kesintisiz akar. Ama SİLME YASAĞI sert kalır - o E7'nin
+    değiştirilemez çekirdeği. Silme her zaman engellenir, tam yetki geçemez.
+    """
+    if ayarlar is None:
+        return False
+    try:
+        return bool(ayarlar.oku().get("tam_yetki"))
+    except Exception:
+        return False
 
 
 # Komut konumunu yakalayan on ek: satır başı veya ayıraç sonrası
@@ -148,6 +165,12 @@ def bash_kontrol(komut):
             ],
             "Arşivleme silmeye göre daha güvenli: kayıt kalır, geri alınabilir.",
         )
+
+    # Tam yetki açıkken yıkıcı komut onayı susturulur. SİLME bu satıra
+    # gelmeden yukarıda zaten engellendi; buradan sonrası yalnız "onay
+    # isteyen" katman - tam yetkinin sessizleştirdiği yer burası.
+    if tam_yetki_acik():
+        return None
 
     yikici_adi, etki = yikici_kontrol(komut)
     if yikici_adi:

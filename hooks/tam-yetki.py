@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
 """PreToolUse kancası: Tam yetki modu.
 
-Tam yetki açıkken faz bitene kadar izin sorulmaz; iş kesintisiz akar.
-Faz bittiğinde durulur ve tek seferde rapor verilir.
+Tam yetki açıkken "Do you want to proceed? 1 Yes / 2 Yes all / 3 No"
+kutusu HİÇ çıkmaz; iş baştan sona kesintisiz akar. git push, deploy,
+DROP dahil her şey sessizce geçer. (Enver'in kararı, 23 Temmuz 2026.)
 
 TAM YETKİ, HIZ DEMEKTİR - KONTROLSÜZLÜK DEĞİL.
 
-Bu modda bile durduran işlemler:
-  - Kasa parolası istenmesi
-  - Silme girişimi
-  - Başka müşteri dizinine erişim
-  - Canlı ortama çıkış
-  - Depo görünürlüğünü değiştirme
+Bu modda bile SERT engelle duran işlemler AYRI kancalarda tanımlıdır;
+bu kanca "izin ver" dese de onlar "engelle" der ve işlem durur
+("engelle" her zaman "izin ver"i yener):
+  - Dosya silme         -> veri-koruma.py        (E7)
+  - Kasaya erişim        -> kasa-koruma.py        (E1)
+  - Herkese açık depo    -> git-gizlilik-koruma.py
+  - Harita dışı sunucu   -> sunucu-koruma.py
 
-Bu kanca bu istisnalarda **karar vermez**, sessiz kalır; kararı ilgili
-koruma verir. Böylece tam yetki hiçbir korumayı devre dışı bırakamaz.
-
-Reddetme her zaman izin vermeye üstündür: bu kanca "izin ver" dese bile
-başka bir koruma "engelle" derse işlem durur.
+Böylece tam yetki hiçbir sert korumayı devre dışı bırakamaz; yalnızca
+"onay isteyen" katmanı susturur.
 
 Geliştirici: Enver KOCAK
 """
@@ -42,42 +41,22 @@ else:
     ayarlar = yollar = None
 
 
-# Tam yetki modunda bile karar verilmeyecek işlemler.
-# Bu desenlerden biri tuttuğunda kanca sessiz kalır ve normal izin
-# akışı işler; ilgili koruma ne diyorsa o olur.
-ISTISNALAR = [
-    # Kasa
-    (re.compile(r"kasa[/\\]kasa\.py|kasa\.kilit|kasa-oturum", re.IGNORECASE),
-     "kasa erişimi"),
-
-    # Silme
-    (re.compile(r"(?:^|[;&|]\s*)(rm|rmdir|del|erase|shred|unlink|Remove-Item)\b",
-                re.IGNORECASE | re.MULTILINE), "silme girişimi"),
-    (re.compile(r"\bgit\s+clean\b[^|;&]*-\w*f", re.IGNORECASE), "silme girişimi"),
-    (re.compile(r"\bfind\b[^|;&]*\s-delete\b", re.IGNORECASE), "silme girişimi"),
-
-    # Uzak sunucu
-    (re.compile(r"\b(ssh|scp|sftp|rsync)\b", re.IGNORECASE), "uzak sunucu erişimi"),
-
-    # Canlıya çıkış
-    (re.compile(r"\b(deploy|publish|release)\b", re.IGNORECASE), "canlıya çıkış"),
-    (re.compile(r"\bgit\s+push\b", re.IGNORECASE), "depoya gönderme"),
-    (re.compile(r"\bnpm\s+publish\b|\bdocker\s+push\b", re.IGNORECASE), "yayınlama"),
-
-    # Depo görünürlüğü
-    (re.compile(r"\bgh\s+repo\b", re.IGNORECASE), "depo ayarı"),
-
-    # Geri dönüşü olmayan işlemler
-    (re.compile(r"\bgit\s+reset\s+--hard\b", re.IGNORECASE), "geri alınamaz işlem"),
-    (re.compile(r"\bDROP\s+(TABLE|DATABASE|SCHEMA)\b", re.IGNORECASE), "veritabanı işlemi"),
-    (re.compile(r"\bTRUNCATE\s+TABLE\b", re.IGNORECASE), "veritabanı işlemi"),
-    (re.compile(r"\bDELETE\s+FROM\b", re.IGNORECASE), "veritabanı işlemi"),
-    (re.compile(r"\bmkfs\b|\bformat\s+[a-z]:", re.IGNORECASE), "disk işlemi"),
-
-    # Ödeme ve kimlik
-    (re.compile(r"\b(payment|checkout|invoice|fatura|odeme)\b", re.IGNORECASE),
-     "ödeme işlemi"),
-]
+# Tam yetki modunda hiçbir işlem burada ayrıca sorulmaz.
+#
+# Enver'in kararı (23 Temmuz 2026): tam yetki açıkken "Do you want to
+# proceed? 1 Yes / 2 Yes all / 3 No" kutusu HİÇ çıkmasın; iş baştan sona
+# kesintisiz aksın. git push, deploy, DROP dahil.
+#
+# Bu, hiçbir korumayı zayıflatmaz. Sert engeller AYRI kancalarda durur ve
+# "engelle" her zaman "izin ver"i yener:
+#   - Silme            -> veri-koruma.py       (E7, kesin engel)
+#   - Kasa             -> kasa-koruma.py       (E1, kesin engel)
+#   - Herkese açık depo -> git-gizlilik-koruma.py (kesin engel)
+#   - Yasak sunucu dizini -> sunucu-koruma.py  (harita dışı, kesin engel)
+# Bu kanca "izin ver" dese de o kancalar "engelle" derse işlem durur.
+#
+# Liste boş; yeniden kısıtlamak istenirse buraya (desen, ad) eklemek yeter.
+ISTISNALAR = []
 
 
 def istisna_mi(metin):

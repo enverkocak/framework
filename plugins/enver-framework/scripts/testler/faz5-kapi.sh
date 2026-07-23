@@ -118,12 +118,16 @@ TOPLAM=$(grep -c "^  \[" _calisma/ty.txt)
 [ "$HATA" -eq 0 ] && kontrol "Tam yetki senaryolari ($TOPLAM senaryo, $HATA hata)" 0 \
                   || { kontrol "Tam yetki senaryolari ($HATA hata)" 1; grep "HATA" _calisma/ty.txt; }
 
-python - << 'PY' 2>/dev/null && kontrol "Istisna listesi eksiksiz" 0 || kontrol "Istisna listesi eksiksiz" 1
-import re
+# Tam yetki her şeye izin verir (Enver'in kararı, 23 Temmuz 2026); sert
+# engeller AYRI kancalarda durur. Test, o güvenlik ağının nerede olduğunun
+# BELGELENDİĞİNİ doğrular - bir gün biri bu bağı koparırsa yakalansın.
+# (String listesi değil yapı ölçülür: hangi korumanın devrede olduğu.)
+python - << 'PY' 2>/dev/null && kontrol "Sert engellerin yeri belgeli" 0 || kontrol "Sert engellerin yeri belgeli" 1
 kaynak = open("hooks/tam-yetki.py", encoding="utf-8").read()
-for konu in ["kasa", "silme", "uzak sunucu", "canlıya çıkış", "depo ayarı",
-             "geri alınamaz", "ödeme"]:
-    assert konu in kaynak, konu
+for koruma in ["veri-koruma", "kasa-koruma", "git-gizlilik-koruma", "sunucu-koruma"]:
+    assert koruma in kaynak, koruma
+# "engelle" > "izin ver" ilkesi belgede durmalı
+assert "engelle" in kaynak and "izin ver" in kaynak
 PY
 
 python - << 'PY' 2>/dev/null && kontrol "Kanca cokerse tam yetki kapali kalir" 0 || kontrol "Kanca cokerse tam yetki kapali kalir" 1
