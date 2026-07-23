@@ -25,6 +25,7 @@ BETIKLER_HAZIR = ortak_yol.hazirla()
 
 if BETIKLER_HAZIR:
     betik_dizini = ortak_yol.betik_dizini()
+    sys.path.insert(0, str(betik_dizini))
     sys.path.insert(0, str(betik_dizini / "hafiza"))
     sys.path.insert(0, str(betik_dizini / "senkron"))
     try:
@@ -33,8 +34,13 @@ if BETIKLER_HAZIR:
         import yollar
     except ImportError:
         hafiza = makine = yollar = None
+    try:
+        import guncelleme
+    except ImportError:
+        guncelleme = None
 else:
     hafiza = makine = yollar = None
+    guncelleme = None
 
 SATIR_SINIRI = 40
 
@@ -74,6 +80,16 @@ def brifing_uret():
     proje = yollar.proje_adi(kok)
 
     bolumler = [f"OTURUM AÇILIŞ BRİFİNGİ - {proje}"]
+
+    # Güncelleme bildirimi (varsa) en üstte, en görünür yerde durur.
+    # Ağı günde bir kez yoklar; yoksa ya da güncelse hiçbir şey eklemez.
+    if guncelleme is not None:
+        try:
+            haber = guncelleme.banner()
+        except Exception:
+            haber = ""
+        if haber:
+            bolumler.append(haber)
 
     # Makine durumu
     kendi = makine.bu_makine(kok)

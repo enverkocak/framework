@@ -7,6 +7,33 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 2.13.0 — Tam yetki susar, güncelleme haber verir
+
+İki gerçek istek: tam yetki modu soru sormaya devam ediyordu; kullananlar
+yeni sürümden haberdar olmuyordu.
+
+- **Tam yetki artık hiç soru sormaz.** Açıkken "Do you want to proceed?"
+  kutusu çıkmaz; `git push`, `deploy`, `DROP` dahil her şey sessizce
+  geçer. **Neden değişti:** eski hâlde geniş bir istisna listesi vardı ve
+  bunlar bilerek soruyordu; günlük işte sürekli çıkınca "açtım ama hâlâ
+  soruyor" oluyordu. Ayrıca `veri-koruma`'nın "onay iste"si, tam yetkinin
+  "izin ver"ini eziyordu (en kısıtlayıcı kazanır), o yüzden onu da kesmek
+  gerekti.
+- **Sert engeller delinmedi.** Dosya silme (E7), kasa (E1), herkese açık
+  depo ve harita dışı sunucu ayrı kancalarda durur; tam yetki bunları
+  geçemez. Karar Enver'in: E16 ("her yes'in ne için olduğunu göreyim")
+  yalnız tam yetki modunda kapanır, dikkatli modda geçerli kalır.
+- **`mod.py durum`** çalışır hale geldi — modun açık mı olduğunu görmenin
+  yolu yoktu; "açtım sanıyorum ama emin değilim" bundandı.
+- **Açılışta "GÜNCELLEME VAR" bildirimi.** Uzak depo günde bir kez
+  yoklanır; yeni sürüm varsa açılış brifinginin en üstünde sürüm farkı ve
+  ne değiştiği görünür. **Neden bildirim, otomatik değil:** sessiz
+  güncelleme çalışırken davranışı değiştirir ve yerel işle çakışabilir;
+  Claude Code'un kendisi de yalnız haber verir.
+- **`/guncelle` — tek komutluk güncelleme.** `git pull` + kurulumu kendisi
+  yürütür, sonunda `/reload-plugins` hatırlatır. Kurulum artık klon
+  konumunu kaydeder ki kurulu kopya kaynağın nerede olduğunu bilsin.
+
 ## 2.12.0 — Cihaza göre tasarım
 
 **Faz 11.** Enver'in isteği (E20): her projede mobil, tablet, web ve

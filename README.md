@@ -1,4 +1,4 @@
-# Framework v2.12.0
+# Framework v2.13.0
 
 Türkçe proje yönetim çerçevesi. Ücretsiz ve açık kaynak.
 

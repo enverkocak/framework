@@ -28,6 +28,7 @@
 | Dosya | Ne işe yarar |
 |-------|--------------|
 | `ara.py` | Sorgu gizli bilgiyle ilgiliyse kullanıcıyı kasaya yönlendir. |
+| `guncelleme.py` | Güncellemeyi uygula: git pull + kurulumu tekrar çalıştır. |
 | `index-uret.py` | Dosyanın açıklamasını bul: önce on bilgi, sonra ilk anlamlı satır. |
 | `kuru-deneme.py` | Bir korumaya komutu sor, kararını döndür. |
 | `statusline.py` | Kasa açık mı kilitli mi, kalan süre ne kadar. |

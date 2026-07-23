@@ -65,6 +65,19 @@ else
     echo "UYARI: Kayit betigi bulunamadi: $KAYIT_BETIGI"
 fi
 
+# Klon konumunu kaydet: açılışta "uzakta yeni sürüm var mı" kontrolü
+# buradan okur. Yol ortam değişkeniyle geçirilir; tırnak sorunu olmaz.
+if [ -d "$REPO_DIR/.git" ]; then
+    mkdir -p "$CLAUDE_DIR/enver"
+    ENVER_KAYNAK="$REPO_DIR" ENVER_HEDEF="$CLAUDE_DIR" python3 - <<'PYKOD' || true
+import json, os
+from pathlib import Path
+p = Path(os.environ["ENVER_HEDEF"]) / "enver" / "kurulum-bilgisi.json"
+p.write_text(json.dumps({"kaynak_dizin": os.environ["ENVER_KAYNAK"]},
+                        ensure_ascii=False, indent=2), encoding="utf-8")
+PYKOD
+fi
+
 echo ""
 echo "========================================"
 echo "  KURULUM TAMAMLANDI!"

@@ -224,6 +224,9 @@ islevsel "Yedek listesi okunuyor" python "$P/scripts/sunucu/yedek.py" liste --si
 islevsel "Kurulum ortami hazir" python "$P/scripts/kurulum/sihirbaz.py" kontrol
 islevsel "Senkron durumu okunuyor" python "$P/scripts/senkron/senkron.py" durum
 islevsel "Makine taniniyor" python "$P/scripts/senkron/makine.py" durum
+# Guncelleme kontrolu: aga bagimli olmayan kismi olculur (import + surum).
+# Banner ve fetch aga bagli oldugu icin burada zorlanmaz.
+islevsel "Guncelleme modulu okunuyor" python -c "import sys; sys.path.insert(0, r'$P/scripts'); import guncelleme; assert guncelleme.yerel_surum(); assert callable(guncelleme.banner)"
 fi
 
 # ---------------------------------------------------------------- güvenlik

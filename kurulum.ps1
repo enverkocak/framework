@@ -87,6 +87,16 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "UYARI: Korumalar kaydedilemedi. Elle kontrol edin." -ForegroundColor Yellow
 }
 
+# Klon konumunu kaydet: açılışta "uzakta yeni sürüm var mı" kontrolü buradan
+# okur. Böylece kurulu kopya, kaynak deponun nerede olduğunu bilir.
+if (Test-Path (Join-Path $KaynakDizin ".git")) {
+    $EnverDizin = Join-Path $HedefDizin "enver"
+    New-Item -ItemType Directory -Force -Path $EnverDizin | Out-Null
+    $Bilgi = @{ kaynak_dizin = $KaynakDizin } | ConvertTo-Json
+    Set-Content -Path (Join-Path $EnverDizin "kurulum-bilgisi.json") `
+                -Value $Bilgi -Encoding UTF8
+}
+
 # --- Bitis ---
 
 Write-Host ""

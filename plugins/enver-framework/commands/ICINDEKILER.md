@@ -17,6 +17,7 @@
 | `faz.md` | Faz motoru - aktif faz, ilerleme, kapi kontrolu, calisma modu ve tam yetki |
 | `framework-ayarlari.md` | Framework ayarlari - memory, vault, hook, izin, versiyon yonetimi |
 | `git-islemleri.md` | Git islemleri - branch, commit, PR, merge, conflict cozme |
+| `guncelle.md` | Framework'u tek komutla günceller - depodan son sürümü çeker, kurulumu yeniler |
 | `guvenlik-tara.md` | Projedeki guvenlik aciklarini tarar - OWASP Top 10, credentials sizintisi, bagimlilik kontrolu |
 | `hafiza.md` | Hafiza - nerede kaldik, karar defteri, hata kutuphanesi, oturum ozetleri ve proje index'leri |
 | `index.md` | Komut rehberi - butun komutlar, beceriler, ajanlar ve korumalar tek listede, detayli kullanimla |
