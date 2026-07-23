@@ -1,3 +1,5 @@
+![Framework — Claude Code için Türkçe geliştirme çerçevesi](.github/banner.png)
+
 **Türkçe** · [English](README.en.md)
 
 # Framework — Claude Code için Türkçe geliştirme çerçevesi

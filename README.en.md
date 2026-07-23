@@ -1,3 +1,5 @@
+![Framework — a Turkish-first toolkit for Claude Code](.github/banner.png)
+
 [Türkçe](README.md) · **English**
 
 # Framework — a Turkish-first toolkit for Claude Code

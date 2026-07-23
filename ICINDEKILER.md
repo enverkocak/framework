@@ -30,9 +30,9 @@
 | `kurulum.ps1` | Enver Framework - Kurulum (Windows) |
 | `kurulum.sh` | Enver Framework - Otomatik Kurulum |
 | `LICENSE` | - |
-| `README.en.md` | [Türkçe](README.md) · **English** |
+| `README.en.md` | ![Framework — a Turkish-first toolkit for Claude Code](.github/banner.png) |
 | `README.md` | Tum projelerde kullanilan proje yonetim framework'u. |
-| `README.ornek.md` | [![Testler](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/t |
+| `README.ornek.md` | ![Framework — Claude Code için Türkçe geliştirme çerçevesi](.github/banner.png) |
 | `SECURITY.md` | Bir güvenlik açığı bulduysan **herkese açık konu (issue) açma.** Doğrudan yaz: |
 
 ---
