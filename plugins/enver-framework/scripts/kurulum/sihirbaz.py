@@ -210,10 +210,10 @@ def ortam_kontrol():
                          "Kasa çalışmaz. Kurmak için: python -m pip install cryptography"))
 
     kok = Path(yollar.proje_kok())
-    if (kok / "hooks").is_dir():
+    if (kok / "plugins" / "enver-framework" / "hooks").is_dir():
         bulgular.append((True, "Koruma dosyaları yerinde", ""))
     else:
-        bulgular.append((False, "Koruma dosyaları bulunamadı", str(kok / "hooks")))
+        bulgular.append((False, "Koruma dosyaları bulunamadı", str(kok / "plugins" / "enver-framework" / "hooks")))
 
     ev = Path.home() / ".claude"
     if ev.is_dir():
@@ -373,7 +373,7 @@ def komut_kur(args):
     print("-" * 62)
 
     kayit_betigi = SCRIPT_DIZINI / "kanca-kaydet.py"
-    kanca_dizini = kok / "hooks"
+    kanca_dizini = kok / "plugins" / "enver-framework" / "hooks"
 
     if kayit_betigi.is_file() and kanca_dizini.is_dir():
         sonuc = subprocess.run(

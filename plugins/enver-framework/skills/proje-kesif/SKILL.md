@@ -1,6 +1,6 @@
 ---
 name: proje-kesif
-description: Yeni bir proje, sistem, site, uygulama, panel ya da ozellik yapilacaksa - KODLAMAYA BASLAMADAN ONCE bu beceriyi kullan. Kullanici "yeni proje", "sunu yapalim", "bir sistem lazim", "su ozelligi ekleyelim" derse ya da bir isin nasil yapilacagini anlatmaya baslarsa, acikca istemese bile devreye gir. Amac: yarim anlasilmis bir ise baslayip sonra bastan yazmak zorunda kalmamak. Once istek toplanir, sonra arastirilir, sonra netlestirici sorular sorulur, ANCAK ONDAN SONRA kod yazilir.
+description: 'Yeni bir proje, sistem, site, uygulama, panel ya da ozellik yapilacaksa - KODLAMAYA BASLAMADAN ONCE bu beceriyi kullan. Kullanici "yeni proje", "sunu yapalim", "bir sistem lazim", "su ozelligi ekleyelim" derse ya da bir isin nasil yapilacagini anlatmaya baslarsa, acikca istemese bile devreye gir. Amac - yarim anlasilmis bir ise baslayip sonra bastan yazmak zorunda kalmamak. Once istek toplanir, sonra arastirilir, sonra netlestirici sorular sorulur, ANCAK ONDAN SONRA kod yazilir.'
 ---
 
 # Proje keşfi

@@ -28,42 +28,29 @@ fi
 mkdir -p "$CLAUDE_DIR/vault"
 mkdir -p "$CLAUDE_DIR/bilgi"
 mkdir -p "$CLAUDE_DIR/sablonlar"
-mkdir -p "$CLAUDE_DIR/hooks"
 mkdir -p "$CLAUDE_DIR/plugins/enver-framework"
 mkdir -p "$CLAUDE_DIR/plugins/.claude-plugin"
 
 # Dosyaları kopyala
-echo "[1/6] Global CLAUDE.md kopyalaniyor..."
+echo "[1/5] Global CLAUDE.md kopyalaniyor..."
 cp "$REPO_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
 
-echo "[2/6] Vault dosyalari kopyalaniyor..."
+echo "[2/5] Vault dosyalari kopyalaniyor..."
 cp -r "$REPO_DIR/vault/"* "$CLAUDE_DIR/vault/"
 
-echo "[3/6] Bilgi deposu kopyalaniyor..."
+echo "[3/5] Bilgi deposu kopyalaniyor..."
 cp -r "$REPO_DIR/bilgi/"* "$CLAUDE_DIR/bilgi/"
 
-echo "[4/6] Sablonlar kopyalaniyor..."
+echo "[4/5] Sablonlar kopyalaniyor..."
 cp -r "$REPO_DIR/sablonlar/"* "$CLAUDE_DIR/sablonlar/"
 
-echo "[5/6] Hook'lar kopyalaniyor..."
-cp -r "$REPO_DIR/hooks/"* "$CLAUDE_DIR/hooks/"
-chmod +x "$CLAUDE_DIR/hooks/"*.py
-
-echo "[6/6] Plugin kopyalaniyor..."
+echo "[5/5] Plugin kopyalaniyor (korumalar plugin ile gelir)..."
 cp -r "$REPO_DIR/plugins/enver-framework/"* "$CLAUDE_DIR/plugins/enver-framework/"
 cp -r "$REPO_DIR/plugins/.claude-plugin/"* "$CLAUDE_DIR/plugins/.claude-plugin/"
 
-# Kancaları KAYDET - sadece kopyalamak yetmez, kayıt olmadan hiçbiri çalışmaz
-echo ""
-echo "Korumalar devreye aliniyor..."
-
-KAYIT_BETIGI="$CLAUDE_DIR/plugins/enver-framework/scripts/kurulum/kanca-kaydet.py"
-if [ -f "$KAYIT_BETIGI" ]; then
-    python3 "$KAYIT_BETIGI" "$CLAUDE_DIR/hooks" || \
-        echo "UYARI: Korumalar kaydedilemedi. Elle kontrol edin."
-else
-    echo "UYARI: Kayit betigi bulunamadi: $KAYIT_BETIGI"
-fi
+# Korumalar (kancalar) artik plugin'in hooks.json'u ile gelir. Kurulum
+# ayri kanca kaydi YAPMAZ - "/plugin install" calistirilinca devreye girer.
+# Boylece tek teslim vardir; cift kayit (cift calisma) olmaz.
 
 # Klon konumunu kaydet: açılışta "uzakta yeni sürüm var mı" kontrolü
 # buradan okur. Yol ortam değişkeniyle geçirilir; tırnak sorunu olmaz.

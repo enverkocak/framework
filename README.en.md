@@ -6,7 +6,7 @@
 
 [![Tests](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-2.15.1-blue.svg)
+![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)
 ![Language](https://img.shields.io/badge/docs-Türkçe%20%7C%20English-orange)
 
@@ -38,27 +38,26 @@ forgotten. They are enforced, not suggested.
 
 ## Install
 
-```bash
-git clone https://github.com/enverkocak/framework ~/framework
-cd ~/framework
-chmod +x kurulum.sh
-./kurulum.sh
-```
-
-On Windows use `kurulum.ps1`. Full walkthrough:
-[KURULUM-KILAVUZU.md](KURULUM-KILAVUZU.md) (installation guide, Turkish).
-
-After install, inside Claude Code:
+**Fastest** — one line inside Claude Code:
 
 ```
-/plugin marketplace add ~/.claude/plugins
-/plugin install enver-framework@enver-local
+/plugin marketplace add enverkocak/framework
+/plugin install enver-framework@enver-framework
 /reload-plugins
 /panel
 ```
 
+Commands, skills, agents and the **protection hooks** all come with it.
+
+**Full setup** (identity, encrypted vault, multi-machine memory):
+
+```bash
+git clone https://github.com/enverkocak/framework ~/framework
+cd ~/framework && ./kurulum.sh    # Windows: kurulum.ps1
+```
+
 **Requirements:** Python 3.9+, Git, and `cryptography` (`pip install cryptography`)
-for the encrypted vault.
+for the encrypted vault. Full walkthrough: [KURULUM-KILAVUZU.md](KURULUM-KILAVUZU.md).
 
 ---
 

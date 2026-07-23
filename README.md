@@ -6,7 +6,7 @@
 
 [![Testler](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-green.svg)](LICENSE)
-![Sürüm](https://img.shields.io/badge/sürüm-2.15.1-blue.svg)
+![Sürüm](https://img.shields.io/badge/sürüm-3.0.0-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-eklenti-8A2BE2)
 ![Dil](https://img.shields.io/badge/belge-Türkçe%20%7C%20English-orange)
 
@@ -37,24 +37,25 @@ Kurallar belge olarak değil, **çalışan koruma** olarak durur. Yani unutulmaz
 
 ## Kurulum
 
-```bash
-git clone https://github.com/enverkocak/framework ~/framework
-cd ~/framework
-chmod +x kurulum.sh
-./kurulum.sh
-```
-
-Windows'ta `kurulum.ps1` kullanılır. Ayrıntı için
-[KURULUM-KILAVUZU.md](KURULUM-KILAVUZU.md).
-
-Kurulumdan sonra:
+**En hızlısı** — Claude Code içinde tek satır:
 
 ```
-/plugin marketplace add ~/.claude/plugins
-/plugin install enver-framework@enver-local
+/plugin marketplace add enverkocak/framework
+/plugin install enver-framework@enver-framework
 /reload-plugins
 /panel
 ```
+
+Komutlar, beceriler, ajanlar ve **korumalar** bununla gelir.
+
+**Tam kurulum** (kimlik, kasa, çoklu bilgisayar hafızası) için ayrıca:
+
+```bash
+git clone https://github.com/enverkocak/framework ~/framework
+cd ~/framework && ./kurulum.sh    # Windows: kurulum.ps1
+```
+
+Ayrıntı için [KURULUM-KILAVUZU.md](KURULUM-KILAVUZU.md).
 
 ---
 

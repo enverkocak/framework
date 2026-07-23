@@ -135,7 +135,7 @@ def ajanlari_tara():
 
 
 def kancalari_tara():
-    dizin = FRAMEWORK_KOK / "hooks"
+    dizin = PLUGIN_KOK / "hooks"
     if not dizin.is_dir():
         return []
 

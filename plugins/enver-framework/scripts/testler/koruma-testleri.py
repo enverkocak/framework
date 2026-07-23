@@ -20,7 +20,7 @@ for akis in (sys.stdout, sys.stderr):
         akis.reconfigure(encoding="utf-8", errors="replace")
 
 KOK = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[4]
-KANCA_DIZINI = KOK / "hooks"
+KANCA_DIZINI = KOK / "plugins" / "enver-framework" / "hooks"
 
 # Sunucu adresi ve korunan kök HARITADAN okunur; teste gömülmez.
 # Bu dosya paylaşılan kopyada da bulunacağı için kişisel değer taşıyamaz.

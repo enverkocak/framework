@@ -1,0 +1,24 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "enver-framework",
+  "description": "Claude Code icin Turkce gelistirme cercevesi - veri koruma, faz motoru, kasa ve tasarim kimligi",
+  "owner": {
+    "name": "Enver KOCAK",
+    "email": "mail@enverkocak.com"
+  },
+  "plugins": [
+    {
+      "name": "enver-framework",
+      "description": "Proje yonetim framework'u - komutlar, beceriler, ajanlar ve koruma kancalari. Nerede kaldigini hatirlar, veri kaybini onler, fazlari yurutur, her projeye ozgu tasarim kimligi uretir.",
+      "version": "3.0.0",
+      "author": {
+        "name": "Enver KOCAK",
+        "email": "mail@enverkocak.com"
+      },
+      "source": "./plugins/enver-framework",
+      "category": "development",
+      "homepage": "https://github.com/enverkocak/framework",
+      "license": "MIT"
+    }
+  ]
+}

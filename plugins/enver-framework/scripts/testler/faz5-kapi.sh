@@ -24,9 +24,9 @@ for b in faz/faz.py faz/mod.py faz/izole.py; do
     && kontrol "scripts/$b sozdizimi gecerli" 0 || kontrol "scripts/$b sozdizimi gecerli" 1
 done
 for k in tam-yetki kalite-kapisi; do
-  [ -f "hooks/$k.py" ] && kontrol "hooks/$k.py var" 0 || kontrol "hooks/$k.py var" 1
-  python -c "import ast;ast.parse(open('hooks/$k.py',encoding='utf-8').read())" 2>/dev/null \
-    && kontrol "hooks/$k.py sozdizimi gecerli" 0 || kontrol "hooks/$k.py sozdizimi gecerli" 1
+  [ -f "plugins/enver-framework/hooks/$k.py" ] && kontrol "plugins/enver-framework/hooks/$k.py var" 0 || kontrol "plugins/enver-framework/hooks/$k.py var" 1
+  python -c "import ast;ast.parse(open('plugins/enver-framework/hooks/$k.py',encoding='utf-8').read())" 2>/dev/null \
+    && kontrol "plugins/enver-framework/hooks/$k.py sozdizimi gecerli" 0 || kontrol "plugins/enver-framework/hooks/$k.py sozdizimi gecerli" 1
 done
 
 echo ""
@@ -123,7 +123,7 @@ TOPLAM=$(grep -c "^  \[" _calisma/ty.txt)
 # BELGELENDİĞİNİ doğrular - bir gün biri bu bağı koparırsa yakalansın.
 # (String listesi değil yapı ölçülür: hangi korumanın devrede olduğu.)
 python - << 'PY' 2>/dev/null && kontrol "Sert engellerin yeri belgeli" 0 || kontrol "Sert engellerin yeri belgeli" 1
-kaynak = open("hooks/tam-yetki.py", encoding="utf-8").read()
+kaynak = open("plugins/enver-framework/hooks/tam-yetki.py", encoding="utf-8").read()
 for koruma in ["veri-koruma", "kasa-koruma", "git-gizlilik-koruma", "sunucu-koruma"]:
     assert koruma in kaynak, koruma
 # "engelle" > "izin ver" ilkesi belgede durmalı
@@ -133,7 +133,7 @@ PY
 python - << 'PY' 2>/dev/null && kontrol "Kanca cokerse tam yetki kapali kalir" 0 || kontrol "Kanca cokerse tam yetki kapali kalir" 1
 import json, subprocess, sys
 # Bozuk girdi verildiğinde kanca izin VERMEMELI
-p = subprocess.run([sys.executable, "hooks/tam-yetki.py"], input="bozuk-json",
+p = subprocess.run([sys.executable, "plugins/enver-framework/hooks/tam-yetki.py"], input="bozuk-json",
                    capture_output=True, text=True, encoding="utf-8")
 cikti = json.loads(p.stdout or "{}")
 assert cikti.get("hookSpecificOutput", {}).get("permissionDecision") != "allow", cikti
@@ -149,7 +149,7 @@ sys.path.insert(0, "plugins/enver-framework/scripts/hafiza")
 import ayarlar, mod
 onceki = ayarlar.oku().get("calisma_modu", "dikkatli")
 mod.mod_ayarla("dikkatli")
-p = subprocess.run([sys.executable, "hooks/kalite-kapisi.py"],
+p = subprocess.run([sys.executable, "plugins/enver-framework/hooks/kalite-kapisi.py"],
                    input=json.dumps({"stop_hook_active": False}),
                    capture_output=True, text=True, encoding="utf-8")
 cikti = json.loads(p.stdout or "{}")
@@ -159,14 +159,14 @@ PY
 
 python - << 'PY' 2>/dev/null && kontrol "Sonsuz dongu korumasi var" 0 || kontrol "Sonsuz dongu korumasi var" 1
 import json, subprocess, sys
-p = subprocess.run([sys.executable, "hooks/kalite-kapisi.py"],
+p = subprocess.run([sys.executable, "plugins/enver-framework/hooks/kalite-kapisi.py"],
                    input=json.dumps({"stop_hook_active": True}),
                    capture_output=True, text=True, encoding="utf-8")
 cikti = json.loads(p.stdout or "{}")
 assert cikti == {}, cikti
 PY
 
-grep -q "stop_hook_active" hooks/kalite-kapisi.py \
+grep -q "stop_hook_active" plugins/enver-framework/hooks/kalite-kapisi.py \
   && kontrol "Dongu korumasi kodda tanimli" 0 || kontrol "Dongu korumasi kodda tanimli" 1
 
 echo ""

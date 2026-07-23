@@ -88,7 +88,7 @@ assert Path(k).resolve()==Path('$KOK').resolve(), k
 assert yollar.gecici_mi('test-deneme.tmp')
 assert not yollar.gecici_mi('index.php')
 assert yollar.ana_dizinde_mi('$KOK/README.md',k)
-assert not yollar.ana_dizinde_mi('$KOK/hooks/iz-kontrol.py',k)
+assert not yollar.ana_dizinde_mi('$KOK/plugins/enver-framework/hooks/iz-kontrol.py',k)
 " 2>/dev/null && kontrol "Yol cozumleme dogru calisiyor" 0 || kontrol "Yol cozumleme dogru calisiyor" 1
 
 echo ""
@@ -123,8 +123,13 @@ echo ""
 echo "--- 6. WINDOWS KATMANI (T35) ---"
 [ -f "kurulum.ps1" ] && kontrol "kurulum.ps1 var" 0 || kontrol "kurulum.ps1 var" 1
 [ -f "guncelle.ps1" ] && kontrol "guncelle.ps1 var" 0 || kontrol "guncelle.ps1 var" 1
-grep -q "kanca-kaydet.py" kurulum.ps1 && kontrol "kurulum.ps1 kancalari KAYDEDIYOR" 0 || kontrol "kurulum.ps1 kancalari KAYDEDIYOR" 1
-grep -q "kanca-kaydet.py" kurulum.sh && kontrol "kurulum.sh kancalari KAYDEDIYOR" 0 || kontrol "kurulum.sh kancalari KAYDEDIYOR" 1
+# Korumalar artik plugin'in hooks.json'u ile gelir (tek teslim), kurulum
+# ayri kanca kaydi yapmaz. Olculecek yapisal invariant: plugin hooks.json
+# TASIYOR ve butun kancalari tanimliyor - "/plugin install" korumalari da getirir.
+HJ="plugins/enver-framework/hooks/hooks.json"
+python -c "import json,sys; d=json.load(open('$HJ',encoding='utf-8')); h=d['hooks']; assert h.get('PreToolUse') and h.get('PostToolUse') and h.get('SessionStart') and h.get('Stop'); s=json.dumps(h); assert 'veri-koruma.py' in s and 'kasa-koruma.py' in s and 'CLAUDE_PLUGIN_ROOT' in s" 2>/dev/null \
+  && kontrol "Plugin hooks.json korumalari tanimliyor (tek teslim)" 0 || kontrol "Plugin hooks.json korumalari tanimliyor (tek teslim)" 1
+grep -q "kanca-kaydet.py" kurulum.sh && kontrol "kurulum.sh kanca KAYDETMIYOR (plugin veriyor)" 1 || kontrol "kurulum.sh kanca KAYDETMIYOR (plugin veriyor)" 0
 
 echo ""
 echo "--- 7. PAKETLEME (T2) ---"

@@ -345,6 +345,6 @@ Değiştirmesi en muhtemel yerler:
 |-------|---------|
 | `plugins/enver-framework/references/sunucu-haritasi.json` | Kendi sunucuların ve projelerin |
 | `plugins/enver-framework/references/dizin-duzeni.json` | Ana dizinde ne bulunabilir |
-| `hooks/veri-koruma.py` | Hangi komutlar engellensin |
+| `plugins/enver-framework/hooks/veri-koruma.py` | Hangi komutlar engellensin |
 | `plugins/enver-framework/diller/tr.json` | Arayüz metinleri |
 | `plugins/enver-framework/references/yazi-tipi-eslesmeleri.json` | Tasarım kataloğu |

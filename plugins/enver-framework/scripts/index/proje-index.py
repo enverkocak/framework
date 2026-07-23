@@ -44,9 +44,13 @@ INDEX_ADI = "ICINDEKILER.md"
 ELLE_ACIKLAMA = "aciklamalar.json"
 
 ATLANACAK_DIZINLER = {
-    ".git", ".claude", "node_modules", "vendor", "__pycache__",
+    ".git", ".claude", ".claude-plugin", "node_modules", "vendor", "__pycache__",
     "dist", "build", "_arsiv", "_calisma", "gunluk", "kasa", "vault",
     ".venv", "venv", ".idea", ".vscode",
+    # Plugin bilesen dizinleri: Claude Code buradaki her .md'yi komut/ajan/
+    # beceri sanar. Uretilen ICINDEKILER.md buralara YAZILMAZ, yoksa sahte
+    # komut olusur ve "claude plugin validate" uyari verir.
+    "commands", "agents", "skills", "hooks",
 }
 
 ATLANACAK_DOSYALAR = {INDEX_ADI, ELLE_ACIKLAMA, ".gitignore", ".DS_Store"}

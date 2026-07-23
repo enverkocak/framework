@@ -77,7 +77,7 @@ CAKISMA_ESIKLERI = 0.9
 
 
 def _kanca_dizini():
-    return Path(yollar.proje_kok()) / "hooks"
+    return Path(yollar.proje_kok()) / "plugins" / "enver-framework" / "hooks"
 
 
 def _ayar_yolu():
@@ -503,9 +503,9 @@ def komut_istatistik(args):
         if (eklenti / "skills").is_dir() else 0,
         "ajan": len(list((eklenti / "agents").glob("*.md")))
         if (eklenti / "agents").is_dir() else 0,
-        "koruma": len([y for y in (kok / "hooks").glob("*.py")
+        "koruma": len([y for y in (kok / "plugins" / "enver-framework" / "hooks").glob("*.py")
                        if not y.name.startswith("_")])
-        if (kok / "hooks").is_dir() else 0,
+        if (kok / "plugins" / "enver-framework" / "hooks").is_dir() else 0,
         "betik": len([y for y in (eklenti / "scripts").rglob("*.py")
                       if "__pycache__" not in y.as_posix()]),
         "test": len(list((eklenti / "scripts" / "testler").glob("*")))

@@ -54,3 +54,7 @@ build/
 
 # Tarayici otomasyonu ciktilari - ekran goruntusu ve sayfa dokumu
 .playwright-mcp/
+
+# Kancalar plugin icine tasindi; repo kokundeki hooks/ yalniz calisan
+# oturum icin gecici uyumluluk kopyasidir, depoya girmez.
+/hooks/

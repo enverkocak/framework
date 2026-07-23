@@ -1,6 +1,6 @@
 ---
 name: ozgun-tasarim
-description: Bir web sitesi, arayuz, sayfa, panel ya da herhangi bir gorsel yuzey tasarlanacaksa - renk secilecekse, yazi tipi belirlenecekse, duzen kurulacaksa, HTML/CSS yazilacaksa - ONCE bu beceriyi kullan. Kullanici "site yap", "sayfa tasarla", "arayuz kur", "tasarim", "renk", "yazi tipi", "sablon gibi durmasin", "ozgun olsun" derse ya da yeni bir proje baslatirsa acikca istemese bile bu beceri devreye girer. Amaci: iki projenin birbirine benzememesi ve hicbir projede uretim araci izi kalmamasi.
+description: 'Bir web sitesi, arayuz, sayfa, panel ya da herhangi bir gorsel yuzey tasarlanacaksa - renk secilecekse, yazi tipi belirlenecekse, duzen kurulacaksa, HTML/CSS yazilacaksa - ONCE bu beceriyi kullan. Kullanici "site yap", "sayfa tasarla", "arayuz kur", "tasarim", "renk", "yazi tipi", "sablon gibi durmasin", "ozgun olsun" derse ya da yeni bir proje baslatirsa acikca istemese bile bu beceri devreye girer. Amaci - iki projenin birbirine benzememesi ve hicbir projede uretim araci izi kalmamasi.'
 ---
 
 # Özgün tasarım

@@ -7,12 +7,9 @@
 
 | Klasör | Ne için |
 |--------|---------|
-| `agents/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
-| `commands/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
 | `diller/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
 | `references/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
 | `scripts/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
-| `skills/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
 
 ---
 

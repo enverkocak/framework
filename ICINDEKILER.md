@@ -10,7 +10,6 @@
 | `bilgi/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
 | `gelistirme-arastirmasi/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
 | `hafiza/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
-| `hooks/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
 | `plugins/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
 | `sablonlar/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
 

@@ -93,19 +93,19 @@ else
 fi
 
 for k in sunucu-koruma git-gizlilik-koruma iz-kontrol; do
-  [ -f "hooks/$k.py" ] && S=0 || S=1
-  kontrol "hooks/$k.py var" GECMELI $S
-  python -c "import ast,sys;ast.parse(open('hooks/$k.py',encoding='utf-8').read())" 2>/dev/null && S=0 || S=1
-  kontrol "hooks/$k.py sozdizimi gecerli" GECMELI $S
+  [ -f "plugins/enver-framework/hooks/$k.py" ] && S=0 || S=1
+  kontrol "plugins/enver-framework/hooks/$k.py var" GECMELI $S
+  python -c "import ast,sys;ast.parse(open('plugins/enver-framework/hooks/$k.py',encoding='utf-8').read())" 2>/dev/null && S=0 || S=1
+  kontrol "plugins/enver-framework/hooks/$k.py sozdizimi gecerli" GECMELI $S
 done
 
-[ -f "hooks/ai-referans-kontrol.py" ] && S=1 || S=0
+[ -f "plugins/enver-framework/hooks/ai-referans-kontrol.py" ] && S=1 || S=0
 kontrol "Eski adli kanca dosyasi kalmadi" GECMELI $S
 
 echo ""
 echo "--- 4. KANCA DAVRANISI ---"
 
-ct() { python "hooks/$1.py"; }
+ct() { python "plugins/enver-framework/hooks/$1.py"; }
 
 # Tek tırnak değişken genişletmez; hook '$ADRES' metnini görür ve
 # gerçek bir adres saymaz. Bu yüzden JSON printf ile kuruluyor.

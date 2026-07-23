@@ -42,6 +42,8 @@ SURUM_YERLERI = [
     (KOK / "plugins" / ".claude-plugin" / "marketplace.json", "json"),
     (KOK / "plugins" / ".claude-plugin" / "plugin.ornek.json", "json"),
     (KOK / "plugins" / ".claude-plugin" / "marketplace.ornek.json", "json"),
+    (KOK / "plugins" / "enver-framework" / ".claude-plugin" / "plugin.json", "json"),
+    (KOK / ".claude-plugin" / "marketplace.json", "json"),
     (KOK / "README.md", "readme"),
     (KOK / "README.ornek.md", "readme"),
     (KOK / "README.en.md", "readme"),

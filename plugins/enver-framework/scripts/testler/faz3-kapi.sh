@@ -27,7 +27,7 @@ for b in hafiza/hafiza.py hafiza/oturum.py hafiza/defter.py \
 done
 
 for k in oturum-kayit oturum-acilis; do
-  [ -f "hooks/$k.py" ] && kontrol "hooks/$k.py var" 0 || kontrol "hooks/$k.py var" 1
+  [ -f "plugins/enver-framework/hooks/$k.py" ] && kontrol "plugins/enver-framework/hooks/$k.py var" 0 || kontrol "plugins/enver-framework/hooks/$k.py var" 1
 done
 
 echo ""
@@ -80,7 +80,7 @@ ls hafiza/oturumlar/*.md >/dev/null 2>&1 && kontrol "Oturum ozeti uretilmis" 0 |
 
 echo ""
 echo "--- 5. ACILIS BRIFINGI (E5/T19) ---"
-echo '{"session_id":"t","source":"startup"}' | python hooks/oturum-acilis.py > _calisma/br.json 2>&1
+echo '{"session_id":"t","source":"startup"}' | python plugins/enver-framework/hooks/oturum-acilis.py > _calisma/br.json 2>&1
 python -c "
 import json
 d=json.load(open('_calisma/br.json',encoding='utf-8'))

@@ -25,7 +25,6 @@ cp "$REPO_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
 cp -r "$REPO_DIR/vault/"* "$CLAUDE_DIR/vault/"
 cp -r "$REPO_DIR/bilgi/"* "$CLAUDE_DIR/bilgi/"
 cp -r "$REPO_DIR/sablonlar/"* "$CLAUDE_DIR/sablonlar/"
-cp -r "$REPO_DIR/hooks/"* "$CLAUDE_DIR/hooks/"
 cp -r "$REPO_DIR/plugins/enver-framework/"* "$CLAUDE_DIR/plugins/enver-framework/"
 cp -r "$REPO_DIR/plugins/.claude-plugin/"* "$CLAUDE_DIR/plugins/.claude-plugin/"
 

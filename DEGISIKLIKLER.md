@@ -7,6 +7,45 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.0.0 — Gerçek Claude Code eklentisi: tek komutla kurulum
+
+Çerçeve artık standart bir Claude Code eklentisi. Herkes tek satırla
+ekleyip kurabiliyor; korumalar da eklentiyle birlikte geliyor.
+
+```
+/plugin marketplace add enverkocak/framework
+/plugin install enver-framework@enver-framework
+```
+
+**Neden kırıcı sürüm (3.0.0):** kurulum yöntemi değişti. Eskiden korumalar
+`kurulum.sh` ile `settings.json`'a kaydediliyordu; artık eklentinin
+`hooks.json`'u getiriyor. Var olan bir kurulumdan geçen kişinin kurulumu
+yeniden yapması gerekir.
+
+- **Kancalar eklentinin içine taşındı** — `plugins/enver-framework/hooks/`
+  + `hooks.json`. Yollar `${CLAUDE_PLUGIN_ROOT}` ile veriliyor, makineden
+  bağımsız. **Neden:** Claude Code eklentisi bileşenlerini (komut, beceri,
+  ajan, kanca) kendi kökünde bekler; kancalar repo kökündeyken eklenti
+  tam değildi.
+- **Kök `.claude-plugin/marketplace.json`** — `/plugin marketplace add
+  enverkocak/framework` bunu okuyor. Eklenti kendi `.claude-plugin/plugin.json`
+  manifestini taşıyor.
+- **Tek teslim.** `kurulum.sh` artık kanca KAYDETMEZ; korumalar eklentinin
+  `hooks.json`'undan gelir. Böylece çift kayıt (çift çalışma) olmaz.
+  Kurulum yalnız kimlik, kasa/hafıza klasörleri ve güncelleme kaydını yapar.
+- **`claude plugin validate` temiz** — plugin ve marketplace manifestleri
+  doğrulamadan geçiyor. Yol boyunca üç gerçek sorun çıktı ve düzeltildi:
+  iki `SKILL.md`'de YAML hatası (açıklama içindeki `:` eşleme sanılıyordu),
+  ve `commands/`+`agents/` içindeki üretilen `ICINDEKILER.md` dosyaları sahte
+  komut/ajan oluşturuyordu (index üreteci artık bileşen dizinlerine yazmıyor).
+
+### Ders (canlı göç tehlikesi)
+
+Çalışan oturumun `settings.json`'unun işaret ettiği kancaları taşımak,
+kırık PreToolUse kancaları `Bash` aracını bloke ettiği için oturumu
+kilitledi. Kurtarma `PowerShell` ile oldu (`Bash` matcher'ına takılmıyor).
+Bu tür göçler oturum sınırında yapılmalı, orta yerinde değil.
+
 ## 2.15.1 — CI düzeltmeleri (satır sonu + makineye özgü test)
 
 İlk CI koşuları kırmızıydı. İki ayrı sebep:

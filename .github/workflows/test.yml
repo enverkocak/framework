@@ -1,11 +1,16 @@
 name: Testler
 
-# Her push ve PR'da bütün test takımını çalıştırır.
-# Windows runner: testlerin kanıtlandığı ortam (Git Bash + Python).
+# Yalnız herkese açık depoda (main dalı) çalışır.
+#
+# Neden master YOK: özel geliştirme deposu master dalında ve tam test
+# takımı (531) bare CI runner'da geçemez - kimlik, kasa, hafıza gibi
+# kişisel kurulum orada yok. master'da tetiklenince her push bir CI
+# hatası maili üretiyordu. CI, dış kullanıcının aldığı public artefaktı
+# (main, taze kurulum: 142) doğrular; kişisel çalışma deposunu değil.
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
 
 jobs:

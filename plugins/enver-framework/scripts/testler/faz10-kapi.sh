@@ -53,7 +53,7 @@ python - << PY 2>/dev/null && kontrol "Bozuk koruma YAKALANIYOR" 0 || kontrol "B
 $YOL_EKLE
 import json, saglik, shutil
 from pathlib import Path
-kanca = Path("hooks/veri-koruma.py")
+kanca = Path("plugins/enver-framework/hooks/veri-koruma.py")
 yedek = Path("_calisma/veri-koruma-yedek.py")
 shutil.copy2(kanca, yedek)
 try:
@@ -156,8 +156,10 @@ PY
 python - << PY 2>/dev/null && kontrol "Temiz kopyada framework govdesi VAR" 0 || kontrol "Temiz kopyada framework govdesi VAR" 1
 from pathlib import Path
 hedef = Path("_calisma/paylasim-kapi")
-for gereken in ("README.md", "hooks", "plugins/enver-framework/commands",
-                "plugins/enver-framework/scripts", "kurulum.ps1"):
+for gereken in ("README.md", "plugins/enver-framework/hooks/hooks.json",
+                "plugins/enver-framework/commands",
+                "plugins/enver-framework/scripts", "kurulum.ps1",
+                ".claude-plugin/marketplace.json"):
     assert (hedef / gereken).exists(), gereken
 PY
 

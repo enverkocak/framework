@@ -19,11 +19,11 @@ echo ""
 
 echo "--- 1. KANCA DOSYALARI ---"
 for k in sunucu-koruma git-gizlilik-koruma iz-kontrol veri-koruma kasa-koruma yazim-kontrol; do
-  [ -f "hooks/$k.py" ] && kontrol "hooks/$k.py var" 0 || kontrol "hooks/$k.py var" 1
-  python -c "import ast;ast.parse(open('hooks/$k.py',encoding='utf-8').read())" 2>/dev/null \
-    && kontrol "hooks/$k.py sozdizimi gecerli" 0 || kontrol "hooks/$k.py sozdizimi gecerli" 1
+  [ -f "plugins/enver-framework/hooks/$k.py" ] && kontrol "plugins/enver-framework/hooks/$k.py var" 0 || kontrol "plugins/enver-framework/hooks/$k.py var" 1
+  python -c "import ast;ast.parse(open('plugins/enver-framework/hooks/$k.py',encoding='utf-8').read())" 2>/dev/null \
+    && kontrol "plugins/enver-framework/hooks/$k.py sozdizimi gecerli" 0 || kontrol "plugins/enver-framework/hooks/$k.py sozdizimi gecerli" 1
 done
-[ -f "hooks/_ortak_yol.py" ] && kontrol "hooks/_ortak_yol.py (yardimci) var" 0 || kontrol "hooks/_ortak_yol.py (yardimci) var" 1
+[ -f "plugins/enver-framework/hooks/_ortak_yol.py" ] && kontrol "plugins/enver-framework/hooks/_ortak_yol.py (yardimci) var" 0 || kontrol "plugins/enver-framework/hooks/_ortak_yol.py (yardimci) var" 1
 
 echo ""
 echo "--- 2. KAYIT (settings.json) ---"
@@ -111,7 +111,7 @@ yasak = re.compile(r'"(parola|password|sifre|secret|token|api_key)"\s*:\s*"[^"]{
 assert not yasak.search(ham)
 PY
 
-grep -q "IZINLI_DIZINLER" hooks/sunucu-koruma.py && S=1 || S=0
+grep -q "IZINLI_DIZINLER" plugins/enver-framework/hooks/sunucu-koruma.py && S=1 || S=0
 kontrol "Sunucu korumasinda sabit kodlu dizin YOK" $S
 
 echo ""
@@ -127,7 +127,7 @@ echo "--- 7. TURKCE GEREKCE (E15/E16) ---"
 python - << 'PY' 2>/dev/null && kontrol "Gerekceler Turkce ve dort parcali" 0 || kontrol "Gerekceler Turkce ve dort parcali" 1
 import json, subprocess, sys
 veri = json.dumps({"tool_name": "Bash", "tool_input": {"command": "rm -rf x"}})
-p = subprocess.run([sys.executable, "hooks/veri-koruma.py"], input=veri,
+p = subprocess.run([sys.executable, "plugins/enver-framework/hooks/veri-koruma.py"], input=veri,
                    capture_output=True, text=True, encoding="utf-8")
 sebep = json.loads(p.stdout)["hookSpecificOutput"]["permissionDecisionReason"]
 for parca in ["ENGELLENDİ", "Ne yapılacak", "Neden", "Nasıl düzeltilir"]:

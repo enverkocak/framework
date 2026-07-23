@@ -37,7 +37,7 @@ if (-not $Python) {
 # --- Dizinler ---
 
 $Dizinler = @(
-    "vault", "bilgi", "sablonlar", "hooks",
+    "vault", "bilgi", "sablonlar",
     "plugins\enver-framework", "plugins\.claude-plugin"
 )
 foreach ($d in $Dizinler) {
@@ -66,7 +66,6 @@ Kopyala "Kurallar dosyasi" (Join-Path $KaynakDizin "CLAUDE.md") (Join-Path $Hede
 Kopyala "Kasa"             (Join-Path $KaynakDizin "vault\*")     (Join-Path $HedefDizin "vault\") "2/6"
 Kopyala "Bilgi deposu"     (Join-Path $KaynakDizin "bilgi\*")     (Join-Path $HedefDizin "bilgi\") "3/6"
 Kopyala "Sablonlar"        (Join-Path $KaynakDizin "sablonlar\*") (Join-Path $HedefDizin "sablonlar\") "4/6"
-Kopyala "Korumalar"        (Join-Path $KaynakDizin "hooks\*")     (Join-Path $HedefDizin "hooks\") "5/6"
 
 Write-Host "[6/6] Eklenti"
 Copy-Item -Path (Join-Path $KaynakDizin "plugins\enver-framework\*") `
@@ -74,18 +73,9 @@ Copy-Item -Path (Join-Path $KaynakDizin "plugins\enver-framework\*") `
 Copy-Item -Path (Join-Path $KaynakDizin "plugins\.claude-plugin\*") `
           -Destination (Join-Path $HedefDizin "plugins\.claude-plugin\") -Recurse -Force
 
-# --- Kancalari KAYDET (kopyalamak yetmez) ---
+# Korumalar plugin'in hooks.json'u ile gelir; ayri kayit yapilmaz.
+# '/plugin install' calistirilinca devreye girer.
 
-Write-Host ""
-Write-Host "Korumalar devreye aliniyor..."
-
-$KayitBetigi = Join-Path $HedefDizin "plugins\enver-framework\scripts\kurulum\kanca-kaydet.py"
-$KancaDizini = Join-Path $HedefDizin "hooks"
-
-& $Python $KayitBetigi $KancaDizini
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "UYARI: Korumalar kaydedilemedi. Elle kontrol edin." -ForegroundColor Yellow
-}
 
 # Klon konumunu kaydet: açılışta "uzakta yeni sürüm var mı" kontrolü buradan
 # okur. Böylece kurulu kopya, kaynak deponun nerede olduğunu bilir.

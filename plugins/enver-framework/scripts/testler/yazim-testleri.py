@@ -22,7 +22,7 @@ for akis in (sys.stdout, sys.stderr):
         akis.reconfigure(encoding="utf-8", errors="replace")
 
 KOK = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[4]
-KANCA = KOK / "hooks" / "yazim-kontrol.py"
+KANCA = KOK / "plugins" / "enver-framework" / "hooks" / "yazim-kontrol.py"
 
 # Muaf dizinlerin dışında bir yer seçilir, yoksa kanca zaten sessiz kalır
 DENEME_DIZINI = KOK.parent / "_yazim-denemeleri"

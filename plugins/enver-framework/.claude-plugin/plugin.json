@@ -3,9 +3,10 @@
   "version": "3.0.0",
   "description": "Enver KOCAK icin proje yonetim framework'u. Komut rehberi, kademeli yukleme, betik katmani, arsivleme motoru (hicbir veri silinmez), musteri sunucusu korumasi, depo gizlilik kurali, iz denetimi, cok dilli metin katmani ve Windows destegi.",
   "author": {
-    "name": "<adin>",
-    "email": "<e-postan>"
+    "name": "Enver KOCAK",
+    "email": "mail@enverkocak.com"
   },
-  "homepage": "<siten>",
-  "_aciklama": "ORNEK DOSYA. Kendi bilgilerinle doldurup .ornek olmadan kaydet."
+  "homepage": "https://enverkocak.com",
+  "repository": "https://github.com/enverkocak/framework",
+  "license": "MIT"
 }
