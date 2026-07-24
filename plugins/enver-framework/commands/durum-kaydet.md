@@ -36,7 +36,7 @@ deftere yaz - durum ozeti gecicidir, defter kalicidir:
 D="${CLAUDE_PLUGIN_ROOT}/scripts/hafiza/defter.py"
 
 python "$D" karar ekle "<baslik>" "<gerekce>"
-python "$D" hata ekle "<belirti>" "<sebep>" "<cozum>"
+python "$D" hata ekle "<belirti>" "<cozum>" --nerede "<dosya ya da katman>"
 ```
 
 **Gerekce olmadan karar yazma.** "Ne" olmadan gecmis anlamsiz, "neden"
