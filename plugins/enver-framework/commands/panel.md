@@ -609,7 +609,7 @@ Domain: CLAUDE.md → `## DOMAIN YAPISI` | Port: package.json | Hesap: vault/tes
 ### [Proje-3] Durum Kaydet
 
 Alt menu yok, direkt calistir:
-- `.claude/durum.md` dosyasini guncelle
+- `hafiza/durum.md` guncellenir (`scripts/hafiza/oturum.py bitir`)
 - Nerede kalindi, ne yapildi, sirada ne var
 - Git commit + push
 - Opsiyonel: temizlik de yap (gecici dosyalar)

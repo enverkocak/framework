@@ -17,7 +17,15 @@ Sen bir conversation handoff ajansin. Mevcut calisma durumunu kaydet.
 
 2. **Durum Dosyasi Olustur**
 
-`.claude/durum.md` dosyasini su formatla yaz:
+Durum kaydi `hafiza/durum.md` dosyasinda tutulur; acilis brifingi orayi okur.
+Elle yazmak yerine oturum katmanini kullan:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/hafiza/oturum.py" bitir \
+  --not "<devir notu>" --sirada "<sonraki adim>"
+```
+
+Yazilan ozet su bicimdedir:
 
 ```markdown
 # [Proje Adi] - Son Durum

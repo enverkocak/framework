@@ -27,17 +27,33 @@ Proje turune gore uygun sablonu oku:
 - Sablondaki placeholder'lari doldur
 - Proje spesifik kurallari ekle
 
-### 3.2 Faz Plani
+### 3.2 Proje Tanimi
 ```
-.claude/faz-plani.md
+.claude/proje.json
 ```
-Faz sablonunu (`~/.claude/sablonlar/faz-sablonu.md`) kullanarak ilk faz planini olustur.
 
-### 3.3 Durum Dosyasi
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/projeler/proje.py" olustur --ad "<ad>"
 ```
-.claude/durum.md
+
+### 3.3 Faz Plani
+Faz motoru plani `hafiza/faz-plani.json` dosyasindan okur. Elle dosya
+yazilmaz, fazlar motora eklenir:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/faz/faz.py" ekle 1 "<faz adi>" \
+  --kapi "<kapi komutu>" --madde "<madde>"
 ```
-Bos durum dosyasi olustur.
+
+Kesif yapildiysa taslak `_calisma/faz-plani.md` dosyasindadir
+(`kesif.py plana-dok` ciktisi); maddeleri oradan alip motora ekle.
+
+### 3.4 Durum Dosyasi
+Durum `hafiza/durum.md` dosyasinda tutulur; acilis brifingi orayi okur:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/hafiza/oturum.py" durum --yaz "Proje kuruldu, Faz 1 bekliyor"
+```
 
 ## 4. Vault'a Ekle (gerekiyorsa)
 
@@ -55,8 +71,9 @@ Eger proje icin ozel credentials varsa, vault'a yeni dosya eklenmesi gerektigini
 ║                                      ║
 ║  Olusturulan dosyalar:               ║
 ║  - CLAUDE.md                         ║
-║  - .claude/faz-plani.md              ║
-║  - .claude/durum.md                  ║
+║  - .claude/proje.json                ║
+║  - hafiza/faz-plani.json             ║
+║  - hafiza/durum.md                   ║
 ║                                      ║
 ║  Sonraki adim:                       ║
 ║  Faz 1'e baslayin!                   ║

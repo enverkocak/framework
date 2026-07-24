@@ -28,6 +28,32 @@ IZ_DESENLERI = [
     r"\bgenerated with\b",
 ]
 
+# Kurulumun kendisi olan kullanımlar iz değildir.
+#
+# Çerçeve bir eklenti; kurulum belgesinde `claude plugin install`, ayar
+# yolunda `~/.claude/settings.json`, kancada `${CLAUDE_PLUGIN_ROOT}` geçmek
+# zorunda. Bunları iz sayan bir denetim her kurulum belgesinde öter, bir
+# süre sonra da hiç okunmaz - asıl yakalaması gereken "generated with ..."
+# satırını da o gürültünün içinde kaybeder.
+#
+# Muafiyet YALNIZ makine biçimlerini kapsar: yol, ortam değişkeni, komut,
+# paket adı, adres. Düz metinde geçen ürün adı ("Claude Code ile üretildi")
+# muaf DEĞİLDİR - asıl kural odur.
+MUAF_BAGLAMLAR = [
+    r"[\w./~-]*\.claude\b[\w./-]*",          # ~/.claude, .claude/settings.json
+    r"\bclaude\.md\b",                        # CLAUDE.md - kural dosyasının adı
+    r"\bCLAUDE_[A-Z0-9_]+\b",                 # ${CLAUDE_PLUGIN_ROOT}
+    r"\bclaude[-_]plugins?[\w-]*",            # claude-plugin, claude-plugins-community
+    r"\bclaude\s+plugins?\b",                 # `claude plugin install ...` komutu
+    r"\bclaude[-_]code[-_][\w-]+",            # claude-code-plugin gibi etiketler
+    r"\b[\w-]*\.?claude\.(?:ai|com)\b[\w./?=&#%-]*",   # claude.ai, code.claude.com
+    r"\banthropics?\.com\b[\w./?=&#%-]*",
+    r"\banthropics/[\w.-]+",                  # anthropics/claude-plugins-community
+    r"@claude[-_][\w-]+",                     # @claude-community
+]
+
+MUAF_BAGLAM_DESENI = re.compile("|".join(MUAF_BAGLAMLAR), re.IGNORECASE)
+
 # Taranmayacak uzantılar (metin olmayan dosyalar)
 MUAF_UZANTILAR = {
     ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico", ".webp",
@@ -99,28 +125,49 @@ def dosya_tara(dosya_yolu):
         return None
 
     bulunanlar = []
-    for desen in IZ_DESENLERI:
-        eslesme = re.search(desen, icerik, re.IGNORECASE)
-        if eslesme:
-            bulunanlar.append(eslesme.group())
+    yerler = []
+
+    # Satır satır bakılır; muaf biçimler satırdan çıkarıldıktan SONRA aranır.
+    # Böylece `claude plugin install` sessiz kalır, "generated with Claude"
+    # yakalanır - ikisi aynı satırda olsa bile.
+    for numara, satir in enumerate(icerik.splitlines(), 1):
+        kalan_satir = MUAF_BAGLAM_DESENI.sub(" ", satir)
+
+        for desen in IZ_DESENLERI:
+            eslesme = re.search(desen, kalan_satir, re.IGNORECASE)
+            if eslesme:
+                bulunanlar.append(eslesme.group())
+                if len(yerler) < 5:
+                    yerler.append(f"satir {numara}: {satir.strip()[:80]}")
 
     if not bulunanlar:
         return None
 
+    mesaj = (
+        "IZ BULUNDU - temizlenmesi gerekiyor\n"
+        "\n"
+        f"Dosya: {dosya_yolu}\n"
+        f"Bulunan ifadeler: {', '.join(sorted(set(bulunanlar)))}\n"
+    )
+
+    if yerler:
+        mesaj += "".join(f"  {yer}\n" for yer in yerler)
+
+    mesaj += (
+        "\n"
+        "Kural: Kodda, yorumlarda ve dokumantasyonda arac izi kalmaz.\n"
+        "Gelistirici bilgisi: Enver KOCAK\n"
+        "\n"
+        "Yol, ortam degiskeni ve kurulum komutu iz sayilmaz; bunlar zaten\n"
+        "muaf. Uyari geldiyse duz metinde arac adi geciyor demektir.\n"
+        "\n"
+        "Bu ifadeleri simdi kaldir."
+    )
+
     return {
         "hookSpecificOutput": {
             "hookEventName": "PostToolUse",
-            "additionalContext": (
-                "IZ BULUNDU - temizlenmesi gerekiyor\n"
-                "\n"
-                f"Dosya: {dosya_yolu}\n"
-                f"Bulunan ifadeler: {', '.join(sorted(set(bulunanlar)))}\n"
-                "\n"
-                "Kural: Kodda, yorumlarda ve dokumantasyonda arac izi kalmaz.\n"
-                "Gelistirici bilgisi: Enver KOCAK\n"
-                "\n"
-                "Bu ifadeleri simdi kaldir."
-            ),
+            "additionalContext": mesaj,
         }
     }
 

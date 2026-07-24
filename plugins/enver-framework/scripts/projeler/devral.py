@@ -539,7 +539,7 @@ def plan_uret(envanter):
         isler.append({
             "anahtar": "yarim", "baslik": f"{toplam_yarim} yarım iş izi",
             "aciklama": "TODO/FIXME izleri faz planına dökülmeli.",
-            "oncelik": "orta", "eylem": "elle", "hedef": ".claude/faz-plani.md",
+            "oncelik": "orta", "eylem": "elle", "hedef": "hafiza/faz-plani.json",
         })
 
     sira = {"kritik": 0, "yuksek": 1, "orta": 2, "dusuk": 3}

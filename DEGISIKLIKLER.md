@@ -7,6 +7,52 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.1.1 — İz denetimi bağlam tanıyor, belgelerdeki eski yollar düzeltildi
+
+İki eski yara kapatıldı. İkisi de aynı türden: denetim ya da belge,
+sistemin **gerçekte** nasıl çalıştığından kopmuştu.
+
+**İz denetimi artık kurulumun kendisini iz sanmıyor.** `iz-kontrol.py`
+dosyanın tamamında araç adı arıyordu. Ama çerçeve bir eklenti: kurulum
+belgesinde `claude plugin install`, ayar yolunda `~/.claude/settings.json`,
+kancada `${CLAUDE_PLUGIN_ROOT}` geçmek zorunda. Denetim bunların hepsine
+ötüyordu.
+
+- Tarama satır satır yapılıyor; **muaf biçimler satırdan çıkarıldıktan
+  sonra** aranıyor. Böylece `claude plugin install ...` sessiz kalıyor,
+  aynı satırdaki "generated with ..." yakalanıyor.
+- Muafiyet yalnız **makine biçimlerini** kapsıyor: yol, ortam değişkeni,
+  komut, paket adı, adres. Düz metinde geçen ürün adı hâlâ ihlal — asıl
+  kural odur.
+- Uyarı artık satır numarası ve satırın kendisini gösteriyor; "hangi
+  ifade" değil "nerede" sorusunun cevabı veriliyor.
+
+**Neden önemliydi:** sürekli yanlış uyaran bir denetim bir süre sonra hiç
+okunmaz, ve asıl yakalaması gereken satırı da o gürültünün içinde
+kaçırırsın. Aynı ilke `yazim-kontrol.py`'de zaten uygulanmıştı.
+
+- **`iz-testleri.py` eklendi (18 senaryo)** — kancanın testi hiç yoktu.
+  Yedi gerçek iz yakalanmalı, sekiz kurulum biçimi sessiz kalmalı, bir
+  senaryo da ikisinin aynı satırda olduğu durumu ölçüyor. Tam takıma
+  bağlandı.
+
+**Belgelerdeki eski yollar düzeltildi.** Altı yerde motorun okumadığı
+dosyalar tarif ediliyordu:
+
+| Nerede | Eskiden | Doğrusu |
+|--------|---------|---------|
+| `proje-baslat.md` | `.claude/faz-plani.md`, `.claude/durum.md` | `hafiza/faz-plani.json`, `hafiza/durum.md` |
+| `durum-kaydet.md` | `.claude/durum.md` + kırık depo yolu | `oturum.py bitir` |
+| `faz-kontrol.md` | `.claude/faz-plani.md` okunuyordu | `faz.py durum` |
+| `devir-ajani.md` | `.claude/durum.md` elle yazılıyordu | `oturum.py bitir` |
+| `panel.md` | `.claude/durum.md` | `hafiza/durum.md` |
+
+**Neden:** faz motoru planı `hafiza/faz-plani.json`, açılış brifingi durumu
+`hafiza/durum.md` okuyor. Belgedeki yola yazılan dosya hiçbir yerde
+görünmüyordu — komutu okuyup uygulayan kişi, işe yaramayan bir dosya
+üretiyordu. Bu hata `/proje-devral` yazılırken fark edildi; orada
+düzeltilmişti, kalan beş yer şimdi kapandı.
+
 ## 3.1.0 — Var olan projeler devralınabiliyor
 
 Çerçeve bugüne kadar sıfırdan başlayan projeye göre kurulmuştu:

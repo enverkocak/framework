@@ -6,7 +6,7 @@
 
 [![Testler](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-green.svg)](LICENSE)
-![Sürüm](https://img.shields.io/badge/sürüm-3.1.0-blue.svg)
+![Sürüm](https://img.shields.io/badge/sürüm-3.1.1-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-eklenti-8A2BE2)
 ![Dil](https://img.shields.io/badge/belge-Türkçe%20%7C%20English-orange)
 

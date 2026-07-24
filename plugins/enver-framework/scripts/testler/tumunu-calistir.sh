@@ -120,6 +120,7 @@ senaryo() {
 
 senaryo "Korumalar" "$T/koruma-testleri.py" "koruma"
 senaryo "Turkce yazim" "$T/yazim-testleri.py" "yazim"
+senaryo "Arac izi" "$T/iz-testleri.py" "iz"
 senaryo "Tam yetki guvenligi" "$T/tam-yetki-testleri.py" "tam-yetki"
 
 # ------------------------------------------------------------ belge yolları

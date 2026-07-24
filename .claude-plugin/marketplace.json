@@ -10,7 +10,7 @@
     {
       "name": "enver-framework",
       "description": "Proje yonetim framework'u - komutlar, beceriler, ajanlar ve koruma kancalari. Nerede kaldigini hatirlar, veri kaybini onler, fazlari yurutur, var olan projeleri tarayip devralir, her projeye ozgu tasarim kimligi uretir.",
-      "version": "3.1.0",
+      "version": "3.1.1",
       "author": {
         "name": "Enver KOCAK",
         "email": "mail@enverkocak.com"

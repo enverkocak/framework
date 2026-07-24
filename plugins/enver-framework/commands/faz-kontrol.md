@@ -55,8 +55,13 @@ Numara sec (1-6):
 ## KONTROL ADIMLARI
 
 ### 0. Faz Planini Oku
-- `.claude/faz-plani.md` dosyasini oku
-- Aktif fazi bul (DEVAM_EDIYOR durumundaki)
+Plan `hafiza/faz-plani.json` dosyasinda durur; elle okumak yerine motora sor:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/faz/faz.py" durum
+```
+
+- Aktif fazi ve kapi komutunu bu ciktidan al
 - Faz plani yoksa kullaniciya bildir ve dur
 
 ### Secim 1: Tum Kontroller

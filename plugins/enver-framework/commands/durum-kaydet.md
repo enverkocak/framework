@@ -1,107 +1,90 @@
 ---
-description: Conversation handoff - nerede kaldigini kaydeder, sonraki konusmaya hazirlar
+description: Nerede kaldigini kaydeder, sonraki konusmaya hazirlar
 argument-hint: Opsiyonel - ozel not eklemek icin
 ---
 
-# Durum Kaydet - Conversation Handoff
+# Durum Kaydet
 
-Mevcut calisma durumunu kaydet ki sonraki konusmada kaldigi yerden devam edilebilsin.
+Mevcut calisma durumunu kaydet ki sonraki konusmada kaldigi yerden devam
+edilebilsin.
+
+## Nerede tutulur
+
+Durum kaydi **`hafiza/durum.md`** dosyasindadir. Acilis brifingi (SessionStart
+kancasi) o dosyayi okur; baska bir yere yazilan kayit bir sonraki oturumda
+gorunmez. Dosyayi elle yazma, oturum katmanini kullan.
+
+| Dosya | Ne tutar |
+|-------|----------|
+| `hafiza/durum.md` | Son durum - nerede kaldik |
+| `hafiza/oturumlar/<tarih>-<no>.md` | O oturumun tam ozeti |
+| `hafiza/kararlar.md` | Verilen kararlar, gerekcesiyle |
+| `hafiza/hatalar.md` | Cozulen hatalar, cozumuyle |
 
 ## 1. Bilgi Topla
 
-Asagidaki kaynaklardan bilgi topla:
-
 - **Git durumu:** `git status` ve `git log --oneline -10`
-- **Faz plani:** `.claude/faz-plani.md` (varsa)
-- **Memory:** Proje memory dosyalari
-- **Konusma ozeti:** Bu konusmada ne yapildi
+- **Faz durumu:** `python "${CLAUDE_PLUGIN_ROOT}/scripts/faz/faz.py" durum`
+- **Konusma ozeti:** bu konusmada ne yapildi, ne yarim kaldi
 
-## 2. Durum Dosyasini Guncelle
+## 2. Karar ve Hatalari Isle
 
-`.claude/durum.md` dosyasini su formatla olustur/guncelle:
+Bu konusmada bir karar verildiyse ya da bir hata cozulduyse, once onlari
+deftere yaz - durum ozeti gecicidir, defter kalicidir:
 
-```markdown
-# [Proje Adi] - Son Durum
-**Tarih:** [YYYY-MM-DD HH:MM]
-**Aktif Faz:** [Faz bilgisi veya "Faz plani yok"]
-
-## Son Yapilanlar
-- [x] [Bu konusmada tamamlanan isler]
-- [x] [...]
-
-## Devam Eden Isler
-- [ ] [Yarim kalan isler - detayli aciklama]
-- [ ] [...]
-
-## Bilinen Sorunlar
-- [Cozulmemis hatalar veya teknik borclar]
-
-## Sonraki Adim
-[Bir sonraki konusmada ne yapilmasi gerektiginin net aciklamasi]
-```
-
-## 3. Memory Guncelle
-
-Eger bu konusmada onemli bir bilgi ogrenmissek (kullanici tercihi, yeni karar, vb.):
-- Ilgili memory dosyasini guncelle
-- Veya yeni memory olustur
-
-## 4. Git Commit + Push (ZORUNLU - ATLANMAZ!)
-
-**BU ADIM HER ZAMAN CALISTIRILIR.** Iki repo guncellenir:
-
-### 4a. Proje Repo (Proje dizini)
-1. Once stage et (hassas dosyalari haric tut):
 ```bash
-git add .claude/durum.md
-```
-2. Eger baska degismis dosya varsa (git status ile kontrol et), onlari da ekle:
-```bash
-git add [degisen-dosyalar]
-```
-3. Commit ve push:
-```bash
-git commit -m "durum: conversation handoff" && git push 2>&1
+D="${CLAUDE_PLUGIN_ROOT}/scripts/hafiza/defter.py"
+
+python "$D" karar ekle "<baslik>" "<gerekce>"
+python "$D" hata ekle "<belirti>" "<sebep>" "<cozum>"
 ```
 
-### 4b. Framework Repo (Komut degisiklikleri varsa)
-Eger bu konusmada framework komutlari (panel.md, durum-kaydet.md vb.) degistiyse:
-1. Degisen dosyalari framework reposuna kopyala:
+**Gerekce olmadan karar yazma.** "Ne" olmadan gecmis anlamsiz, "neden"
+olmadan ogretici degildir.
+
+## 3. Oturumu Kapat
+
 ```bash
-# Windows: D:\Projelerramework\plugins\enver-framework\commands\
-# Mac: ~/framework/plugins/enver-framework/commands/
-```
-2. Framework reposunu commit + push:
-```bash
-cd [framework-repo] && git add -A && git commit -m "framework: komut guncelleme" && git push 2>&1
+python "${CLAUDE_PLUGIN_ROOT}/scripts/hafiza/oturum.py" bitir \
+  --not "<bu oturumda ne yapildi>" \
+  --sirada "<bir sonraki konusmada ne yapilacak>"
 ```
 
-**NOT:** Framework reposu degismediyse bu adimi atla.
+Bu komut hem `hafiza/durum.md` dosyasini yeniler hem de oturumun tam
+ozetini `hafiza/oturumlar/` altina yazar.
 
-### Sonuc Bildirimi
-- Proje push BASARILI: "Proje: GitHub'a yuklendi"
-- Proje push BASARISIZ: "UYARI: Proje push basarisiz"
-- Framework push BASARILI: "Framework: GitHub'a yuklendi"
-- Commit edilecek bir sey yoksa: "Degisiklik yok, push gerekmedi"
+`$ARGUMENTS` verilmisse devir notuna ekle.
+
+**Sirada ne var** alanini bos birakma. Yarim kalan is varsa dosya yolu ve
+satir numarasiyla yaz - bir sonraki oturum aramakla vakit kaybetmesin.
+
+## 4. Commit + Push
+
+```bash
+git add -A
+git commit -m "Durum kaydi: <kisa ozet>"
+git push
+```
+
+Push basarisiz olursa sebebini soyle, sessizce gecme.
+
+Framework komutlarinda degisiklik yapildiysa ve calisilan proje framework
+deposu DEGILSE, o degisiklik framework deposuna ayrica islenmeli -
+kullaniciya hatirlat, kendin kopyalama.
 
 ## 5. Kullaniciya Bildir
 
 ```
-╔═══════════════════════════════════════╗
-║        DURUM KAYDEDILDI              ║
-╠═══════════════════════════════════════╣
-║  Dosya: .claude/durum.md             ║
-║  Tarih: [tarih]                      ║
-║  Yapilanlar: [sayi] is              ║
-║  Kalan isler: [sayi] is             ║
-║                                      ║
-║  Sonraki konusma basinda             ║
-║  /panel calistirarak devam edin.    ║
-╚═══════════════════════════════════════╝
+DURUM KAYDEDILDI
+  Dosya   : hafiza/durum.md
+  Oturum  : hafiza/oturumlar/<tarih>-<no>.md
+  Yapilan : <n> is
+  Sirada  : <ilk madde>
 ```
 
 ## KURALLAR
-- Durum dosyasini HER ZAMAN guncelle, ekleme yapma - tamamen yeniden yaz
+
+- Durum dosyasini oturum katmani yazar; elle duzenleme
 - Detayli ol ama gereksiz uzatma
-- Eger $ARGUMENTS varsa "Ozel not" olarak durum dosyasina ekle
-- Dosya yollarini ve satir numaralarini belirt (yarim kalan isler icin)
+- Yarim kalan isler icin dosya yolu ve satir numarasi ver
+- Kasa dosyalarini ve sirlari kayda gecirme
