@@ -7,6 +7,43 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.1.0 — Var olan projeler devralınabiliyor
+
+Çerçeve bugüne kadar sıfırdan başlayan projeye göre kurulmuştu:
+`/proje-baslat` şablon açıyor, `/kesif` sorularla ilerliyordu. Oysa işlerin
+çoğu **zaten var olan** bir koda giriliyor - eski bir müşteri sitesi,
+uzun süre dokunulmamış bir depo. Böyle bir projede çerçevenin bütün
+yetenekleri (faz motoru, hafıza, kapılar) boşta duruyordu; kimse yirmi
+bin satırlık bir projenin `CLAUDE.md`'sini elle yazmıyor.
+
+`/proje-devral` bu boşluğu kapatır: projeyi okur, öğrendiğini yazıya
+döker, **onay alır**, sonra çerçeveye bağlar.
+
+- **`/proje-devral` komutu** — sekiz adım: mekanik tarama, beş paralel
+  ajanla derin okuma, birleştirme, plan, onay, uygulama, kayıt, kapanış.
+- **`devral.py` tarama motoru** — dizin haritası ve rolleri, giriş
+  noktaları, bağımlılıklar, depo geçmişi ve en çok dokunulan dosyalar,
+  yarım iş izleri, depoya girmiş sır, kimlik kuralına aykırı satırlar,
+  eksik çerçeve dosyaları.
+- **`devralma-ajani`** — beş rol (mimari, veri, süreç, kurallar,
+  yarım iş) paralel çalışır; hiçbiri dosya değiştirmez.
+- **`proje-devral` becerisi** — çerçeve dosyası olmayan bir dizinde iş
+  istenirse kendiliğinden devreye girer.
+
+**Neden onaysız yazılmıyor:** devralınan proje çoğu zaman müşteriye ait
+ve çalışır durumdadır. Tarama aşaması hiçbir dosyaya dokunmaz, yalnız
+`_calisma/devralma/` altına rapor bırakır; `uygula --onay` denmeden tek
+dosya yazılmaz ve var olan bir dosyanın üzerine hiçbir koşulda yazılmaz.
+
+**Neden sır değerleri raporlanmıyor:** tarama koda gömülü parola ve
+anahtar arıyor. Bulduğunu rapora yazsa rapor kendisi bir sızıntı olurdu.
+Yalnız `dosya:satır` ve izin türü bildirilir.
+
+**Kurulum kılavuzu düzeltildi** — eklentiyi etkinleştirme adımı eski
+pazar yeri adını (`enver-local`) ve yanlış yolu gösteriyordu. Ayrıca
+kapsam (`user` / `project` / `local`) bölümü eklendi: eklentinin bütün
+projelerde mi yoksa tek depoda mı çalışacağı artık yazıyor.
+
 ## 3.0.0 — Gerçek Claude Code eklentisi: tek komutla kurulum
 
 Çerçeve artık standart bir Claude Code eklentisi. Herkes tek satırla

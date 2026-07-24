@@ -1,6 +1,6 @@
 {
   "name": "enver-framework",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Enver KOCAK icin proje yonetim framework'u. Komut rehberi, kademeli yukleme, betik katmani, arsivleme motoru (hicbir veri silinmez), musteri sunucusu korumasi, depo gizlilik kurali, iz denetimi, cok dilli metin katmani ve Windows destegi.",
   "author": {
     "name": "<adin>",

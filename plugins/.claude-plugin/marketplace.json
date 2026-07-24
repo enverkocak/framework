@@ -10,7 +10,7 @@
     {
       "name": "enver-framework",
       "description": "Proje yonetim framework'u - komut rehberi, betik katmani, arsivleme, sunucu ve depo korumalari, cok dil, Windows destegi",
-      "version": "3.0.0",
+      "version": "3.1.0",
       "author": {
         "name": "<adin>",
         "email": "<e-postan>"

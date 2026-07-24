@@ -96,10 +96,46 @@ python plugins/enver-framework/scripts/kurulum/sihirbaz.py kur \
 
 ### 5. Eklentiyi etkinleştir
 
+Pazar yeri, indirdiğin deponun **kökü**. İki kaynaktan biri:
+
+```bash
+# Yerel diskten - geliştirirken değişiklikleri anında görürsün
+claude plugin marketplace add <deponun yolu>
+
+# Ya da doğrudan depodan
+claude plugin marketplace add enverkocak/framework
 ```
-/plugin marketplace add ~/.claude/plugins
-/plugin install enver-framework@enver-local
-/reload-plugins
+
+Sonra kur:
+
+```bash
+claude plugin install enver-framework@enver-framework
+```
+
+Kurulumdan sonra Claude Code'u yeniden başlat.
+
+#### Kapsam - nerede çalışacağı
+
+`--scope` ile seçilir:
+
+| Kapsam | Nerede geçerli | Komut |
+|--------|----------------|-------|
+| `user` (varsayılan) | **Bütün projelerde** | `claude plugin install enver-framework@enver-framework` |
+| `project` | Yalnız o depo, ekip de alır (git'e girer) | `... --scope project` |
+| `local` | Yalnız o depo, yalnız sen (git'e girmez) | `... --scope local` |
+
+`user` kapsamı çoğu durumda doğrudur: hafıza, korumalar ve faz motoru her
+projede çalışır. Karışmasını istemediğin bir projede o proje içinde kapat:
+
+```bash
+claude plugin disable enver-framework
+```
+
+Kurulu eklentileri ve pazar yerlerini görmek için:
+
+```bash
+claude plugin list
+claude plugin marketplace list
 ```
 
 ### 6. Kurulumu doğrula
@@ -156,6 +192,39 @@ python "$P/kayit.py" kok --ekle "<projelerinin bulunduğu klasör>"
 python "$P/kayit.py" tara
 python "$P/tani.py" hepsi      # teknoloji ve durum tahmini
 python "$P/kayit.py" liste
+```
+
+Bu **sığ** taramadır: hangi projede hangi teknoloji var, en son ne zaman
+çalışılmış. Tek tek projeleri çerçeveye bağlamaz.
+
+### Var olan bir projeyi çerçeveye bağla
+
+Çerçeve yeni projeler için kurulmuş değildir; eski işler de devralınır.
+Devralınacak projenin dizininde:
+
+```
+/proje-devral
+```
+
+Sırasıyla şunu yapar:
+
+1. Projeyi derinlemesine tarar - dizin düzeni, geçmiş, bağımlılıklar,
+   yarım işler, depoya girmiş sır, kimlik kuralına aykırı izler
+2. Beş ajanı paralel çalıştırır: mimari, veri, süreç, kurallar, yarım iş
+3. Öğrendiğini rapora döker - `_calisma/devralma/rapor.md`
+4. Ne üreteceğini gösterir ve **onay ister**
+5. Onaydan sonra `CLAUDE.md`, `.claude/proje.json`, `hafiza/faz-plani.json`
+   ve hafıza defterlerini üretir
+
+Onay verilmeden tek dosya yazılmaz, var olan dosyanın üzerine hiç yazılmaz.
+
+Yalnız raporu isteyip uygulamayı elle yapmak istersen:
+
+```bash
+D="plugins/enver-framework/scripts/projeler/devral.py"
+
+python "$D" tara --yol "<proje dizini>"
+python "$D" plan --yol "<proje dizini>"
 ```
 
 ### Görsel şemayı üret

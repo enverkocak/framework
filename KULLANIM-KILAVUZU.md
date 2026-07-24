@@ -150,6 +150,7 @@ Bütün komutlar: `/index`
 | `/projeler` | Bütün projelerin durumu, projeye geçmeden sorgu |
 | `/sema` | Görsel sistem şeması — hangi proje neye bağlı |
 | `/proje-baslat` | Yeni proje iskeleti |
+| `/proje-devral` | Var olan projeye ilk kez girerken — tarar, öğrenir, çerçeveye bağlar |
 | `/faz` | Faz durumu, çalışma modu, tam yetki |
 
 ### Tasarım

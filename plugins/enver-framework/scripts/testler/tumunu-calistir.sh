@@ -229,6 +229,10 @@ islevsel "Makine taniniyor" python "$P/scripts/senkron/makine.py" durum
 islevsel "Guncelleme modulu okunuyor" python -c "import sys; sys.path.insert(0, r'$P/scripts'); import guncelleme; assert guncelleme.yerel_surum(); assert callable(guncelleme.banner)"
 # Surum araci: alti yerdeki surum tutarli mi (yayin oncesi guvenlik agi).
 islevsel "Surum tutarli" python "$P/scripts/surum.py" durum
+# Devralma: bu depo uzerinde tarama calisiyor mu. "tara" hicbir seye dokunmaz,
+# yalniz _calisma/devralma/ altina rapor birakir - testte guvenli.
+islevsel "Devralma taramasi calisiyor" python "$P/scripts/projeler/devral.py" tara --yol "$KOK"
+islevsel "Devralma bosluk raporu okunuyor" python "$P/scripts/projeler/devral.py" bosluk --yol "$KOK"
 fi
 
 # ---------------------------------------------------------------- güvenlik
