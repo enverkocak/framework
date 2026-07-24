@@ -87,7 +87,7 @@ exactly where you stopped.
 
 ## What's inside
 
-**29 commands** · **3 skills** · **4 agents** · **10 protections** · **48 scripts**
+**30 commands** · **4 skills** · **5 agents** · **10 protections** · **49 scripts**
 
 ### Frequently used
 
@@ -96,6 +96,7 @@ exactly where you stopped.
 | `/panel` | Dashboard — project status, phase, pending work |
 | `/durum-kaydet` | Save where you left off, create a handoff note |
 | `/proje-baslat` | Start a new project from a template |
+| `/proje-devral` | Take over an existing project — scan it, learn it, wire it into the framework |
 | `/faz-kontrol` | Run the active phase's gate checks |
 | `/guvenlik-tara` | Security scan |
 | `/saglik` | The framework's own health report |

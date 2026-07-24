@@ -11,15 +11,16 @@ hangi kuralın neden var olduğunu anlatır.
 
 1. [Günlük akış](#günlük-akış)
 2. [Yeni proje başlatma](#yeni-proje-başlatma)
-3. [Komut rehberi](#komut-rehberi)
-4. [Korumalar — ne engelleniyor, neden](#korumalar)
-5. [Kasa](#kasa)
-6. [Hafıza ve çoklu bilgisayar](#hafıza-ve-çoklu-bilgisayar)
-7. [Faz motoru ve tam yetki](#faz-motoru-ve-tam-yetki)
-8. [Tasarım](#tasarım)
-9. [Teslim](#teslim)
-10. [Güncelleme](#güncelleme)
-11. [Sorun giderme](#sorun-giderme)
+3. [Var olan projeyi devralma](#var-olan-projeyi-devralma)
+4. [Komut rehberi](#komut-rehberi)
+5. [Korumalar — ne engelleniyor, neden](#korumalar)
+6. [Kasa](#kasa)
+7. [Hafıza ve çoklu bilgisayar](#hafıza-ve-çoklu-bilgisayar)
+8. [Faz motoru ve tam yetki](#faz-motoru-ve-tam-yetki)
+9. [Tasarım](#tasarım)
+10. [Teslim](#teslim)
+11. [Güncelleme](#güncelleme)
+12. [Sorun giderme](#sorun-giderme)
 
 ---
 
@@ -125,6 +126,60 @@ F="plugins/enver-framework/scripts/faz"
 python "$K" plana-dok                # keşiften faz planı üret
 python "$F/faz.py" ekle <no> "<ad>" --kapi "<test komutu>"
 ```
+
+---
+
+## Var olan projeyi devralma
+
+Yukarıdaki sıra sıfırdan başlayan iş içindir. Devralınan bir projede —
+eski bir müşteri sitesi, aylardır dokunulmamış bir depo, başkasının
+yazdığı kod — soru sorarak değil **koda bakarak** öğrenilir.
+
+```
+/proje-devral
+```
+
+### Ne yapar
+
+| Adım | İş |
+|------|-----|
+| 1 | Mekanik tarama — dizin haritası, giriş noktaları, bağımlılıklar, depo geçmişi, yarım iş izleri, depoya girmiş sır, kimlik kuralına aykırı satırlar |
+| 2 | Beş ajan paralel okur: `mimari`, `veri`, `surec`, `kurallar`, `yarim-is` |
+| 3 | Öğrenilenler birleştirilir — çakışan bulgu saklanmaz, yazılır |
+| 4 | Plan gösterilir ve **onay istenir** |
+| 5 | Onaydan sonra çerçeve dosyaları üretilir |
+
+### Üretilenler
+
+`CLAUDE.md` · `.claude/proje.json` · `hafiza/faz-plani.json` ·
+`hafiza/durum.md` · `hafiza/kararlar.md` · `hafiza/hatalar.md` ·
+eksik `.gitignore` satırları
+
+Üretilen faz planı doğrudan faz motoruna girer; devralma bitince
+`/faz durum` çalışır hale gelir.
+
+### Değişmez kurallar
+
+1. **Onaysız tek dosya yazılmaz.** Tarama ve plan hiçbir şeye dokunmaz,
+   yalnız `_calisma/devralma/` altına rapor bırakır.
+2. **Var olan dosyanın üzerine yazılmaz.** `CLAUDE.md` zaten varsa
+   korunur, eksik olan tamamlanır.
+3. **Sır değeri raporlanmaz.** Anahtar bulunursa yalnız `dosya:satır`
+   ve izin türü yazılır — yoksa raporun kendisi sızıntı olur.
+4. **Kritik risk sessizce geçilmez.** Depoya girmiş sır dosyası varsa
+   kapanışta tekrar söylenir.
+
+### Elle çalıştırmak istersen
+
+```bash
+D="plugins/enver-framework/scripts/projeler/devral.py"
+
+python "$D" tara --yol "<proje dizini>"    # hiçbir şey yazmaz
+python "$D" plan --yol "<proje dizini>"    # ne yapılacağını gösterir
+python "$D" uygula --yol "<proje dizini>" --onay
+```
+
+Yalnız bir bölümü üretmek için: `--yalniz claude-md,hafiza`
 
 ---
 
