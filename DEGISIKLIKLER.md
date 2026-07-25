@@ -9,6 +9,26 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.2.3 — Panel kendi menusunu yanlis sayiyordu
+
+`/panel` kendini "4 sekme, 16 kategori, **80+ islem**" diye tanitiyordu.
+Menunun kendisi sayildi: sekme ve kategori dogru, islem sayisi degil.
+
+| Olculen | Aciklamada | Gercek |
+|---------|------------|--------|
+| Sekme | 4 | 4 |
+| Kategori | 16 | 16 |
+| Alt islem | 80+ | **58** |
+
+Kucuk bir fark ama ayni sinifin ornegi: belge, gercegin bir adim onunde
+yuruyordu. Sayilar artik menunun kendisinden olculuyor.
+
+**Not:** 30 egik cizgi komutu ile panelin 58 islemi ayri seylerdir. "Kac
+komut var" sorusunun cevabi 30; "kac islem yapabilirim" sorusununki daha
+fazla, cunku panel tek basina bir menu katmani.
+
+Tam takim: **553 gecti, 0 kaldi.**
+
 ## 3.2.2 — Güncelleme bildirimi güncelledikten sonra geçmiyordu
 
 İkinci bilgisayarda güncelleme akışı uçtan uca denendi. Bildirim doğru

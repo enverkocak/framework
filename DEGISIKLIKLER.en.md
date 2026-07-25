@@ -10,6 +10,22 @@ teaches nothing.
 
 ---
 
+## 3.2.3 — The panel miscounted its own menu
+
+`/panel` described itself as "4 tabs, 16 categories, **80+ operations**".
+The menu was counted: tabs and categories were right, the operation count
+was not — there are **58**, not 80+.
+
+A small gap, but the same class of defect: the document walked one step
+ahead of reality. The numbers are now measured from the menu itself.
+
+**Note:** the 30 slash commands and the panel's 58 operations are
+different things. "How many commands are there" is 30; "how many
+operations can I run" is larger, because the panel is a menu layer of its
+own.
+
+Full suite: **553 passed, 0 failed.**
+
 ## 3.2.2 — The update banner did not clear after updating
 
 The update flow was tested end to end on the second computer. The banner

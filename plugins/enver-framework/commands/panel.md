@@ -1,12 +1,14 @@
 ---
-description: Framework ana menusu - tum komutlara tek noktadan eris, 4 sekme 16 kategori 80+ islem
+description: Framework ana menusu - tum komutlara tek noktadan eris, 4 sekme 16 kategori 58 islem
 argument-hint: Opsiyonel - bos birak = ana menu, veya direkt (web, api-test, deploy, db, git, iskele...)
 ---
 
 # Panel Enver - Framework Ana Menu v2.0
 
 Tum framework islemlerine tek noktadan erisim.
-4 sekme → 16 kategori → 80+ alt islem.
+4 sekme → 16 kategori → 58 alt islem.
+
+(Sayilar menunun kendisinden olculur, tahminle yazilmaz.)
 
 ## CALISMA MANTIGI
 
