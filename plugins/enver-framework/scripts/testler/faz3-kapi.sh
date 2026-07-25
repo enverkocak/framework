@@ -161,6 +161,29 @@ grep -q "$(basename "$KOK")" _calisma/sl.txt && kontrol "Durum satiri proje adin
 echo "" | python "$P/scripts/statusline.py" > /dev/null 2>&1 \
   && kontrol "Durum satiri bos girdide cokmuyor" 0 || kontrol "Durum satiri bos girdide cokmuyor" 1
 
+# Jeton sayaci: sahte bir oturum kaydi uretilip sayim dogrulanir.
+# Onbellek OKUMASI sayilmamali - ayni baglami tekrar tekrar sayan bir
+# sayac dogru degil yaniltici olur.
+printf '%s\n%s\n' \
+  '{"message":{"usage":{"input_tokens":1000,"cache_creation_input_tokens":500,"cache_read_input_tokens":900000,"output_tokens":500}}}' \
+  '{"message":{"usage":{"input_tokens":0,"cache_creation_input_tokens":0,"cache_read_input_tokens":900000,"output_tokens":1000}}}' \
+  > "$KUM/oturum-kaydi.jsonl"
+echo '{"workspace":{"project_dir":"'"$KOK"'"},"transcript_path":"'"$KUM/oturum-kaydi.jsonl"'"}' \
+  | python "$P/scripts/statusline.py" > _calisma/sl2.txt 2>&1
+grep -q "3k jeton" _calisma/sl2.txt \
+  && kontrol "Jeton sayaci yeni jetonu sayiyor (onbellek okumasi haric)" 0 \
+  || { kontrol "Jeton sayaci yeni jetonu sayiyor (onbellek okumasi haric)" 1; cat _calisma/sl2.txt; }
+grep -q "bağlam" _calisma/sl2.txt \
+  && kontrol "Durum satiri baglam dolulugunu gosteriyor" 0 || kontrol "Durum satiri baglam dolulugunu gosteriyor" 1
+
+python - << 'PY' 2>/dev/null && kontrol "Faz gostergesi motorun kaydindan okunuyor" 0 || kontrol "Faz gostergesi motorun kaydindan okunuyor" 1
+# Gerileme koruması: gösterge bir dönem belgedeki başlıktan okunuyordu;
+# belge değişince sessizce boşaldı. Kaynak motorun kaydı olmalı.
+kaynak = open("plugins/enver-framework/scripts/statusline.py", encoding="utf-8").read()
+assert "faz-plani.json" in kaynak, "faz gostergesi motor kaydini okumuyor"
+assert "00-DEVAM-BURADAN" not in kaynak, "gosterge hala belgeye bagli"
+PY
+
 echo ""
 echo "--- 10. KANCA KAYDI ---"
 python - << 'PY' 2>/dev/null && kontrol "Yeni kancalar settings.json'da" 0 || kontrol "Yeni kancalar settings.json'da" 1

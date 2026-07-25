@@ -7,6 +7,58 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.1.4 — Durum satırı jeton sayıyor, iz denetimi yolu iz sanmıyor
+
+Bütünlük denetimi çalıştırıldı: belgelerin işaret ettiği her betik yolu,
+komutların çağırdığı her dosya, bütün betiklerin sözdizimi, bütün kayıt
+dosyalarının geçerliliği ve ayarlardaki kanca yolları tarandı — **kırık
+bağlantı yok**. Ama üç davranış hatası çıktı.
+
+**Dosya yolu iz sayılıyordu.** Çerçevenin çalışma deposu `enver-claude-...`
+adını taşıyor; mutlak yol yazan her betik ve her kurulum belgesi bu adı
+geçirmek zorunda. İz denetimi bunlara ötüyordu. 3.1.1'in kararı açıktı —
+"muafiyet yalnız makine biçimlerini kapsar: yol, ortam değişkeni, komut,
+paket adı, adres" — ama desen yol içindeki klasör adını kapsamıyordu.
+
+Muafiyet **eğik çizgi şartıyla** eklendi: "claude" ya bir yol parçasından
+sonra ya da öncesinde gelmeli. Boşluk yol deseninde yer almadığı için düz
+metindeki ürün adı muafiyete giremez — aynı satırda yol bulunsa bile.
+Dört senaryo eklendi (üçü sessiz kalmalı, biri yol + üretici ifadesi aynı
+satırda: yine uyarmalı). İz senaryoları 18 → 22.
+
+**Durum satırı maliyet yerine jeton gösteriyor.** Dolar tutarı, harcamayı
+anlatıyordu ama iş sırasında asıl merak edilen tüketim ve bağlam doluluğu.
+
+Gösterilen sayı **yeni işlenen** jetondur: girdi + önbelleğe yazılan +
+üretilen. Önbellek okuması **bilerek sayılmaz** — ölçüldü: bir oturumda
+74,5 milyon jetonluk önbellek okuması, 1,4 milyonluk gerçek tüketime
+karşılık geliyordu. "76M" yazan bir sayaç doğru değil yanıltıcıdır; aynı
+bağlamı her turda yeniden sayar.
+
+Bağlam ayrı gösterilir — "ne kadar harcadım" ile "ne kadar doldu" farklı
+sorulardır:
+
+```
+enver-claude-framework · OFIS-PC · 12 faz bitti · kasa kilitli · 1.4M jeton (bağlam 318k)
+```
+
+Sayım **artımlıdır**: oturum kaydı büyüyen bir günlüktür, her çizimde
+baştan okunsa durum satırı yavaşlar. Son okunan konum ve toplam saklanır,
+yalnız yeni satırlar işlenir.
+
+**Faz göstergesi sessizce boşalmıştı.** Gösterge fazı bir belgedeki
+"Siradaki:" başlığından okuyordu; 3.1.2'de o başlık kaldırılınca gösterge
+hiçbir şey yazmaz oldu ve kimse fark etmedi. Faz planı belgede değil
+motorun kaydında durur: artık `hafiza/faz-plani.json` okunuyor, hepsi
+bitmişse "12 faz bitti" yazıyor. Gerileme kontrolü eklendi.
+
+**Neden bu üçü aynı hikâye:** bir gösterge ya da denetim, ölçtüğü şeyin
+gerçek kaynağından koparsa sessizce yanlışa döner. Yanlış öten denetim
+okunmaz olur, boşalan gösterge fark edilmez, yanıltıcı sayaç yanlış karar
+verdirir.
+
+Tam takım: **560 geçti, 0 kaldı.**
+
 ## 3.1.3 — Sanal deneme ölü kancalara soruyordu
 
 3.1.2 yayınlandıktan sonra eklentinin kendisi denetlendi ve **ölü bir kopya**

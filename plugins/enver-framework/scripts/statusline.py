@@ -2,7 +2,7 @@
 """Durum satırı - ekranın altında sabit duran özet.
 
 Gösterilenler:
-    proje · makine · aktif faz · kasa durumu · maliyet
+    proje · makine · aktif faz · kasa durumu · kullanılan jeton
 
 Makine adının görünmesi bilinçli: birden çok bilgisayarda çalışılıyor,
 "hangi makinedeyim" sorusu her an cevaplı olmalı.
@@ -15,7 +15,6 @@ Geliştirici: Enver KOCAK
 
 import json
 import os
-import re
 import sys
 import time
 from pathlib import Path
@@ -67,19 +66,28 @@ def _makine_adi(kok):
 
 
 def _aktif_faz(kok):
-    """Geliştirme notlarından sıradaki fazı oku."""
-    aday = Path(kok) / "gelistirme-arastirmasi" / "00-DEVAM-BURADAN.md"
-    if not aday.is_file():
+    """Aktif fazı MOTORUN kaydından oku.
+
+    Eskiden bir belgedeki "Siradaki:" başlığı okunuyordu. Belge değişince
+    gösterge sessizce boşaldı - faz planı belgede değil, motorun kaydında
+    durur. Tek doğruluk kaynağı hafiza/faz-plani.json.
+    """
+    plan = Path(kok) / "hafiza" / "faz-plani.json"
+    if not plan.is_file():
         return None
 
     try:
-        icerik = aday.read_text(encoding="utf-8", errors="ignore")
-    except OSError:
+        veri = json.loads(plan.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
         return None
 
-    eslesme = re.search(r"###\s*Siradaki:\s*(.+)", icerik)
-    if eslesme:
-        return eslesme.group(1).strip()[:34]
+    fazlar = veri.get("fazlar") or []
+    for faz in fazlar:
+        if faz.get("durum") in ("aktif", "devam", "basladi"):
+            return f"Faz {faz.get('no')}: {faz.get('ad', '')}".strip()[:34]
+
+    if fazlar and all(f.get("durum") == "tamamlandi" for f in fazlar):
+        return f"{len(fazlar)} faz bitti"
     return None
 
 
@@ -101,11 +109,85 @@ def _kasa_durumu():
     return f"kasa AÇIK ({int(kalan / 60)} dk)"
 
 
-def _maliyet(bilgi):
-    tutar = (bilgi.get("cost") or {}).get("total_cost_usd")
-    if tutar is None:
+def _kisalt(sayi):
+    """1390526 -> 1.4M, 311199 -> 311k"""
+    if sayi >= 1_000_000:
+        return f"{sayi / 1_000_000:.1f}M"
+    if sayi >= 1_000:
+        return f"{sayi / 1_000:.0f}k"
+    return str(sayi)
+
+
+def _jeton_sayaci(bilgi):
+    """Oturumda kullanılan jeton ve şu anki bağlam doluluğu.
+
+    NEDEN ÖNBELLEK OKUMASI SAYILMIYOR
+    Her turda aynı bağlam önbellekten yeniden okunur; bu oturumda 74 milyon
+    jetonluk okuma, 1,4 milyonluk gerçek tüketime karşılık geliyordu.
+    "76M" yazan bir sayaç doğru değil, yanıltıcıdır - aynı içeriği tekrar
+    tekrar sayar. Gösterilen sayı YENİ işlenen jetondur: girdi + önbelleğe
+    yazılan + üretilen.
+
+    Bağlam ayrı gösterilir: "ne kadar harcadım" ile "ne kadar doldu"
+    farklı sorulardır.
+
+    Sayım artımlıdır. Kayıt dosyası büyüyen bir günlüktür; her çizimde
+    baştan okunsa durum satırı yavaşlar. Son okunan konum ve o ana kadarki
+    toplam saklanır, yalnız yeni satırlar işlenir.
+    """
+    kayit = bilgi.get("transcript_path")
+    if not kayit or not os.path.isfile(kayit):
         return None
-    return f"${tutar:.2f}"
+
+    onbellek = Path.home() / ".claude" / "enver" / "jeton-sayaci.json"
+    durum = {}
+    try:
+        durum = json.loads(onbellek.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        pass
+
+    if durum.get("kayit") != kayit:
+        durum = {"kayit": kayit, "konum": 0, "toplam": 0, "baglam": 0}
+
+    try:
+        boyut = os.path.getsize(kayit)
+        # Dosya küçüldüyse (yeni oturum, aynı ad) baştan say
+        if boyut < durum.get("konum", 0):
+            durum = {"kayit": kayit, "konum": 0, "toplam": 0, "baglam": 0}
+
+        with open(kayit, encoding="utf-8", errors="ignore") as dosya:
+            dosya.seek(durum["konum"])
+            for satir in dosya:
+                try:
+                    kutuk = json.loads(satir)
+                except ValueError:
+                    continue
+                kullanim = (kutuk.get("message") or {}).get("usage")
+                if not kullanim:
+                    continue
+                durum["toplam"] += (kullanim.get("input_tokens", 0)
+                                    + kullanim.get("cache_creation_input_tokens", 0)
+                                    + kullanim.get("output_tokens", 0))
+                durum["baglam"] = (kullanim.get("input_tokens", 0)
+                                   + kullanim.get("cache_read_input_tokens", 0)
+                                   + kullanim.get("cache_creation_input_tokens", 0))
+            durum["konum"] = dosya.tell()
+    except OSError:
+        return None
+
+    try:
+        onbellek.parent.mkdir(parents=True, exist_ok=True)
+        onbellek.write_text(json.dumps(durum), encoding="utf-8")
+    except OSError:
+        pass
+
+    if not durum["toplam"]:
+        return None
+
+    metin = f"{_kisalt(durum['toplam'])} jeton"
+    if durum["baglam"]:
+        metin += f" (bağlam {_kisalt(durum['baglam'])})"
+    return metin
 
 
 def _tam_yetki_acik_mi(kok):
@@ -135,9 +217,9 @@ def main():
     if _tam_yetki_acik_mi(kok):
         parcalar.append("TAM YETKİ")
 
-    tutar = _maliyet(bilgi)
-    if tutar:
-        parcalar.append(tutar)
+    jeton = _jeton_sayaci(bilgi)
+    if jeton:
+        parcalar.append(jeton)
 
     print(AYIRAC.join(p for p in parcalar if p))
     return 0

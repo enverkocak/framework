@@ -50,6 +50,18 @@ MUAF_BAGLAMLAR = [
     r"\banthropics?\.com\b[\w./?=&#%-]*",
     r"\banthropics/[\w.-]+",                  # anthropics/claude-plugins-community
     r"@claude[-_][\w-]+",                     # @claude-community
+
+    # Dosya yolu içindeki klasör adı. Çerçevenin çalışma deposu
+    # "enver-claude-framework" adını taşıyor; her mutlak yol yazan betik
+    # ve her kurulum belgesi bu adı geçirmek zorunda. Yol bir makine
+    # biçimidir, iz değildir.
+    #
+    # Eşleşme için EĞİK ÇİZGİ şartı vardır: "claude" ya bir yol
+    # parçasından sonra ya da öncesinde gelmeli. Böylece düz metindeki
+    # ürün adı ("... ile üretildi") muafiyete giremez - aynı satırda yol
+    # bulunsa bile, çünkü boşluk yol deseninde yer almaz.
+    r"[\w.:~-]+[\\/][\w.:~\\/-]*claude[\w.:~\\/-]*",   # D:/Projeler/enver-claude-...
+    r"[\w.:~-]*claude[\w.:~-]*[\\/][\w.:~\\/-]*",      # enver-claude-framework/plugins
 ]
 
 MUAF_BAGLAM_DESENI = re.compile("|".join(MUAF_BAGLAMLAR), re.IGNORECASE)

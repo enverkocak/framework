@@ -91,9 +91,21 @@ dene("m7.md", "Onaylanınca @claude-community altında görünür.\n", False, "p
 dene("m8.sh", 'curl -s https://raw.githubusercontent.com/anthropics/claude-plugins-community/main/x.json\n',
      False, "katalog adresi")
 
+print("\n  Dosya yolu içindeki klasör adı - sessiz kalmalı")
+# Çerçevenin çalışma deposu bu adı taşıyor; mutlak yol yazan her betik
+# ve kurulum belgesi adı geçirmek zorunda. Yol makine biçimidir.
+dene("y1.py", 'KOK = "D:/Projeler/enver-claude-framework"\n',
+     False, "Windows mutlak yolu")
+dene("y2.sh", 'cd /home/enver/enver-claude-framework/plugins || exit 1\n',
+     False, "Linux yolu")
+dene("y3.md", "Depo: `enver-claude-framework/plugins/enver-framework/`\n",
+     False, "belgede göreli yol")
+
 print("\n  Muaf biçim ile gerçek iz aynı satırda - yine uyarmalı")
 dene("k1.md", "claude plugin install x  # bu satir Claude tarafindan uretildi\n",
      True, "komut + üretici ifadesi aynı satırda")
+dene("k2.py", 'KOK = "D:/Projeler/enver-claude-framework"  # Claude Code ile uretildi\n',
+     True, "yol + üretici ifadesi aynı satırda")
 
 print("\n  İlgisiz içerik - sessiz kalmalı")
 dene("i1.py", 'mesaj = "İşlem tamamlandı"\n', False, "sıradan Türkçe kod")
