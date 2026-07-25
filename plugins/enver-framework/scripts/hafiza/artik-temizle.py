@@ -130,6 +130,33 @@ def dosyalari_gez(hafiza_dizini):
     return belgeler, kayitlar
 
 
+def gunluk_ayikla(yol):
+    """Ham günlükten test satırlarını çıkar, yeni içeriği ve sayıyı ver.
+
+    Ham günlük depoya girmez ama hafızayı O BESLER: oturum özeti bu
+    kayıttan üretilir. Yalnız hafızayı temizlemek yetmedi - ilk özet
+    çıkarıldığında test artığı hafızaya geri döndü. Kaynak temizlenmezse
+    temizlik kalıcı olmaz.
+    """
+    try:
+        satirlar = yol.read_text(encoding="utf-8", errors="ignore").splitlines()
+    except OSError:
+        return None, 0
+
+    temiz = []
+    cikan = 0
+    for satir in satirlar:
+        if any(imza in satir for imza in IMZA.BELGE_IMZALARI) or \
+                any(ad in satir for ad in IMZA.KAYIT_IMZALARI["proje"]):
+            cikan += 1
+            continue
+        temiz.append(satir)
+
+    if not cikan:
+        return None, 0
+    return "\n".join(temiz) + ("\n" if temiz else ""), cikan
+
+
 def temizle(kok, kuru):
     hafiza_dizini = Path(kok) / "hafiza"
     if not hafiza_dizini.is_dir():
@@ -139,6 +166,13 @@ def temizle(kok, kuru):
     belgeler, kayitlar = dosyalari_gez(hafiza_dizini)
     planlanan = []
     tamami_test = []
+
+    gunluk_dizini = Path(kok) / "gunluk"
+    if gunluk_dizini.is_dir():
+        for yol in sorted(gunluk_dizini.glob("*.jsonl")):
+            yeni, cikan = gunluk_ayikla(yol)
+            if cikan:
+                planlanan.append((yol, yeni, f"{cikan} ham kayıt"))
 
     for yol in belgeler:
         metin = yol.read_text(encoding="utf-8")

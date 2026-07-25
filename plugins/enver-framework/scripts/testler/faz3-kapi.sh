@@ -229,6 +229,16 @@ python "$P/scripts/testler/sizinti-kontrol.py" "$KOK" > _calisma/sz.txt 2>&1 \
 [ -f "$KUM/hafiza/gorevler.json" ] || [ -f "$KUM/hafiza/kararlar.md" ] \
   && kontrol "Kum havuzu gercekten kullaniliyor" 0 || kontrol "Kum havuzu gercekten kullaniliyor" 1
 
+# Ham gunluk ozetlendikten sonra DONDURULMELI. Dondurulmezse her ozet
+# butun gecmisi yeniden ozetler; "Sure" ilk gunden baslar ve ozet
+# "bu oturumda ne oldu" sorusuna cevap veremez olur.
+CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/oturum.py" kaydet not "Donme denemesi" > /dev/null 2>&1
+CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/oturum.py" bitir --not "deneme" --sirada "yok" > /dev/null 2>&1
+[ -f "$KUM/gunluk/komutlar.jsonl" ] && S=1 || S=0
+kontrol "Ham gunluk ozetten sonra donduruluyor" $S
+ls "$KUM"/gunluk/komutlar-*.jsonl >/dev/null 2>&1 \
+  && kontrol "Donen gunluk silinmiyor, arsivleniyor" 0 || kontrol "Donen gunluk silinmiyor, arsivleniyor" 1
+
 echo ""
 echo "--- 13. GERILEME TESTLERI ---"
 if [ -n "$ENVER_GERILEME_ATLA" ]; then

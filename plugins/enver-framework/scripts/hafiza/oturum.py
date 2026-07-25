@@ -187,7 +187,7 @@ def komut_bitir(args):
     print(f"Oturum özeti yazıldı: {hedef}")
     print(f"Durum güncellendi   : {durum_yolu}")
 
-    if args.gunlugu_temizle:
+    if args.gunlugu_temizle and gunluk_yolu.is_file():
         arsiv_yolu = hafiza.gunluk_dizini(kok) / f"komutlar-{tarih}-{sira}.jsonl"
         gunluk_yolu.replace(arsiv_yolu)
         print(f"Ham günlük arşivlendi: {arsiv_yolu}")
@@ -291,7 +291,14 @@ def main():
     p = alt.add_parser("bitir", help="Oturumu özetle ve hafızaya geçir")
     p.add_argument("--not", dest="not_metni", help="Devir notu")
     p.add_argument("--sirada", help="Sırada ne var")
-    p.add_argument("--gunlugu-temizle", action="store_true", dest="gunlugu_temizle")
+    # Ham günlük özetlendikten sonra döndürülür (arşivlenir, silinmez).
+    # Döndürülmezse her özet bütün geçmişi yeniden özetler: "Süre" ilk
+    # günden başlar, aynı satırlar her oturumda tekrar eder ve özet
+    # "bu oturumda ne oldu" sorusuna cevap veremez olur.
+    p.add_argument("--gunlugu-birak", action="store_false",
+                   dest="gunlugu_temizle",
+                   help="Ham günlüğü döndürme (özet birikmeli olsun)")
+    p.set_defaults(gunlugu_temizle=True)
     p.set_defaults(islev=komut_bitir)
 
     p = alt.add_parser("brifing", help="Nerede kaldık")

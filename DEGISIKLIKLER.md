@@ -7,6 +7,38 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.1.5 — Temizlik kaynağa inmeyince kalıcı olmuyordu
+
+3.1.2'de hafıza test artığından temizlenmişti. Bu sürümde ilk oturum özeti
+çıkarıldı ve **artık geri geldi** - sızıntı kapısı yakaladı. Temizlik
+belirtiyi almış, kaynağı bırakmıştı.
+
+**Ham günlük hafızayı besler.** `hafiza/` temizlendi ama oturum özeti
+`gunluk/komutlar.jsonl` dosyasından üretilir; oradaki 104 test kaydı ilk
+özette hafızaya geri döndü. `artik-temizle.py` artık ham günlüğü de
+ayıklıyor, `sizinti-kontrol.py` de onu denetliyor. Depoya girmeyen bir
+dosya, depoya giren dosyayı üretiyorsa denetim dışı kalamaz.
+
+**Ham günlük hiç döndürülmüyordu.** `oturum.py bitir` günlüğü yalnız
+`--gunlugu-temizle` verilirse arşivliyordu; kimse vermiyordu. Sonuç: her
+özet **bütün geçmişi** yeniden özetliyordu. Bugünkü özet 21 Temmuz'dan
+başlıyor, 165 komut ve 131 dosya sayıyordu - yani "bu oturumda ne oldu"
+sorusuna cevap vermiyordu, üstelik aynı satırlar her oturumda tekrar
+ediyordu.
+
+Günlük artık **varsayılan olarak** döndürülüyor: özet çıkarıldıktan sonra
+`komutlar-<tarih>-<sıra>.jsonl` adıyla arşivleniyor. Silme yok. Birikmeli
+özet isteyen `--gunlugu-birak` diyebilir.
+
+**Neden önemliydi:** hafıza katmanının tek işi "nerede kaldık" sorusuna
+doğru cevap vermek. Her oturumda aynı dört günlük özeti gören kişi bir
+süre sonra o belgeyi hiç okumaz.
+
+İki gerileme kontrolü eklendi: günlük özetten sonra dönüyor mu, dönen
+günlük siliniyor mu arşivleniyor mu.
+
+Tam takım: **562 geçti, 0 kaldı.**
+
 ## 3.1.4 — Durum satırı jeton sayıyor, iz denetimi yolu iz sanmıyor
 
 Bütünlük denetimi çalıştırıldı: belgelerin işaret ettiği her betik yolu,

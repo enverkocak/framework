@@ -49,8 +49,13 @@ KAYIT_IMZALARI = {
 # "kapi-testi-kesif" gibi turevler tek tek sayilmasin diye.
 ON_EK_ALANLARI = ("proje", "musteri")
 
-# Denetlenen alan: paylaşılan hafıza. Günlük makineye özeldir, depoya girmez.
+# Denetlenen alan: paylaşılan hafıza ve onu BESLEYEN ham günlük.
+#
+# Günlük depoya girmez, ama oturum özeti ondan üretilir: bir dönem yalnız
+# hafıza temizlendi, ilk özet çıkarıldığında test artığı geri geldi.
+# Kaynağı denetlemeyen bir denetim, temizliğin kalıcı olduğunu sanır.
 DENETLENEN_DIZIN = "hafiza"
+GUNLUK_DIZINI = "gunluk"
 
 
 def belge_tara(yol):
@@ -124,6 +129,21 @@ def denetle(kok):
             print(f"  {bagil}: {len(bulunanlar)} test satırı")
             for sira, satir in bulunanlar[:3]:
                 print(f"      satır {sira}: {satir[:70]}")
+
+    gunluk_dizini = Path(kok) / GUNLUK_DIZINI
+    if gunluk_dizini.is_dir():
+        for yol in sorted(gunluk_dizini.glob("*.jsonl")):
+            sayi = 0
+            try:
+                for satir in yol.read_text(encoding="utf-8",
+                                           errors="ignore").splitlines():
+                    if any(imza in satir for imza in BELGE_IMZALARI):
+                        sayi += 1
+            except OSError:
+                continue
+            if sayi:
+                toplam += sayi
+                print(f"  {yol.relative_to(kok)}: {sayi} ham test kaydı")
 
     for yol in sorted(hafiza_dizini.rglob("*.json")):
         bulunanlar = kayit_tara(yol)
