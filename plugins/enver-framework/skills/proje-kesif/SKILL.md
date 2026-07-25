@@ -113,3 +113,11 @@ doğrudan mı geçelim?"
 - `/faz` — faz motoru ve kapı kontrolleri
 - `/tasarim` — tasarım brifingi (keşiften sonra)
 - `/projeler` — proje tanımı
+
+---
+
+## English
+
+**Discovery skill**
+
+Loads when a new project, system, site, application, panel or feature is to be built: NO CODING before discovery. Four stages - requirements, research, clarification, plan - and none may be skipped. Never assume; ask.

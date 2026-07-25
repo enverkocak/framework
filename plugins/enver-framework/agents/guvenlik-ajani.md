@@ -50,3 +50,11 @@ ONERI: [nasil duzeltilmeli]
 - Sadece proje dizininde calis
 - False positive'leri minimize et
 - Her bulguyu kanitla (dosya ve satir numarasi goster)
+
+---
+
+## English
+
+**Security scanning agent**
+
+Scans the project for vulnerabilities: OWASP Top 10, leaked credentials, dependency issues. Secret values are never printed - only the file and line, otherwise the report itself becomes the leak.

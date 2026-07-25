@@ -52,3 +52,11 @@ Yazilan ozet su bicimdedir:
 - Kisa ve oz ol
 - Dosya yollari ve satir numaralari belirt
 - Sonraki adimi NET yaz (belirsiz birakma)
+
+---
+
+## English
+
+**Session handover agent**
+
+Updates the state file before the context fills up and prepares the next conversation: what was done, which decisions were made, what is left. The next session starts from the right place instead of guessing.

@@ -56,3 +56,11 @@ normal akış geçerlidir.
 - `/proje-devral` — komutun tamamı
 - `proje-kesif` — sıfırdan proje için, sorularla ilerler
 - `/faz` — üretilen planı yürütür
+
+---
+
+## English
+
+**Project takeover skill**
+
+Loads when work starts on a project that already exists - an old site, an inherited customer, an untouched repository. You learn by reading the code, not by asking questions. Nothing is written before approval and existing files are never overwritten.

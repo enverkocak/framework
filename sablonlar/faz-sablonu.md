@@ -12,3 +12,11 @@
 - **Tamamlanan Isler:**
   - ...
 - **Arsiv Tarihi:** [Tamamlaninca tarih yazilir]
+
+---
+
+## English
+
+**Phase plan template**
+
+One phase per row: what it delivers and the **gate check** that proves it. A phase without a gate cannot be closed - "done" is a measurement, not an opinion.

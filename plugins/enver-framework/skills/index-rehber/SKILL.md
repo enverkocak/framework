@@ -62,3 +62,11 @@ Metin koda gömülmez — yeni dil eklemek tek dosya çevirmekten ibarettir.
 
 Kullanıcıya gösterilen metinlerde Türkçe karakterler tam kullanılır: ö, ç, ü, ğ, ı, ş, İ.
 Komut ve klasör adlarında kullanılmaz.
+
+---
+
+## English
+
+**Command guide skill**
+
+Lists which commands, skills, agents and protections exist in the framework, and finds the right command from a description of the job. The list is generated from the files themselves, never maintained by hand.

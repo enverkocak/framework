@@ -26,3 +26,11 @@
 ## HEDEF PLATFORMLAR
 - iOS: [versiyon]
 - Android: [versiyon]
+
+---
+
+## English
+
+**Mobile project rules template**
+
+The same starting point for a mobile project: platform, build and release steps, device-specific notes.

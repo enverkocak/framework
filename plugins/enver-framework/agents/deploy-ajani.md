@@ -46,3 +46,11 @@ DEPLOY DURUMU:
 - Sunucuda SADECE belirtilen dizinde calis
 - Vault bilgilerini ASLA gosterme
 - Hata durumunda hemen dur ve kullaniciya bildir
+
+---
+
+## English
+
+**Safe deployment agent**
+
+Deploys to a server: directory check, build, health check. It works only inside the permitted project directory - other sites on the same server are never touched. Going live always asks first.

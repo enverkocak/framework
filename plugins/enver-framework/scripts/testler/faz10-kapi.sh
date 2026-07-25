@@ -266,6 +266,17 @@ for K in "$P"/commands/*.md; do
 done
 [ "$EKSIK_INGILIZCE" -eq 0 ] && kontrol "Butun komut belgelerinde Ingilizce bolum var" 0   || kontrol "Ingilizce bolumu eksik komut: $EKSIK_INGILIZCE" 1
 
+# Ajanlar, beceriler, sablonlar ve kural belgesi de iki dilli olmali.
+# Komut belgeleri 3.2.1'de kapsanmisti; digerleri tek dilli kalmisti ve
+# bunu kimse olcmuyordu.
+EKSIK_DIL=0
+for D in "$P"/agents/*.md "$P"/skills/*/SKILL.md "$P"/references/kurallar.md          sablonlar/*.md CLAUDE.ornek.md; do
+  [ -f "$D" ] || continue
+  case "$(basename "$D")" in ICINDEKILER.md) continue ;; esac
+  grep -q "^## English" "$D" || { EKSIK_DIL=$((EKSIK_DIL+1)); echo "       tek dilli: $D"; }
+done
+[ "$EKSIK_DIL" -eq 0 ] && kontrol "Ajan, beceri, sablon ve kural belgeleri iki dilli" 0   || kontrol "Ingilizce bolumu eksik belge: $EKSIK_DIL" 1
+
 # Dil dosyalari ayni anahtarlari tasimali
 "$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Dil dosyalari ayni anahtarlarda" 0 || kontrol "Dil dosyalari ayni anahtarlarda" 1
 import json

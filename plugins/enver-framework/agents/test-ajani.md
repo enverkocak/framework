@@ -45,3 +45,11 @@ EKSIK TESTLER:
 - Testleri Turkce yaz
 - Mevcut test pattern'ine uy
 - Gereksiz test yazma (getter/setter testi gibi)
+
+---
+
+## English
+
+**Test agent**
+
+Writes tests for the project and runs the existing ones: unit, integration and interface. A test that passes without measuring anything is worse than no test.

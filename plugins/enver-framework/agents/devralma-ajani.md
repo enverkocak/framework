@@ -73,3 +73,11 @@ Sohbet cümlesi kurma, doğrudan raporu ver:
 ## Sorular
 - <taramayla cevaplanamayan, sorulması gereken>
 ```
+
+---
+
+## English
+
+**Project takeover agent**
+
+Reads one single aspect of an existing project in depth and reports it: architecture, data, process, rules or unfinished work. Five of them run in parallel during `/proje-devral`. It reports what it found, never what it assumes.

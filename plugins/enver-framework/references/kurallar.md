@@ -125,3 +125,21 @@ Kapı kontrolü otomatik testtir — sonucu sayıyla raporlanır:
 | Deploy bilgisi | `~/.claude/bilgi/deploy-rehberi.md` |
 | Şablon | `~/.claude/sablonlar/index.md` |
 | Komut rehberi | `/index` |
+
+---
+
+## English
+
+**The framework's own rules.** These are not advice; they are enforced by
+running protections.
+
+| Rule | What it means |
+|------|---------------|
+| Identity | Generated files carry the developer's own name, taken from settings, never hard-coded |
+| Trace | Tool names must not appear in **code comments**. Documentation, prose, string values, commands and paths are free |
+| Language | Interface text, comments and error messages are Turkish; identifiers stay ASCII |
+| Deletion | Nothing is deleted. Finished work is archived with a note explaining why |
+| Root | The project root stays clean: temporary work goes to `_calisma/`, finished work to `_arsiv/` |
+| Secrets | Passwords and keys live in the vault; maps and definitions only point at a vault record |
+| Gates | A phase closes when its gate check passes - "done" is a measurement, not an opinion |
+| Reasoning | Every block and every permission request explains **what**, **why** and **how to fix it** in the user's language |

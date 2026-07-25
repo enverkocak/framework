@@ -318,6 +318,41 @@ python "$K" kilitle        # kapat
 - Süre dolunca kasa kendiliğinden kilitlenir
 - Kasa dosyasını doğrudan okumaya çalışma — koruma engeller, zaten şifreli
 
+### İlk kurulum
+
+Kasa, düz metin bir klasörden kurulur:
+
+```bash
+python "$K" kur --kaynak <şifre-klasörün>
+```
+
+Parola sorulur (en az 8 karakter). Kurulumdan sonra **düz metin kaynağı
+arşivle**, projede bırakma — aynı sırlar iki yerde durursa şifreli olan
+hiçbir şey korumaz:
+
+```bash
+python plugins/enver-framework/scripts/ortak/arsiv.py <şifre-klasörün> \
+  "Kasa duz metin kaynagi" "Kasa sifrelendi."
+```
+
+### Kasa makineye özeldir
+
+`kasa/` deponun dışında tutulur (git'e girmez), yani **senkron olmaz.**
+Her bilgisayarda ayrı kurulur. Hafıza makineler arasında gider, sırlar
+gitmez — bu bilinçli bir ayrımdır.
+
+### Parolayı unutursan
+
+Geri dönüş yoktur; kasa açılmaz. Çözüm, kaynağı olan bir klasörden
+yeniden kurmaktır:
+
+```bash
+python "$K" kur --kaynak <kaynak-klasör> --uzerine-yaz
+```
+
+`--uzerine-yaz` mevcut kasayı **değiştirir**. İçinde ulaşamadığın kayıtlar
+varsa önce onları kurtarmayı dene.
+
 ---
 
 ## Hafıza ve çoklu bilgisayar

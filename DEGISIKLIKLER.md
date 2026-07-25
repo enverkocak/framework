@@ -9,6 +9,37 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.3.2 — Iki dillilik komut belgelerinin otesine gecti
+
+"Her seyin Ingilizcesi olsun" denince olculdu: komut belgelerinin 30'u da
+iki dilliydi ama **15 belge tek dilli kalmisti** ve bunu hicbir kontrol
+olcmuyordu.
+
+| Nerede | Kac dosya |
+|--------|-----------|
+| Ajanlar | 5 |
+| Beceriler | 4 |
+| Sablonlar | 4 |
+| Kural belgesi (`references/kurallar.md`) | 1 |
+| Ornek kurallar (`CLAUDE.ornek.md`) | 1 |
+
+Hepsine Ingilizce bolum yazildi. Ajan ve beceri bolumleri ne yaptigini
+degil **nasil davrandigini** anlatiyor: devralma ajani "buldugunu
+raporlar, varsaydigini degil", guvenlik ajani "sir degerini yazmaz, yalniz
+dosya ve satiri", kesif becerisi "kesif bitmeden kodlama yok".
+
+**Kasa bolumu tamamlandi.** Kilavuzda gunluk kullanim vardi ama sunlar
+yoktu: ilk kurulumun nasil yapildigi, duz metin kaynagin arsivlenmesi
+gerektigi, kasanin MAKINEYE OZEL oldugu (`kasa/` senkron olmaz, her
+bilgisayarda ayri kurulur) ve parola unutulursa ne olacagi. Ingilizce
+bolumde ayrica `liste` ve `yaz` komutlari ile uyarilar eksikti.
+
+**Kapiya baglandi.** Faz 10 artik ajan, beceri, sablon ve kural
+belgelerinde de Ingilizce bolum ariyor. Yeni bir ajan ya da beceri tek
+dilli eklenirse takim kalir.
+
+Tam takim: **587 gecti, 0 kaldi** (cikis kodu 0).
+
 ## 3.3.1 — Kasa kontrolu yazdiriyordu, olcmuyordu
 
 3.3.0'da eklenen gerileme kontrolu kasanin boyutunu **yazdiriyor** ama

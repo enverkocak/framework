@@ -131,3 +131,11 @@ Kodda, yorumda, meta etikette, commit mesajında, dosya adında hiçbir üretim
 aracı görünmez. Geliştirici bilgisi her zaman **Enver KOCAK**.
 
 Bu kural müşteri projelerinde **istisnasızdır**.
+
+---
+
+## English
+
+**Original design skill**
+
+Loads whenever a website, interface, page, panel or any visual surface is to be designed. Produces a distinct colour, typography, spacing and corner language per project, and audits template-looking layouts - the same hero plus three cards plus the same gradient is rejected.

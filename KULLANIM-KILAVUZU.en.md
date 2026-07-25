@@ -189,15 +189,55 @@ line it exists to catch.
 ```bash
 K="plugins/enver-framework/scripts/kasa/kasa.py"
 
+python "$K" durum       # locked or open, how long is left
 python "$K" ac          # unlock (asks for the password)
-python "$K" oku <file>  # read a record
+python "$K" liste       # list the records
+python "$K" oku <file>  # read one record
+python "$K" yaz <file>  # add or update a record
 python "$K" kilitle     # lock
-python "$K" durum       # is it open, how long is left
 ```
 
-Decrypted content is **never written to disk**. The derived key is stored
-for a limited time (60 minutes by default); after that the vault locks
-itself.
+**Important:**
+- Type the password **in your own terminal**; never into the conversation
+- Decrypted content is **never written to disk**
+- The vault locks itself when the time is up (60 minutes by default)
+- Do not try to read the vault file directly — a protection blocks it, and
+  it is encrypted anyway
+
+### First-time setup
+
+The vault is built from a plaintext folder:
+
+```bash
+python "$K" kur --kaynak <your secrets folder>
+```
+
+It asks for a password (at least 8 characters). Afterwards **archive the
+plaintext source** instead of leaving it in the project — if the same
+secrets sit in two places, the encrypted one protects nothing:
+
+```bash
+python plugins/enver-framework/scripts/ortak/arsiv.py <your secrets folder> \
+  "Vault plaintext source" "Vault encrypted."
+```
+
+### The vault is per-machine
+
+`kasa/` is kept out of the repository (never committed), so it **does not
+sync**. Set it up separately on each computer. Memory travels between
+machines; secrets do not — that separation is deliberate.
+
+### If you forget the password
+
+There is no recovery; the vault will not open. The way back is to rebuild
+it from a source folder:
+
+```bash
+python "$K" kur --kaynak <source folder> --uzerine-yaz
+```
+
+`--uzerine-yaz` **replaces** the existing vault. If it holds records you
+cannot reach, try to recover those first.
 
 ---
 

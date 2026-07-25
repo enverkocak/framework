@@ -56,3 +56,18 @@
 | `/kasa` | Şifreler ve anahtarlar |
 | `/saglik` | Framework gerçekten çalışıyor mu |
 | `/guncelle` | Yeni sürüme tek komutla geç |
+
+---
+
+## English
+
+**Your own working rules.** This file ships as an example; replace the
+placeholders with your details. Whatever you write here applies to every
+session in this project.
+
+The identity rules keep your name on your work. The security rules keep
+secrets out of the repository. The working rules define the language,
+the phase order and what "done" means.
+
+Rules written here are read at the start of every session; the ones that
+must never be forgotten are additionally enforced by protection hooks.

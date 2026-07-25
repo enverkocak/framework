@@ -10,6 +10,38 @@ teaches nothing.
 
 ---
 
+## 3.3.2 — Bilingual coverage went beyond the command documents
+
+"Let everything have English" was measured: all 30 command documents were
+bilingual, but **15 documents were still single-language** and no check
+measured it.
+
+| Where | Files |
+|-------|-------|
+| Agents | 5 |
+| Skills | 4 |
+| Templates | 4 |
+| Rules reference (`references/kurallar.md`) | 1 |
+| Example rules (`CLAUDE.ornek.md`) | 1 |
+
+Each gained an English section. The agent and skill sections describe not
+what they do but **how they behave**: the takeover agent "reports what it
+found, never what it assumes"; the security agent "never prints secret
+values, only the file and line"; the discovery skill "no coding before
+discovery finishes".
+
+**The vault section was completed.** The guide covered daily use but not:
+how the first-time setup works, that the plaintext source must be
+archived, that the vault is **per-machine** (`kasa/` never syncs, set it up
+on each computer), and what happens if the password is lost. The English
+section was also missing the `liste` and `yaz` commands and the warnings.
+
+**Bound to the gate.** Phase 10 now looks for an English section in agents,
+skills, templates and the rules reference too. Add a single-language agent
+or skill and the suite fails.
+
+Full suite: **587 passed, 0 failed** (exit code 0).
+
 ## 3.3.1 — The vault check printed but did not measure
 
 The regression check added in 3.3.0 **printed** the vault size without

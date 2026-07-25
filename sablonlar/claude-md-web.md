@@ -29,3 +29,11 @@
 
 ## DEPLOY
 → Detay icin: ~/.claude/bilgi/deploy-rehberi.md
+
+---
+
+## English
+
+**Web project rules template**
+
+A starting `CLAUDE.md` for a web project: stack, directory layout, commands, and the rules that apply to this project. Fill in the placeholders; what you do not know, leave empty rather than guess.
