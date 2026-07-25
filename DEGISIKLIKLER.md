@@ -9,6 +9,21 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.2.6 — Yol denetimi kendi belgemdeki hatayi yakaladi
+
+3.2.5'te README'ye eklenen Ingilizce blokta dil dosyasinin yolu eksik
+yazilmisti: `diller/en.json` denmisti, dogrusu
+`plugins/enver-framework/diller/en.json`. Yani yeni gelen kullaniciya var
+olmayan bir yol gosteriliyordu.
+
+Yol denetimi bunu yakaladi ama **surum yine de yayinlandi**: takim
+"KALAN VAR" derken cikis kodu boru hattinda maskelenmisti. Ders, kapinin
+kendisiyle ilgili: bir kapi ancak cikis koduna bakilirsa kapidir.
+
+Yol duzeltildi, tam takim cikis koduyla birlikte dogrulandi.
+
+Tam takim: **584 gecti, 0 kaldi** (cikis kodu 0).
+
 ## 3.2.5 — Depo sayfasi yabanciya kendini anlatiyor
 
 Depo herkese acik ve MIT lisansli, ama github.com sayfasinda **ilk ekranda

@@ -10,6 +10,21 @@ teaches nothing.
 
 ---
 
+## 3.2.6 — The path audit caught an error in my own document
+
+The English block added in 3.2.5 pointed at `diller/en.json`; the real
+path is `plugins/enver-framework/diller/en.json`. A newcomer would have
+been sent to a file that does not exist.
+
+The path audit caught it — but the release went out anyway: the suite
+printed "FAILED" while its exit code was masked by a pipeline. The lesson
+concerns the gate itself: a gate is only a gate if its exit code is read.
+
+The path was fixed and the full suite verified together with its exit
+code.
+
+Full suite: **584 passed, 0 failed** (exit code 0).
+
 ## 3.2.5 — The repository page introduces itself to non-Turkish readers
 
 The repository is public and MIT licensed, yet **not one line of English
