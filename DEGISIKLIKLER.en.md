@@ -10,6 +10,53 @@ teaches nothing.
 
 ---
 
+## 3.2.4 — The suite said "all passed" while a section had failed
+
+Testing the update banner end to end on the second computer surfaced
+three bugs at once, all from one root: **the measurement was not measuring
+what it believed it measured.**
+
+### 1. This time the banner never appeared
+
+3.2.2 closed the false warning; the opposite direction opened. Once the
+cached remote version went stale, a new release was **never** announced
+for a day.
+
+Fix: if the local version changed since the cache was written (that is, an
+update happened), the cached remote value may be stale too - the cache is
+skipped and the network is polled once. With no network, the stored
+verdict is no longer returned as-is; the remote version is compared
+against the live local one.
+
+### 2. A scenario suite ran but was NOT COUNTED
+
+The runner looked for the result line in fully Turkish spelling only. The
+trace scenarios were rewritten in 3.2.0 with ASCII output, so from that
+day **24 scenarios ran without entering the total**.
+
+I noticed the drop earlier and explained it as "scenarios merging" - that
+was wrong. This was the cause.
+
+### 3. A failed section did not fail the run
+
+Worse: when the result line could not be read, the section printed
+`[KALDI]` but was never added to the failure total. Two "FAILED" lines
+were on screen while the summary said **"ALL PASSED, 0 failed"**.
+
+A gate that says "passed" while knowing it is shut is not a gate. Now: an
+unreadable suite counts as broken, a non-zero exit code counts as a
+failure, and both spellings are read.
+
+### New suite: guncelleme-testleri.py (7 scenarios)
+
+The banner can err in both directions and both mislead the user: a false
+warning ("I updated but it still says so") and silence ("a new version
+exists but nothing is said"). Seven scenarios measure both; no network
+required.
+
+Full suite: **584 passed, 0 failed** (the previous count of 553 was
+incomplete).
+
 ## 3.2.3 — The panel miscounted its own menu
 
 `/panel` described itself as "4 tabs, 16 categories, **80+ operations**".

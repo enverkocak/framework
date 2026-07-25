@@ -9,6 +9,50 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.2.4 — Takim "hepsi gecti" derken bir bolum kalmisti
+
+Guncelleme bildirimi ikinci bilgisayarda ucdan uca denenirken uc hata
+birden cikti. Ucu de ayni koke bagli: **olcum, olctugunu sandigi seyi
+olcmuyordu.**
+
+### 1. Bildirim bu kez hic cikmadi
+
+3.2.2'de yanlis uyari kapatilmisti; simdi ters yon acildi. Onbellekteki
+uzak surum eskiyince yeni yayin bir gun boyunca **hic** soylenmiyordu.
+
+Duzeltme: yerel surum onbellek yazildigindan beri degistiyse (yani
+guncelleme yapilmissa) kayitli uzak deger de eskimis olabilir - onbellek
+atlanip aga bir kez bakiliyor. Ag yoksa kayitli karar oldugu gibi
+donmuyor, uzak surum ile canli yerel surum yeniden karsilastiriliyor.
+
+### 2. Senaryo takimi calisiyor ama SAYILMIYORDU
+
+Kosucu sonuc satirini yalniz tam Turkce bicimde ariyordu
+("N gecti, M kaldi" ASCII yazilmissa okuyamiyordu). Iz senaryolari
+3.2.0'da yeniden yazilirken ASCII'ye donmustu; o gunden beri **24 senaryo
+kosuyor ama toplama girmiyordu**.
+
+Daha once bu dususu fark edip "senaryolarin birlesmesinden" diye
+aciklamistim - yanlisti. Sebep buymus.
+
+### 3. Kalan bolum kosuyu DUSURMUYORDU
+
+Daha kotusu: sonuc satiri okunamayinca bolum `[KALDI]` yazdiriyor ama
+`TOPLAM_KALAN`'a eklenmiyordu. Ekranda iki satir "KALDI" gorunurken
+sonuc **"HEPSI GECTI, 0 kaldi"** diyordu.
+
+Bir kapi, kapali oldugunu bildigi halde "gecti" diyorsa kapi degildir.
+Artik: sonuc satiri okunamayan takim bozuk sayilir, cikis kodu sifirdan
+farkliysa kalan sayilir, iki yazim bicimi de okunur.
+
+### Yeni senaryo takimi: guncelleme-testleri.py (7 senaryo)
+
+Bildirim iki yonde de yanilabilir ve ikisi de kullaniciyi yaniltir:
+yanlis uyari ("guncelledim ama hala soyluyor") ve sessiz kalma ("yeni
+surum var ama demiyor"). Yedi senaryo ikisini de olcuyor; ag gerekmez.
+
+Tam takim: **584 gecti, 0 kaldi** (onceki 553 sayimi eksikti).
+
 ## 3.2.3 — Panel kendi menusunu yanlis sayiyordu
 
 `/panel` kendini "4 sekme, 16 kategori, **80+ islem**" diye tanitiyordu.

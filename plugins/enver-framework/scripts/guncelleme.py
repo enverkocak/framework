@@ -156,9 +156,20 @@ def kontrol(zorla=False):
     if not zorla and onceki.get("son_kontrol"):
         try:
             son = datetime.fromisoformat(onceki["son_kontrol"])
-            if simdi - son < YOKLAMA_ARALIGI:
+            yerel = yerel_surum()
+
+            # Yerel sürüm önbellek yazıldığından beri DEĞİŞTİYSE güncelleme
+            # yapılmış demektir; o zaman kayıtlı uzak sürüm de eskimiş
+            # olabilir ve yeni bir yayını bir gün boyunca kaçırırız.
+            # Böyle bir durumda önbellek atlanır, ağa bir kez bakılır.
+            #
+            # Bu, iki yönlü hatayı da kapatır: güncelledikten sonra
+            # "güncelleme var" demeye devam etmek (yanlış uyarı) ve yeni
+            # sürümü hiç söylememek (sessiz kalma).
+            yerel_degisti = onceki.get("yerel") != yerel
+
+            if simdi - son < YOKLAMA_ARALIGI and not yerel_degisti:
                 uzak = onceki.get("uzak")
-                yerel = yerel_surum()
                 var_mi = bool(uzak and yerel
                               and _surum_tuple(uzak) > _surum_tuple(yerel))
                 return {
@@ -172,10 +183,20 @@ def kontrol(zorla=False):
 
     sonuc = _canli_kontrol(kaynak)
     if sonuc is None:
-        # Ağ yok: eski önbellek varsa onu koru, yoksa sessiz.
+        # Ağ yok: eski önbellekteki UZAK sürüm kullanılır, ama karar
+        # yeniden verilir. Kayıtlı kararı olduğu gibi döndürmek, güncelleme
+        # yapıldıktan sonra ağ da yoksa "GÜNCELLEME VAR" demeyi sürdürürdü.
         if onceki.get("son_kontrol"):
-            return {k: onceki.get(k) for k in
-                    ("var_mi", "yerel", "uzak", "degisiklikler")}
+            uzak = onceki.get("uzak")
+            yerel = yerel_surum()
+            var_mi = bool(uzak and yerel
+                          and _surum_tuple(uzak) > _surum_tuple(yerel))
+            return {
+                "var_mi": var_mi,
+                "yerel": yerel,
+                "uzak": uzak,
+                "degisiklikler": onceki.get("degisiklikler") if var_mi else [],
+            }
         return None
 
     # Sonucu önbelleğe yaz (zaman damgasıyla)

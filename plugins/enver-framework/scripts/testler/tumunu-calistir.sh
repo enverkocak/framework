@@ -115,12 +115,33 @@ senaryo() {
   fi
 
   "$PY_KOMUT" "$BETIK" "$KOK" > "$CIKTI" 2>&1
-  SONUC=$(grep -oE "[0-9]+ geçti, [0-9]+ kaldı" "$CIKTI" | tail -1)
+  CIKIS_KODU=$?
+
+  # Sonuc satiri hem tam Turkce hem ASCII yazilmis olabilir; ikisi de
+  # okunur. Eskiden yalniz Turkcesi araniyordu: ASCII yazan bir takim
+  # sessizce SIFIR sayiliyor, kaldigi da fark edilmiyordu.
+  SONUC=$(grep -oE "[0-9]+ (geçti|gecti), [0-9]+ (kaldı|kaldi)" "$CIKTI" | tail -1)
   GECEN=$(echo "$SONUC" | grep -oE "^[0-9]+")
-  KALAN=$(echo "$SONUC" | grep -oE "[0-9]+ kaldı" | grep -oE "[0-9]+")
+  KALAN=$(echo "$SONUC" | grep -oE "[0-9]+ (kaldı|kaldi)" | grep -oE "^[0-9]+")
 
   GECEN=${GECEN:-0}
   KALAN=${KALAN:-0}
+
+  # Sonuc satiri hic okunamadiysa takim sessizce yok sayilmasin: cikis
+  # kodu sifirdan farkliysa ya da hicbir senaryo sayilmadiysa BOZUKTUR.
+  if [ -z "$SONUC" ]; then
+    KALAN=1
+    printf "  [KALDI ] %-40s sonuc satiri okunamadi
+" "$ADI"
+    TOPLAM_KALAN=$((TOPLAM_KALAN + KALAN))
+    BOLUM_SAYISI=$((BOLUM_SAYISI + 1))
+    BOZUK_BOLUMLER="$BOZUK_BOLUMLER $3"
+    return
+  fi
+
+  if [ "$CIKIS_KODU" -ne 0 ] && [ "$KALAN" -eq 0 ]; then
+    KALAN=1
+  fi
 
   TOPLAM_GECEN=$((TOPLAM_GECEN + GECEN))
   TOPLAM_KALAN=$((TOPLAM_KALAN + KALAN))
@@ -137,6 +158,7 @@ senaryo() {
 senaryo "Korumalar" "$T/koruma-testleri.py" "koruma"
 senaryo "Turkce yazim" "$T/yazim-testleri.py" "yazim"
 senaryo "Arac izi" "$T/iz-testleri.py" "iz"
+senaryo "Guncelleme bildirimi" "$T/guncelleme-testleri.py" "guncelleme"
 senaryo "Tam yetki guvenligi" "$T/tam-yetki-testleri.py" "tam-yetki"
 
 # ------------------------------------------------------------ belge yolları
