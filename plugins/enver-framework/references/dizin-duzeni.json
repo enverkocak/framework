@@ -35,7 +35,8 @@
     "CONTRIBUTING.md": "Katki rehberi (Turkce + Ingilizce)",
     "SECURITY.md": "Guvenlik acigi bildirme yolu (Turkce + Ingilizce)",
     ".github": "Issue/PR sablonlari ve CI is akislari",
-    "LICENSE": "MIT lisans metni - telif Enver KOCAK"
+    "LICENSE": "MIT lisans metni - telif Enver KOCAK",
+    "aciklamalar.json": "Klasor aciklamalari - index ureteci okur"
   },
   "uretilen": {
     "hafiza": "Kalici hafiza - depoya girer, makineler arasinda senkron olur",

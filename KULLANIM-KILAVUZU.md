@@ -223,6 +223,17 @@ Bütün komutlar: `/index`
 | `/senkron` | Bilgisayar değiştirirken |
 | `/guvenlik-tara` | Teslimden önce |
 | `/guncelle` | Açılışta "GÜNCELLEME VAR" görünce |
+| `/faz-kontrol` | Aktif fazın kapısını çalıştır — lint, tip, güvenlik, test, derleme |
+| `/temizlik` | Hafıza, plan ve geçici dosyalar birikince |
+| `/framework-ayarlari` | Kanca, izin, kasa ve sürüm ayarları |
+
+### Çerçevenin kendi bakımı
+
+| Komut | Ne zaman |
+|-------|----------|
+| `/surum` | Yayın yaparken — sürümü dokuz yerde birden yükseltir |
+| `/dokumantasyon` | Uç listesi, veritabanı şeması, değişiklik kaydı, mimari çizim üretmek |
+| `/toplu-islemler` | Toplu düzeltme — kullanılmayan içe aktarım, ölü kod, paket güncelleme |
 
 ### Sunucu ve operasyon
 
@@ -532,8 +543,8 @@ Yedi alanı ölçer. **Korumaların yalnız kayıtlı değil, gerçekten çalı�
 bash plugins/enver-framework/scripts/testler/tumunu-calistir.sh
 ```
 
-12 faz kapısı, 105 senaryo, sağlık kontrolü, işlevsel ve güvenlik doğrulamaları.
-Yaklaşık 35 saniye.
+12 faz kapısı, 121 senaryo, sağlık kontrolü, işlevsel ve güvenlik doğrulamaları.
+Yaklaşık 40 saniye.
 
 ### Bir koruma yanlış engelliyor
 

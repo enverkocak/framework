@@ -7,9 +7,9 @@
 
 | Klasör | Ne için |
 |--------|---------|
-| `diller/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
-| `references/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
-| `scripts/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
+| `diller/` | açıklamalar dosyaların kendisinden okunur. |
+| `references/` | açıklamalar dosyaların kendisinden okunur. |
+| `scripts/` | açıklamalar dosyaların kendisinden okunur. |
 
 ---
 

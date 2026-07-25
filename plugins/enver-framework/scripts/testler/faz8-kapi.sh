@@ -7,6 +7,10 @@ I="$P/scripts/is"
 cd "$KOK" || exit 1
 mkdir -p _calisma
 
+# Gorev kayitlari gercek hafizaya degil kum havuzuna yazilir
+source "$P/scripts/testler/_kumhavuzu.sh"
+kumhavuzu_ac "$KOK"
+
 GECEN=0; KALAN=0
 kontrol() {
   if [ "$2" -eq 0 ]; then echo "  [GECTI ] $1"; GECEN=$((GECEN+1));
@@ -27,7 +31,7 @@ done
 
 echo ""
 echo "--- 2. GOREV TAKIBI (T42) ---"
-python - << 'PY' 2>/dev/null && kontrol "Gorev eklenip okunabiliyor" 0 || kontrol "Gorev eklenip okunabiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << 'PY' 2>/dev/null && kontrol "Gorev eklenip okunabiliyor" 0 || kontrol "Gorev eklenip okunabiliyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/is")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -39,7 +43,7 @@ bulunan = gorev.gorev_bul(g["no"])
 assert bulunan and bulunan["baslik"] == "Kapi testi gorevi"
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Gorevin kaynagi kaydediliyor" 0 || kontrol "Gorevin kaynagi kaydediliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << 'PY' 2>/dev/null && kontrol "Gorevin kaynagi kaydediliyor" 0 || kontrol "Gorevin kaynagi kaydediliyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/is")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -52,7 +56,7 @@ for k in ("musteri", "kendi", "hata", "bakim"):
     assert k in gorev.KAYNAKLAR
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Oncelik ve durum siralamasi dogru" 0 || kontrol "Oncelik ve durum siralamasi dogru" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << 'PY' 2>/dev/null && kontrol "Oncelik ve durum siralamasi dogru" 0 || kontrol "Oncelik ve durum siralamasi dogru" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/is")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -64,7 +68,7 @@ liste = gorev.suzgecle(proje="kapi-testi-siralama", acik_olanlar=True)
 assert liste[0]["oncelik"] == "acil", [g["oncelik"] for g in liste]
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Gorev bitirilebiliyor" 0 || kontrol "Gorev bitirilebiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << 'PY' 2>/dev/null && kontrol "Gorev bitirilebiliyor" 0 || kontrol "Gorev bitirilebiliyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/is")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -77,7 +81,7 @@ acik = gorev.suzgecle(proje="kapi-testi-bitir", acik_olanlar=True)
 assert not acik, acik
 PY
 
-python "$I/gorev.py" ozet 2>/dev/null | grep -q "GÖREV ÖZETİ" \
+CLAUDE_PROJECT_DIR="$KUM" python "$I/gorev.py" ozet 2>/dev/null | grep -q "GÖREV ÖZETİ" \
   && kontrol "Gorev ozeti uretiliyor" 0 || kontrol "Gorev ozeti uretiliyor" 1
 
 echo ""
@@ -196,7 +200,7 @@ python "$I/teslim.py" kontrol > _calisma/tk2.txt 2>&1
 grep -q "TESLİME HAZIR MI" _calisma/tk2.txt \
   && kontrol "Teslim hazirlik kontrolu calisiyor" 0 || kontrol "Teslim hazirlik kontrolu calisiyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Acil gorev varsa teslim kontrolu DURUYOR" 0 || kontrol "Acil gorev varsa teslim kontrolu DURUYOR" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << 'PY' 2>/dev/null && kontrol "Acil gorev varsa teslim kontrolu DURUYOR" 0 || kontrol "Acil gorev varsa teslim kontrolu DURUYOR" 1
 import subprocess, sys
 sys.path.insert(0, "plugins/enver-framework/scripts/is")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")

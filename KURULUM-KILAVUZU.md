@@ -156,7 +156,7 @@ python plugins/enver-framework/scripts/saglik/saglik.py bak
 /index
 ```
 
-27 komut, ne işe yaradıkları ve nasıl kullanıldıkları.
+30 komut, ne işe yaradıkları ve nasıl kullanıldıkları.
 
 ### Bu makineyi tanıt
 
@@ -293,8 +293,8 @@ python plugins/enver-framework/scripts/saglik/saglik.py istatistik
 bash plugins/enver-framework/scripts/testler/tumunu-calistir.sh
 ```
 
-12 faz kapısı, 105 senaryo, sağlık ve güvenlik doğrulamaları.
-Yaklaşık 35 saniye. Hepsi geçmeli.
+12 faz kapısı, 121 senaryo, sağlık ve güvenlik doğrulamaları.
+Yaklaşık 40 saniye. Hepsi geçmeli.
 
 ---
 

@@ -6,6 +6,10 @@ P="$KOK/plugins/enver-framework"
 cd "$KOK" || exit 1
 mkdir -p _calisma
 
+# Cihaz kayitlari gercek hafizaya degil kum havuzuna yazilir
+source "$P/scripts/testler/_kumhavuzu.sh"
+kumhavuzu_ac "$KOK"
+
 GECEN=0; KALAN=0
 kontrol() {
   if [ "$2" -eq 0 ]; then echo "  [GECTI ] $1"; GECEN=$((GECEN+1));
@@ -30,7 +34,7 @@ done
 
 echo ""
 echo "--- 2. CIHAZ ENVANTERI (T68) ---"
-python - << PY 2>/dev/null && kontrol "Cihaz eklenip okunabiliyor" 0 || kontrol "Cihaz eklenip okunabiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Cihaz eklenip okunabiliyor" 0 || kontrol "Cihaz eklenip okunabiliyor" 1
 $YOL_EKLE
 import envanter
 c = envanter.ekle("Kapi testi kamerasi", "kamera", "Kapi Testi Musterisi",
@@ -49,7 +53,7 @@ for alan in ("adres", "model", "konum", "kasa_anahtari"):
     assert not envanter.YASAK_ALANLAR.match(alan), alan
 PY
 
-python - << PY 2>/dev/null && kontrol "Sir denetimi calisiyor" 0 || kontrol "Sir denetimi calisiyor" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Sir denetimi calisiyor" 0 || kontrol "Sir denetimi calisiyor" 1
 $YOL_EKLE
 import envanter
 # Not alanına parola görünümlü içerik konursa yakalanmalı
@@ -67,7 +71,7 @@ finally:
     envanter.yaz(veri)
 PY
 
-python - << PY 2>/dev/null && kontrol "Bakim takibi hesaplaniyor" 0 || kontrol "Bakim takibi hesaplaniyor" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Bakim takibi hesaplaniyor" 0 || kontrol "Bakim takibi hesaplaniyor" 1
 $YOL_EKLE
 import envanter
 from datetime import date, timedelta
@@ -78,7 +82,7 @@ gerekenler = envanter.bakim_gerekenler()
 assert any(g["no"] == c["no"] and g["gecikme"] > 0 for g in gerekenler), gerekenler
 PY
 
-python "$P/scripts/saha/envanter.py" liste --sinir 3 2>/dev/null | grep -q "CİHAZ ENVANTERİ" \
+CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/saha/envanter.py" liste --sinir 3 2>/dev/null | grep -q "CİHAZ ENVANTERİ" \
   && kontrol "Envanter listelenebiliyor" 0 || kontrol "Envanter listelenebiliyor" 1
 
 echo ""
@@ -153,7 +157,7 @@ for asama in kesif.ASAMALAR:
     assert len(kesif.SORULAR[asama]) >= 5, (asama, len(kesif.SORULAR[asama]))
 PY
 
-python - << PY 2>/dev/null && kontrol "Bos asama ATLANAMIYOR" 0 || kontrol "Bos asama ATLANAMIYOR" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Bos asama ATLANAMIYOR" 0 || kontrol "Bos asama ATLANAMIYOR" 1
 $YOL_EKLE
 import kesif
 kesif.baslat("kapi-testi-kesif", "Test")
@@ -162,7 +166,7 @@ assert veri is None, "bos asama atlandi"
 assert "atlanamaz" in mesaj.lower(), mesaj
 PY
 
-python - << PY 2>/dev/null && kontrol "Bulgu eklenince ilerlenebiliyor" 0 || kontrol "Bulgu eklenince ilerlenebiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Bulgu eklenince ilerlenebiliyor" 0 || kontrol "Bulgu eklenince ilerlenebiliyor" 1
 $YOL_EKLE
 import kesif
 kesif.bulgu_ekle("Ornek istek", proje="kapi-testi-kesif")
@@ -170,7 +174,7 @@ veri, mesaj = kesif.ilerle("kapi-testi-kesif")
 assert veri is not None and veri["asama"] == "arastirma", (veri, mesaj)
 PY
 
-python - << PY 2>/dev/null && kontrol "Kesif bitmeden KODLAMAYA GECILMEZ" 0 || kontrol "Kesif bitmeden KODLAMAYA GECILMEZ" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Kesif bitmeden KODLAMAYA GECILMEZ" 0 || kontrol "Kesif bitmeden KODLAMAYA GECILMEZ" 1
 $YOL_EKLE
 import kesif
 hazir, mesaj = kesif.kodlamaya_hazir_mi("kapi-testi-kesif")
@@ -178,7 +182,7 @@ assert hazir is False, mesaj
 assert "sürüyor" in mesaj.lower() or "suruyor" in mesaj.lower(), mesaj
 PY
 
-python - << PY 2>/dev/null && kontrol "Dort asama bitince kodlamaya gecilebiliyor" 0 || kontrol "Dort asama bitince kodlamaya gecilebiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Dort asama bitince kodlamaya gecilebiliyor" 0 || kontrol "Dort asama bitince kodlamaya gecilebiliyor" 1
 $YOL_EKLE
 import kesif
 for asama in ("arastirma", "netlestirme", "plan"):
@@ -188,7 +192,7 @@ hazir, mesaj = kesif.kodlamaya_hazir_mi("kapi-testi-kesif")
 assert hazir is True, mesaj
 PY
 
-python - << PY 2>/dev/null && kontrol "Kesiften faz plani uretilebiliyor" 0 || kontrol "Kesiften faz plani uretilebiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Kesiften faz plani uretilebiliyor" 0 || kontrol "Kesiften faz plani uretilebiliyor" 1
 import subprocess, sys
 from pathlib import Path
 p = subprocess.run([sys.executable, "plugins/enver-framework/scripts/plan/kesif.py",

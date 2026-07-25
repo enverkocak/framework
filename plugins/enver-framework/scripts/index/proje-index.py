@@ -55,6 +55,10 @@ ATLANACAK_DIZINLER = {
 
 ATLANACAK_DOSYALAR = {INDEX_ADI, ELLE_ACIKLAMA, ".gitignore", ".DS_Store"}
 
+# Üretilen belgenin başındaki uyarı. Klasör açıklaması aranırken atlanır -
+# yoksa üreteç kendi cümlesini açıklama sanır.
+UYARI_ONEKI = "Bu belge otomatik üretilir"
+
 KOD_UZANTILARI = {".py", ".js", ".ts", ".php", ".sh", ".ps1"}
 BELGE_UZANTILARI = {".md", ".txt"}
 
@@ -164,9 +168,15 @@ def dizin_index(dizin, kok):
             if alt_index.is_file():
                 icerik = alt_index.read_text(encoding="utf-8", errors="ignore")
                 for satir in icerik.splitlines():
-                    if satir.startswith("> "):
-                        aciklama = satir[2:].strip()
-                        break
+                    if not satir.startswith("> "):
+                        continue
+                    metin = satir[2:].strip()
+                    # Üretecin kendi uyarısı açıklama değildir; onu
+                    # açıklama sanınca her klasör aynı cümleyi gösteriyordu.
+                    if metin.startswith(UYARI_ONEKI):
+                        continue
+                    aciklama = metin
+                    break
             alt_dizinler.append((oge.name, elle.get(oge.name, aciklama)))
         elif oge.is_file():
             if oge.name in ATLANACAK_DOSYALAR:
@@ -243,8 +253,14 @@ def cakisma_var_mi(dizin):
     return None
 
 
+def _kok_bul(args):
+    """Kök: verilmisse arguman, yoksa bulunulan projenin koku."""
+    verilen = getattr(args, "kok", None)
+    return Path(verilen).resolve() if verilen else Path(yollar.proje_kok())
+
+
 def komut_uret(args):
-    kok = Path(yollar.proje_kok())
+    kok = _kok_bul(args)
     dizinler = dizinleri_gez(kok, args.derinlik)
 
     yazilan = 0
@@ -275,7 +291,7 @@ def komut_uret(args):
 
 
 def komut_kontrol(args):
-    kok = Path(yollar.proje_kok())
+    kok = _kok_bul(args)
     dizinler = dizinleri_gez(kok, args.derinlik)
 
     eski = []
@@ -310,10 +326,14 @@ def main():
     p = alt.add_parser("uret", help="Index dosyalarını üret")
     p.add_argument("--derinlik", type=int, default=3)
     p.add_argument("--ayrintili", action="store_true")
+    p.add_argument("--kok", default=None,
+                   help="Başka bir klasörde üret (paylaşım kopyası gibi)")
     p.set_defaults(islev=komut_uret)
 
     p = alt.add_parser("kontrol", help="Index güncel mi")
     p.add_argument("--derinlik", type=int, default=3)
+    p.add_argument("--kok", default=None,
+                   help="Başka bir klasörü denetle (paylaşım kopyası gibi)")
     p.set_defaults(islev=komut_kontrol)
 
     args = ayristirici.parse_args()

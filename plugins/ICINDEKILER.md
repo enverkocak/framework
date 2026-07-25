@@ -7,7 +7,7 @@
 
 | Klasör | Ne için |
 |--------|---------|
-| `enver-framework/` | Bu belge otomatik üretilir. Elle satır eklenmez; |
+| `enver-framework/` | açıklamalar dosyaların kendisinden okunur. |
 
 ---
 

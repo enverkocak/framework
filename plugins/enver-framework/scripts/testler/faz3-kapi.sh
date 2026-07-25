@@ -6,6 +6,10 @@ P="$KOK/plugins/enver-framework"
 cd "$KOK" || exit 1
 mkdir -p _calisma
 
+# Yazan kontroller gerçek hafızaya değil kum havuzuna yazar
+source "$P/scripts/testler/_kumhavuzu.sh"
+kumhavuzu_ac "$KOK"
+
 GECEN=0; KALAN=0
 kontrol() {
   if [ "$2" -eq 0 ]; then echo "  [GECTI ] $1"; GECEN=$((GECEN+1));
@@ -64,15 +68,15 @@ PY
 
 echo ""
 echo "--- 4. OTURUM KAYDI VE OZETI (T16-T18, E5) ---"
-python "$P/scripts/hafiza/oturum.py" kaydet not "Kapi testi olayi" > /dev/null 2>&1 \
+CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/oturum.py" kaydet not "Kapi testi olayi" > /dev/null 2>&1 \
   && kontrol "Ham gunluge kayit yazilabiliyor" 0 || kontrol "Ham gunluge kayit yazilabiliyor" 1
 
-[ -f "gunluk/komutlar.jsonl" ] && kontrol "Ham gunluk dosyasi olustu" 0 || kontrol "Ham gunluk dosyasi olustu" 1
+[ -f "$KUM/gunluk/komutlar.jsonl" ] && kontrol "Ham gunluk dosyasi olustu" 0 || kontrol "Ham gunluk dosyasi olustu" 1
 
-python "$P/scripts/hafiza/oturum.py" kaydet komut "mysql -u root --password=GizliParola123 db" > _calisma/gz.txt 2>&1
+CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/oturum.py" kaydet komut "mysql -u root --password=GizliParola123 db" > _calisma/gz.txt 2>&1
 grep -q "GizliParola123" _calisma/gz.txt && S=1 || S=0
 kontrol "Parola kayda gecerken GIZLENIYOR" $S
-grep -q "GizliParola123" gunluk/komutlar.jsonl && S=1 || S=0
+grep -q "GizliParola123" "$KUM/gunluk/komutlar.jsonl" && S=1 || S=0
 kontrol "Parola ham gunlukte de GIZLI" $S
 
 [ -f "hafiza/durum.md" ] && kontrol "Durum belgesi var" 0 || kontrol "Durum belgesi var" 1
@@ -91,17 +95,17 @@ assert 'Makine' in m
 
 echo ""
 echo "--- 6. DEFTERLER (T21/T23) ---"
-python "$P/scripts/hafiza/defter.py" karar ekle "Kapi testi karari" "Test amacli kayit." > /dev/null 2>&1 \
+CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/defter.py" karar ekle "Kapi testi karari" "Test amacli kayit." > /dev/null 2>&1 \
   && kontrol "Karar eklenebiliyor" 0 || kontrol "Karar eklenebiliyor" 1
-[ -f "hafiza/kararlar.md" ] && kontrol "Karar defteri olustu" 0 || kontrol "Karar defteri olustu" 1
+[ -f "$KUM/hafiza/kararlar.md" ] && kontrol "Karar defteri olustu" 0 || kontrol "Karar defteri olustu" 1
 
-python "$P/scripts/hafiza/defter.py" hata ekle "Kapi testi hatasi belirtisi" "Cozum adimi." --nerede "kapi testi" > /dev/null 2>&1 \
+CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/defter.py" hata ekle "Kapi testi hatasi belirtisi" "Cozum adimi." --nerede "kapi testi" > /dev/null 2>&1 \
   && kontrol "Hata eklenebiliyor" 0 || kontrol "Hata eklenebiliyor" 1
 
-python "$P/scripts/hafiza/defter.py" hata ara "kapi testi" 2>/dev/null | grep -q "belirtisi" \
+CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/defter.py" hata ara "kapi testi" 2>/dev/null | grep -q "belirtisi" \
   && kontrol "Hata aramasi calisiyor" 0 || kontrol "Hata aramasi calisiyor" 1
 
-python "$P/scripts/hafiza/defter.py" hata ara "qxzv-hicbir-kayitta-bulunmayan-ifade-7788" > /dev/null 2>&1 && S=1 || S=0
+CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/defter.py" hata ara "qxzv-hicbir-kayitta-bulunmayan-ifade-7788" > /dev/null 2>&1 && S=1 || S=0
 kontrol "Bulunamayan aramada dogru sonuc" $S
 
 echo ""
@@ -191,7 +195,19 @@ HATA=$(grep -c "HATA" _calisma/yz.txt)
                   || { kontrol "Yazim senaryolari ($HATA hata)" 1; grep "HATA" _calisma/yz.txt; }
 
 echo ""
-echo "--- 12. GERILEME TESTLERI ---"
+echo "--- 12. HAFIZAYA TEST SIZINTISI ---"
+# Kapı testleri bir dönem gerçek hafızaya yazdı; açılış brifingi test
+# çöpüyle doldu. Testler artık kum havuzuna yazıyor. Bu kontrol, yeni
+# bir testin havuzu atlamasini yakalar.
+python "$P/scripts/testler/sizinti-kontrol.py" "$KOK" > _calisma/sz.txt 2>&1 \
+  && kontrol "Gercek hafizada test kaydi yok" 0 \
+  || { kontrol "Gercek hafizada test kaydi yok" 1; head -8 _calisma/sz.txt; }
+
+[ -f "$KUM/hafiza/gorevler.json" ] || [ -f "$KUM/hafiza/kararlar.md" ] \
+  && kontrol "Kum havuzu gercekten kullaniliyor" 0 || kontrol "Kum havuzu gercekten kullaniliyor" 1
+
+echo ""
+echo "--- 13. GERILEME TESTLERI ---"
 if [ -n "$ENVER_GERILEME_ATLA" ]; then
   echo "  (gerileme testleri atlandi - ust testten cagrildi)"
 else

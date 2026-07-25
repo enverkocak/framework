@@ -1,11 +1,11 @@
 ---
-description: Sürümü tek komutla yükseltir - altı yeri birden günceller, DEGISIKLIKLER'e başlık açar
+description: Sürümü tek komutla yükseltir - dokuz yeri birden günceller, DEGISIKLIKLER'e başlık açar
 ---
 
 # Sürüm
 
-Sürüm numarası altı yerde geçer (plugin, marketplace, ikisinin `.ornek`'i,
-iki README). Bu araç hepsini aynı anda yükseltir; biri unutulmaz.
+Sürüm numarası dokuz yerde geçer (üç plugin.json, iki marketplace.json,
+ikisinin `.ornek`'i, üç README). Bu araç hepsini aynı anda yükseltir; biri unutulmaz.
 
 ## Şu anki sürüm ve tutarlılık
 

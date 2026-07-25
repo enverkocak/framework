@@ -7,6 +7,97 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.1.2 — Kapı testleri gerçek hafızaya yazmayı bıraktı
+
+Çerçevenin kendi hafızası, kendi testlerinin çöpüyle dolmuştu. Açılış
+brifingi "nerede kaldık" sorusuna otuz kere **"Kapi testi olayi"** diye
+cevap veriyordu; gerçek üç iş o gürültünün altında görünmez olmuştu.
+
+**Ölçülen kirlilik:**
+
+| Dosya | Toplam | Test artığı |
+|-------|--------|-------------|
+| `hafiza/gorevler.json` | 393 kayıt | **390** |
+| `hafiza/cihaz-envanteri.json` | 124 cihaz | **124** (hepsi) |
+| `hafiza/durum.md` | 1513 satır | **772** |
+| `hafiza/hatalar.md` | 1234 satır | 101 blok |
+| `hafiza/kararlar.md` | 880 satır | 101 blok |
+
+**Kum havuzu (`testler/_kumhavuzu.sh`).** Hafıza betiklerinin tamamı yolu
+`yollar.proje_kok()` üzerinden çözer, o da `CLAUDE_PROJECT_DIR` değişkenini
+tanır. Yazan kontroller artık bu değişkenle çağrılıyor; kayıt gerçek
+hafızaya değil `_calisma/kapi-kumhavuzu/<zaman>/` altına düşüyor. Havuzun
+içine bir `.claude` işareti konur, böylece kök arama yukarı çıkıp gerçek
+depoyu bulmaz.
+
+Yalnız **yazan** kontroller yönlendirildi. Gerçek depoyu okuyanlar (dosya
+var mı, git yok sayıyor mu, sertifika taraması) olduğu gibi kaldı — yoksa
+test ölçmesi gereken şeyi ölçmez. Faz 3, 8 ve 9 düzeltildi.
+
+**`sizinti-kontrol.py` eklendi.** Düzeltmenin bozulmadığını ölçer, Faz 3
+kapısına bağlandı. Aranan şey "kapı testi" ifadesi **değil**, testlerin
+kullandığı kayıt imzalarıdır: gerçek bir oturum özeti "kapı testleri geçti"
+diye yazabilir, bu ihlal değildir. Aynı keskinlik ilkesi 3.1.1'de iz
+denetimine, ondan önce yazım denetimine uygulanmıştı.
+
+**`artik-temizle.py` eklendi.** Birikmiş artığı ayıkladı: 20 dosya
+düzeltildi, tamamı test verisi olan 1 dosya arşive taşındı. Silme yok —
+ayıklamadan önce hafızanın tamamının kopyası
+`_arsiv/2026-07-25_hafiza-kapi-testi-artiklari/` altına alındı. Test
+imzaları tek yerde tanımlı (`sizinti-kontrol.py`); denetim ile temizlik
+aynı listeyi okur, birbirinden ayrı düşemezler.
+
+**Neden önemliydi:** hafızanın tek işi "nerede kaldık" sorusuna doğru cevap
+vermek. Kendi testi yüzünden yanlış cevap veren bir hafıza, hiç olmamasından
+daha kötüdür — okuyan kişi yanlış yerden devam eder. Aynı sebeple bir
+oturum özetine test dizesi karışması Faz 5'te de yaşanmıştı; kum havuzu o
+hata sınıfını kökünden kapatıyor.
+
+**Bilinen ve kabul edilen:** `deploy.py kontrol` ile sertifika taraması hâlâ
+gerçek hafızaya yazar. İkisi de gerçek veri üretir, sabit boyuttadır ve
+birikmez — yalnız tarih damgası tazelenir.
+
+### Aynı sınıftan iki hata daha
+
+**Test yolu mutlaklaştırılmıyordu.** Beş test betiği kök yolunu
+`Path(sys.argv[1])` diye alıyordu. Görece yol verilince (`.`) üst dizin
+hesabı kayıyor ve deneme klasörü **ana dizine** düşüyordu; "ana dizin temiz
+kalır" kapısı bu yüzden koşu sırasına göre bazen kalıyordu. Yol artık
+`.resolve()` ile mutlaklaştırılıyor. Düşmüş klasör arşive alındı.
+
+**İndeks üreteci kendi uyarısını açıklama sanıyordu.** Klasör açıklamasını
+alt indeksin ilk `>` satırından okuyordu, o satır da üretecin kendi
+"Bu belge otomatik üretilir" uyarısıydı — kök indekste beş klasörün beşi de
+aynı cümleyi gösteriyordu. Uyarı satırı artık atlanıyor, klasör açıklamaları
+`aciklamalar.json` dosyasından okunuyor.
+
+**Paylaşım kopyasının indeksi kaynağın klasörlerini anlatıyordu.**
+`paylasima-hazirla` indeksi kopyalıyordu; açık sürümde bulunmayan `hafiza/`,
+`bilgi/` ve `gelistirme-arastirmasi/` klasörleri listede görünüyordu. Depoyu
+ilk kez açan kişi olmayan klasörleri arıyordu. İndeks artık **hedefte
+yeniden üretiliyor**; üretece bunun için `--kok` seçeneği eklendi.
+
+### Belgeler ölçümle hizalandı
+
+Sayılar elle değil koşudan okundu:
+
+| Belge | Eskiden | Ölçülen |
+|-------|---------|---------|
+| `KURULUM-KILAVUZU.md` | 27 komut | **30** |
+| İki kılavuz | 105 senaryo, 35 saniye | **121 senaryo, 40 saniye** |
+| `README.en.md` | 49 scripts | **52** |
+| `commands/surum.md` | "altı yeri günceller" | **dokuz** (araç zaten dokuzunu güncelliyordu) |
+
+- **`KULLANIM-KILAVUZU.md`** komut rehberine altı komut eklendi:
+  `/faz-kontrol`, `/temizlik`, `/framework-ayarlari`, `/surum`,
+  `/dokumantasyon`, `/toplu-islemler`. Kurulu ama kılavuzda yoklardı.
+- **`00-DEVAM-BURADAN.md`** hâlâ "Sıradaki: FAZ 6" diyordu, oysa on bir fazın
+  tamamı kapanmıştı. Yeni oturumda o belgeyi okuyan yanlış yerden devam
+  ederdi. Durum bölümü ölçülen değerlerle yenilendi, kapı testi tablosu
+  on iki kapının hepsini gösteriyor.
+
+Tam takım ölçümü: **553 geçti, 0 kaldı, 40 saniye.**
+
 ## 3.1.1 — İz denetimi bağlam tanıyor, belgelerdeki eski yollar düzeltildi
 
 İki eski yara kapatıldı. İkisi de aynı türden: denetim ya da belge,

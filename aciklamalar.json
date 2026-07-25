@@ -1,0 +1,12 @@
+{
+  "_aciklama": "Ana dizindeki klasörlerin ne işe yaradığı. İndeks üreteci bu dosyayı okur; klasörler kendilerini anlatamadığı için açıklamaları burada durur.",
+
+  "bilgi": "Deploy rehberi, çözülmüş hatalar, teknoloji notları",
+  "gelistirme-arastirmasi": "Çerçevenin kendi yol haritası, istek listesi ve faz planı",
+  "hafiza": "Kalıcı hafıza - durum, kararlar, hatalar, görevler, projeler (senkron olur)",
+  "plugins": "Çerçevenin kendisi - komutlar, ajanlar, beceriler, kancalar, betikler",
+  "sablonlar": "Yeni proje ve faz planı şablonları",
+  "hooks": "Kancaların depo kökündeki kopyası - kurulum betiği buradan okur",
+  "kasa": "Şifreli kasa dosyası (depoya girmez)",
+  "gunluk": "Ham oturum kaydı - makineye özeldir, depoya girmez"
+}

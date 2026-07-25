@@ -22,7 +22,10 @@ for akis in (sys.stdout, sys.stderr):
     if hasattr(akis, "reconfigure"):
         akis.reconfigure(encoding="utf-8", errors="replace")
 
-KOK = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[4]
+# Yol MUTLAKLASTIRILIR: gorece yol verilirse (ornegin ".") ust dizin
+# hesabi kayiyor ve deneme dosyalari ana dizine dusuyordu.
+KOK = (Path(sys.argv[1]).resolve() if len(sys.argv) > 1
+       else Path(__file__).resolve().parents[4])
 KANCA = KOK / "plugins" / "enver-framework" / "hooks" / "iz-kontrol.py"
 
 # Depo kökünde .iz-muaf var; muafiyet işaretinin ULAŞAMAYACAĞI bir yer seçilir,

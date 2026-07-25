@@ -708,6 +708,23 @@ def komut_paylasima_hazirla(args):
 
     print("  Kişisel veri taraması temiz.")
     print()
+
+    # İçindekiler HEDEFTE yeniden üretilir. Kopyalanan index kaynağın
+    # klasörlerini anlatıyordu: paylaşılan kopyada bulunmayan hafıza,
+    # bilgi ve araştırma klasörleri listede görünüyordu.
+    index_ureteci = (Path(__file__).resolve().parents[1] / "index"
+                     / "proje-index.py")
+    if index_ureteci.is_file():
+        sonuc = subprocess.run(
+            [sys.executable, str(index_ureteci), "uret", "--kok", str(hedef)],
+            capture_output=True, text=True, encoding="utf-8")
+        if sonuc.returncode == 0:
+            print("  İçindekiler hedefte yeniden üretildi.")
+        else:
+            print("  UYARI: içindekiler üretilemedi, elle çalıştır:")
+            print(f"    python {index_ureteci} uret --kok {hedef}")
+        print()
+
     print(f"Temiz kopya hazır: {hedef}")
     print("Bu klasör paylaşılabilir.")
     print("Kasa, hafıza, proje kayıtları ve kişisel notlar içermiyor.")
