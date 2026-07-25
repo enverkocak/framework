@@ -9,6 +9,30 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.2.9 — Depo sayfasinin tamami iki dilli
+
+Onceki iki surumde basliklar ve iki tablo iki dilli olmustu, ama sayfanin
+**govde metinleri** hala tek dildi: "Neden var" altindaki cumleler,
+kurulum adimlarinin aciklamalari, uyarlama bolumu, test ve katki
+paragraflari yalniz Turkce yaziliydi. Yabanci okur basligi anliyor,
+altindaki cumleyi anlamiyordu.
+
+README bastan yazildi: **her Turkce paragrafin altinda Ingilizcesi var**,
+her tablo iki dilli, her baglantinin Ingilizce karsiligi yaninda.
+
+- "Neden var" ve "Uyarlama" tablolari cift dilli hale getirildi (satir
+  ici `<br>` ile, tek tablo iki dil).
+- Akis semasindaki kutu adlari iki dilli yazildi.
+- "Tam liste" gibi tek dilli baglantilarin yanina Ingilizce karsiligi
+  kondu.
+- Kurulum bolumune iki not eklendi: kisa komut adi cozulmezse ad alanli
+  bicim, ve macOS'ta `python` yerine `python3`.
+- Koruma bolumundeki eski bilgi duzeltildi: kancalar artik
+  `.claude/settings.json` ile degil eklentinin `hooks.json` dosyasiyla
+  devreye giriyor (3.0.0'dan beri boyle).
+
+Tam takim: **585 gecti, 0 kaldi** (cikis kodu 0).
+
 ## 3.2.8 — "Ne yapar" sutunlari da iki dilli, sayilar olculuyor
 
 Basliklar 3.2.7'de iki dilli olmustu ama tablolarin **icerigi** hala tek

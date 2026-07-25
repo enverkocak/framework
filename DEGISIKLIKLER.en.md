@@ -10,6 +10,30 @@ teaches nothing.
 
 ---
 
+## 3.2.9 — The whole repository page is bilingual
+
+The previous two releases made the headings and two tables bilingual, but
+the **body text** was still single-language: the sentences under "Why it
+exists", the explanations around the install steps, the customise section,
+the test and contributing paragraphs were Turkish only. A non-Turkish
+reader understood the heading and not the sentence beneath it.
+
+The README was rewritten: **every Turkish paragraph is followed by its
+English counterpart**, every table carries both languages, and every link
+has its English equivalent next to it.
+
+- The "Why it exists" and "Customize" tables are bilingual in place (one
+  table, two languages per cell).
+- The flow-chart node labels are written in both languages.
+- Single-language links such as "full list" gained an English counterpart.
+- Two notes were added to the install section: the namespaced command form
+  when a short name does not resolve, and `python3` instead of `python` on
+  macOS.
+- Stale information was corrected: hooks are activated through the
+  plugin's `hooks.json`, not `.claude/settings.json` (true since 3.0.0).
+
+Full suite: **585 passed, 0 failed** (exit code 0).
+
 ## 3.2.8 — The "what it does" columns are bilingual too, and counts are measured
 
 Headings became bilingual in 3.2.7, but the **contents** of the tables
