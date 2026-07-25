@@ -244,6 +244,16 @@ islevsel "Makine taniniyor" "$PY_KOMUT" "$P/scripts/senkron/makine.py" durum
 # Guncelleme kontrolu: aga bagimli olmayan kismi olculur (import + surum).
 # Banner ve fetch aga bagli oldugu icin burada zorlanmaz.
 islevsel "Guncelleme modulu okunuyor" "$PY_KOMUT" -c "import sys; sys.path.insert(0, r'$P/scripts'); import guncelleme; assert guncelleme.yerel_surum(); assert callable(guncelleme.banner)"
+islevsel "Guncelleme bildirimi yerel surumu CANLI olcuyor" "$PY_KOMUT" -c "
+import sys, inspect
+sys.path.insert(0, r'$P/scripts')
+import guncelleme
+kaynak = inspect.getsource(guncelleme.kontrol)
+# Onbellekten donerken yerel surum yeniden okunmali; yoksa guncelleme
+# yapildiktan sonra bildirim bir gun daha gorunur.
+assert 'yerel_surum()' in kaynak, 'onbellekten donerken yerel surum olculmuyor'
+assert kaynak.count('yerel_surum()') >= 1
+"
 # Surum araci: alti yerdeki surum tutarli mi (yayin oncesi guvenlik agi).
 islevsel "Surum tutarli" "$PY_KOMUT" "$P/scripts/surum.py" durum
 # Devralma: bu depo uzerinde tarama calisiyor mu. "tara" hicbir seye dokunmaz,

@@ -10,6 +10,31 @@ teaches nothing.
 
 ---
 
+## 3.2.2 — The update banner did not clear after updating
+
+The update flow was tested end to end on the second computer. The banner
+appeared correctly, `/guncelle` ran, the clone reached 3.2.1 — and the
+startup briefing still said **"UPDATE AVAILABLE: 3.2.0 → 3.2.1"**.
+
+**Cause:** update status polls the network once a day and reads from a
+cache in between. The cache remembered not only the remote version but
+the **local** one too. After updating, the local version changes while
+the cache keeps repeating the old one for a day.
+
+`guncelleme.py yap` cleared the cache, but the shell scripts
+(`guncelle.ps1` / `guncelle.sh`) did not — so anyone updating that way saw
+a false banner for a day and concluded the update had failed.
+
+**Fix:** the local version is never cached; it is read from the file every
+time. The network is needed for the remote version only; the local one can
+be measured instantly. **What can be measured is not read from a cache** —
+the shared lesson of the seventh bug fixed today.
+
+A regression check was added: if the banner logic stops measuring the
+local version live, the suite fails.
+
+Full suite: **553 passed, 0 failed.**
+
 ## 3.2.1 — Everything in both languages
 
 The framework lives in a public repository, but most documents existed

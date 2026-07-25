@@ -144,12 +144,29 @@ def kontrol(zorla=False):
     simdi = datetime.now()
 
     # Önbellek taze mi?
+    #
+    # Önbellekten dönerken YEREL sürüm yeniden ölçülür. Eskiden kayıtlı
+    # değer olduğu gibi dönüyordu: güncelleme yapıldıktan sonra bile
+    # "GÜNCELLEME VAR" yazmaya devam ediyordu, çünkü önbellek bir gün
+    # boyunca eski yerel sürümü hatırlıyordu. Kullanıcı da güncellemenin
+    # işe yaramadığını sanıyordu.
+    #
+    # Ağ gerektiren şey UZAK sürümdür; yerel sürüm anında okunabilir.
+    # Ölçülebilen bir şey önbellekten okunmaz.
     if not zorla and onceki.get("son_kontrol"):
         try:
             son = datetime.fromisoformat(onceki["son_kontrol"])
             if simdi - son < YOKLAMA_ARALIGI:
-                return {k: onceki.get(k) for k in
-                        ("var_mi", "yerel", "uzak", "degisiklikler")}
+                uzak = onceki.get("uzak")
+                yerel = yerel_surum()
+                var_mi = bool(uzak and yerel
+                              and _surum_tuple(uzak) > _surum_tuple(yerel))
+                return {
+                    "var_mi": var_mi,
+                    "yerel": yerel,
+                    "uzak": uzak,
+                    "degisiklikler": onceki.get("degisiklikler") if var_mi else [],
+                }
         except ValueError:
             pass
 

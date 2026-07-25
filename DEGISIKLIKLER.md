@@ -9,6 +9,32 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.2.2 — Güncelleme bildirimi güncelledikten sonra geçmiyordu
+
+İkinci bilgisayarda güncelleme akışı uçtan uca denendi. Bildirim doğru
+çıktı, `/guncelle` çalıştı, klon 3.2.1'e geldi — ama açılış brifingi hâlâ
+**"GÜNCELLEME VAR: 3.2.0 → 3.2.1"** diyordu.
+
+**Sebep:** güncelleme durumu günde bir ağ yokluyor, arası önbellekten
+okunuyordu. Önbellek yalnız uzak sürümü değil **yerel sürümü de**
+hatırlıyordu. Güncelledikten sonra yerel sürüm değişiyor ama önbellek bir
+gün boyunca eskisini söylüyordu.
+
+`guncelleme.py yap` önbelleği siliyordu, ama kabuk betiği (`guncelle.ps1`
+/ `guncelle.sh`) silmiyordu; o yoldan güncelleyen kullanıcı bir gün
+boyunca yanlış bildirim görüyordu — ve güncellemenin işe yaramadığını
+sanıyordu.
+
+**Düzeltme:** yerel sürüm artık hiç önbelleğe alınmıyor, her seferinde
+dosyadan okunuyor. Ağ gerektiren şey uzak sürümdür; yerel sürüm anında
+ölçülebilir. **Ölçülebilen bir şey önbellekten okunmaz** — bu, bugün
+düzeltilen yedinci hatanın da ortak dersiydi.
+
+Gerileme kontrolü eklendi: bildirim mantığı yerel sürümü canlı ölçmezse
+takım kalır.
+
+Tam takım: **553 geçti, 0 kaldı.**
+
 ## 3.2.1 — Her şey iki dilli
 
 Çerçeve herkese açık bir depoda duruyor ama belgelerin çoğu tek dilliydi:
