@@ -7,6 +7,42 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.1.3 — Sanal deneme ölü kancalara soruyordu
+
+3.1.2 yayınlandıktan sonra eklentinin kendisi denetlendi ve **ölü bir kopya**
+bulundu. Bulgu ikinci bir hatayı da ortaya çıkardı; ikisi de aynı kökten:
+bir dosyanın iki kopyası varsa er geç sessizce ayrışır.
+
+**Depo kökündeki `hooks/` klasörü 3.0.0'dan kalma ölü kopyaydı.** Kancalar o
+sürümde eklentinin içine taşınmıştı; kurulum betikleri, ayarlar ve testler
+o günden beri `plugins/enver-framework/hooks/` okuyor. Kök kopyası kimsenin
+okumadığı halde durdu ve **ayrıştı**: `iz-kontrol.py` orada 3.1.1'in bağlam
+düzeltmesini hiç almamış eski sürümdeydi. Klasör arşive alındı, ana dizin
+beyaz listesinden çıkarıldı — biri tekrar oraya kopya koyarsa Faz 0 kapısı
+artık yakalar.
+
+**Asıl hata bu kopyanın kullanıldığı yerde çıktı.** `kuru-deneme.py` (sanal
+deneme, `/kuru-deneme`) kancaları arıyordu ve baktığı iki yerin **ikisi de
+depo kökü**ydü. Yani T61'in sözü — "tahmin yürütmez, gerçek korumalara
+sorar, rapor ile gerçek davranış ayrılamaz" — aylardır tutmuyordu: rapor
+eski kopyanın kararını gösteriyordu.
+
+Arama sırası düzeltildi ve gerçekte çalışan kopyayı sorar hale getirildi:
+
+1. `CLAUDE_PLUGIN_ROOT/hooks` — eklenti olarak kuruluysa çalışan kopya
+2. `plugins/enver-framework/hooks` — çalışma ağacındaki eklenti gövdesi
+
+**Neden önemliydi:** yanlış rapor veren bir güvenlik aracı, hiç olmamasından
+daha kötüdür — "engel yok" diyen bir rapora güvenip komutu çalıştırırsın.
+Ölü kopya kaldırılınca hata kendini gösterdi; bir kopyayı **silmek**,
+senkron tutmaya çalışmaktan daha sağlam bir çözümdür.
+
+**Belge düzeltmesi:** `KURULUM-KILAVUZU.md` klasör ağacı hâlâ kök `hooks/`
+gösteriyordu; kancalar artık eklentinin içinde, `hooks.json` ile devreye
+giriyor.
+
+Tam takım: **553 geçti, 0 kaldı.**
+
 ## 3.1.2 — Kapı testleri gerçek hafızaya yazmayı bıraktı
 
 Çerçevenin kendi hafızası, kendi testlerinin çöpüyle dolmuştu. Açılış

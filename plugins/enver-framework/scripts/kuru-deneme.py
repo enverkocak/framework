@@ -13,6 +13,7 @@ Geliştirici: Enver KOCAK
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -42,11 +43,25 @@ KARAR_ETIKETLERI = {
 
 
 def kanca_dizini():
-    """Kancaların bulunduğu dizini bul."""
-    adaylar = [
-        SCRIPT_DIZINI.parent.parent.parent / "hooks",
-        Path(yollar.proje_kok()) / "hooks",
-    ]
+    """Kancaların bulunduğu dizini bul.
+
+    Sıra önemlidir: rapor, gerçekte çalışan korumayı sormalı. Eskiden
+    önce depo kökündeki kopyaya bakılıyordu; kancalar 3.0.0'da eklentinin
+    içine taşınınca o kopya ölü kaldı ve sanal deneme eski sürüme
+    soruyordu - rapor ile gerçek davranış sessizce ayrılmıştı.
+    """
+    adaylar = []
+
+    # Eklenti olarak kuruluysa çalışan kopya budur
+    eklenti_koku = os.environ.get("CLAUDE_PLUGIN_ROOT")
+    if eklenti_koku:
+        adaylar.append(Path(eklenti_koku) / "hooks")
+
+    # Çalışma ağacındaki eklenti gövdesi
+    adaylar.append(SCRIPT_DIZINI.parent / "hooks")
+    adaylar.append(Path(yollar.proje_kok())
+                   / "plugins" / "enver-framework" / "hooks")
+
     for aday in adaylar:
         if (aday / "veri-koruma.py").is_file():
             return aday

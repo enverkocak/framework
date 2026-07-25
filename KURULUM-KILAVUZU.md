@@ -239,11 +239,11 @@ python "$P/sema.py" uret --ac
 
 ```
 framework/
-├── hooks/                  Korumalar
 ├── plugins/enver-framework/
 │   ├── commands/           Eğik çizgi komutları
 │   ├── skills/             Beceriler
 │   ├── agents/             Alt ajanlar
+│   ├── hooks/              Korumalar (+ hooks.json ile devreye girer)
 │   ├── scripts/            Betik katmanı
 │   ├── references/         Kurallar, haritalar, kataloglar
 │   └── diller/             Arayüz metinleri (tr, en)
