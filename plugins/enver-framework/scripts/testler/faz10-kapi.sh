@@ -227,6 +227,37 @@ for BELGE in KULLANIM-KILAVUZU KURULUM-KILAVUZU DEGISIKLIKLER; do
   head -6 "$BELGE.en.md" 2>/dev/null | grep -q "$BELGE.md"     && kontrol "$BELGE.en.md Turkcesine baglaniyor" 0 || kontrol "$BELGE.en.md Turkcesine baglaniyor" 1
 done
 
+# README'deki bilesen sayilari GERCEK ile ortusmeli.
+# Uc kez kaydi: 27/30 komut, 105/121 senaryo, 29/30 komut + 48/53 betik.
+# Sayilar elle yazildigi surece eskiyor; artik olculuyor.
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "README bilesen sayilari gercekle ortusuyor" 0 || kontrol "README bilesen sayilari gercekle ortusuyor" 1
+import re
+from pathlib import Path
+
+kok = Path(".")
+p = kok / "plugins" / "enver-framework"
+
+gercek = {
+    "komut": len([x for x in (p / "commands").glob("*.md") if x.stem != "ICINDEKILER"]),
+    "beceri": len([x for x in (p / "skills").iterdir() if x.is_dir()]),
+    "ajan": len([x for x in (p / "agents").glob("*.md") if x.stem != "ICINDEKILER"]),
+    "koruma": len([x for x in (p / "hooks").glob("*.py") if not x.name.startswith("_")]),
+    "betik": len([x for x in (p / "scripts").rglob("*.py") if "__pycache__" not in x.parts]),
+}
+
+for dosya, desen in (
+    ("README.ornek.md", r"\*\*(\d+) komut\*\* . \*\*(\d+) beceri\*\* . \*\*(\d+) ajan\*\* . \*\*(\d+) koruma\*\* . \*\*(\d+) betik\*\*"),
+    ("README.en.md", r"\*\*(\d+) commands\*\* . \*\*(\d+) skills\*\* . \*\*(\d+) agents\*\* . \*\*(\d+) protections\*\* . \*\*(\d+) scripts\*\*"),
+):
+    metin = (kok / dosya).read_text(encoding="utf-8")
+    eslesme = re.search(desen, metin)
+    assert eslesme, f"{dosya}: bilesen sayisi satiri bulunamadi"
+    yazan = [int(s) for s in eslesme.groups()]
+    beklenen = [gercek["komut"], gercek["beceri"], gercek["ajan"],
+                gercek["koruma"], gercek["betik"]]
+    assert yazan == beklenen, f"{dosya}: yazan {yazan}, gercek {beklenen}"
+PY
+
 # Komut belgeleri de iki dilli olmali
 EKSIK_INGILIZCE=0
 for K in "$P"/commands/*.md; do

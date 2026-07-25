@@ -6,7 +6,7 @@
 
 [![Testler](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-green.svg)](LICENSE)
-![Sürüm](https://img.shields.io/badge/sürüm-3.2.7-blue.svg)
+![Sürüm](https://img.shields.io/badge/sürüm-3.2.8-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-eklenti-8A2BE2)
 ![Dil](https://img.shields.io/badge/belge-Türkçe%20%7C%20English-orange)
 
@@ -89,19 +89,22 @@ dilli kalırsa test kalır.
 
 ## İçinde ne var · What's inside
 
-**29 komut** · **3 beceri** · **4 ajan** · **10 koruma** · **48 betik**
+**30 komut** · **4 beceri** · **5 ajan** · **10 koruma** · **53 betik**
+
+*30 commands · 4 skills · 5 agents · 10 protections · 53 scripts*
 
 ### Sık kullanılanlar
 
-| Komut | Ne yapar |
-|-------|----------|
-| `/panel` | Kontrol paneli — proje durumu, faz, bekleyen işler |
-| `/durum-kaydet` | Nerede kaldığını kaydet, devir notu oluştur |
-| `/proje-baslat` | Yeni projeyi şablonla başlat |
-| `/faz-kontrol` | Aktif fazın kapı kontrollerini çalıştır |
-| `/guvenlik-tara` | Güvenlik taraması |
-| `/saglik` | Çerçevenin kendi sağlık raporu |
-| `/guncelle` | Yeni sürüme tek komutla geç |
+| Komut | Ne yapar | What it does |
+|-------|----------|--------------|
+| `/panel` | Kontrol paneli — proje durumu, faz, bekleyen işler | Dashboard: project status, phase, pending work |
+| `/durum-kaydet` | Nerede kaldığını kaydet, devir notu oluştur | Save where you left off, write a handover note |
+| `/proje-baslat` | Yeni projeyi şablonla başlat | Start a new project from a template |
+| `/proje-devral` | Var olan projeyi tara, öğren, çerçeveye bağla | Take over an existing project: scan, learn, wire in |
+| `/faz-kontrol` | Aktif fazın kapı kontrollerini çalıştır | Run the active phase's gate checks |
+| `/guvenlik-tara` | Güvenlik taraması | Security scan |
+| `/saglik` | Çerçevenin kendi sağlık raporu | The framework's own health report |
+| `/guncelle` | Yeni sürüme tek komutla geç | Update to the newest version in one command |
 
 Tam liste: [KULLANIM-KILAVUZU.md](KULLANIM-KILAVUZU.md)
 
@@ -110,14 +113,15 @@ Tam liste: [KULLANIM-KILAVUZU.md](KULLANIM-KILAVUZU.md)
 Kancalar `.claude/settings.json` üzerinden devrededir ve komut çalışmadan
 **önce** araya girer.
 
-| Koruma | Ne yapar |
-|--------|----------|
-| `veri-koruma.py` | Silme komutlarını engeller, yıkıcı olanlarda onay ister |
-| `kasa-koruma.py` | Kasaya doğrudan erişimi ve koda sır yazılmasını engeller |
-| `sunucu-koruma.py` | Sunucuda izinli dizin dışına çıkmayı engeller |
-| `git-gizlilik-koruma.py` | Depoyu istemeden herkese açık yapmayı engeller |
-| `yazim-kontrol.py` | Türkçe yazım ve karakter kuralını denetler |
-| `kalite-kapisi.py` | Kapı kontrolü geçmeden "bitti" denmesini engeller |
+| Koruma | Ne yapar | What it does |
+|--------|----------|--------------|
+| `veri-koruma.py` | Silme komutlarını engeller, yıkıcı olanlarda onay ister | Blocks deletions; asks before destructive commands |
+| `kasa-koruma.py` | Kasaya doğrudan erişimi ve koda sır yazılmasını engeller | Blocks direct vault access and secrets written into code |
+| `sunucu-koruma.py` | Sunucuda izinli dizin dışına çıkmayı engeller | Blocks stepping outside allowed directories on a server |
+| `git-gizlilik-koruma.py` | Depoyu istemeden herkese açık yapmayı engeller | Blocks making a repository public by accident |
+| `iz-kontrol.py` | Kod yorumlarında araç izi arar | Scans code comments for tool traces |
+| `yazim-kontrol.py` | Türkçe yazım ve karakter kuralını denetler | Enforces Turkish spelling and character rules |
+| `kalite-kapisi.py` | Kapı kontrolü geçmeden "bitti" denmesini engeller | Blocks saying "done" before the gate passes |
 
 Onunun tamamı ve nasıl gevşetileceği kılavuzda anlatılır.
 

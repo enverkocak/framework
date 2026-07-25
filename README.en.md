@@ -6,7 +6,7 @@
 
 [![Tests](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-3.2.7-blue.svg)
+![Version](https://img.shields.io/badge/version-3.2.8-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)
 ![Language](https://img.shields.io/badge/docs-Türkçe%20%7C%20English-orange)
 
@@ -87,7 +87,9 @@ exactly where you stopped.
 
 ## What's inside · İçinde ne var
 
-**30 commands** · **4 skills** · **5 agents** · **10 protections** · **52 scripts**
+**30 commands** · **4 skills** · **5 agents** · **10 protections** · **53 scripts**
+
+*30 komut · 4 beceri · 5 ajan · 10 koruma · 53 betik*
 
 ### Frequently used
 

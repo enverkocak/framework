@@ -9,6 +9,28 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.2.8 — "Ne yapar" sutunlari da iki dilli, sayilar olculuyor
+
+Basliklar 3.2.7'de iki dilli olmustu ama tablolarin **icerigi** hala tek
+dildi: komut ve koruma tablolarinin "Ne yapar" sutunu yalniz Turkceydi.
+Yabanci okur basligi anliyor, satiri anlamiyordu.
+
+- Komut tablosuna ve koruma tablosuna **"What it does" sutunu** eklendi.
+  Her satir iki dilde okunuyor.
+- Iki tabloda eksik satirlar da tamamlandi: `/proje-devral` (3.1.0'in
+  ana yeniligi) komut tablosunda yoktu, `iz-kontrol.py` koruma
+  tablosunda yoktu.
+
+**Bilesen sayilari yanlistı.** README "29 komut, 3 beceri, 4 ajan, 48
+betik" diyordu; gercek **30 komut, 4 beceri, 5 ajan, 53 betik**. Bu, bugun
+ucuncu kez kayan sayi (once 27 komut, sonra 105 senaryo, simdi bu).
+
+Elle yazilan sayi eskir. Bu yuzden **kapiya baglandi**: Faz 10 artik
+dizinleri sayip README'deki degerle karsilastiriyor. Bir bilesen eklenip
+README guncellenmezse takim kaliyor.
+
+Tam takim: **585 gecti, 0 kaldi** (cikis kodu 0).
+
 ## 3.2.7 — Depo sayfasi iki dilde taranabiliyor
 
 3.2.5'te Ingilizce ozet blogu eklenmisti ama sayfanin govdesi hala tek

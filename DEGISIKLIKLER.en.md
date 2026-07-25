@@ -10,6 +10,30 @@ teaches nothing.
 
 ---
 
+## 3.2.8 — The "what it does" columns are bilingual too, and counts are measured
+
+Headings became bilingual in 3.2.7, but the **contents** of the tables
+were still single-language: the "Ne yapar" column of the command and
+protection tables was Turkish only. A non-Turkish reader understood the
+heading but not the rows.
+
+- A **"What it does" column** was added to both tables, so every row reads
+  in either language.
+- Missing rows were filled in: `/proje-devral` (the headline feature of
+  3.1.0) was absent from the command table, and `iz-kontrol.py` from the
+  protection table.
+
+**The component counts were wrong.** The README said "29 commands, 3
+skills, 4 agents, 48 scripts"; reality is **30 commands, 4 skills, 5
+agents, 53 scripts**. That is the third count to drift today (27 commands,
+then 105 scenarios, now this).
+
+Hand-written numbers go stale, so this is now **bound to the gate**: Phase
+10 counts the directories and compares them with the README. Add a
+component without updating the README and the suite fails.
+
+Full suite: **585 passed, 0 failed** (exit code 0).
+
 ## 3.2.7 — The repository page can be scanned in both languages
 
 3.2.5 added an English summary block, but the body of the page was still
