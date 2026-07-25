@@ -4,6 +4,22 @@
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 # Cihaz kayitlari gercek hafizaya degil kum havuzuna yazilir
@@ -28,13 +44,13 @@ echo ""
 echo "--- 1. BETIK DOSYALARI ---"
 for b in saha/envanter.py veri/toplu.py plan/kesif.py; do
   [ -f "$P/scripts/$b" ] && kontrol "scripts/$b var" 0 || kontrol "scripts/$b var" 1
-  python -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
+  "$PY_KOMUT" -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
     && kontrol "scripts/$b sozdizimi gecerli" 0 || kontrol "scripts/$b sozdizimi gecerli" 1
 done
 
 echo ""
 echo "--- 2. CIHAZ ENVANTERI (T68) ---"
-CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Cihaz eklenip okunabiliyor" 0 || kontrol "Cihaz eklenip okunabiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" - << PY 2>/dev/null && kontrol "Cihaz eklenip okunabiliyor" 0 || kontrol "Cihaz eklenip okunabiliyor" 1
 $YOL_EKLE
 import envanter
 c = envanter.ekle("Kapi testi kamerasi", "kamera", "Kapi Testi Musterisi",
@@ -42,7 +58,7 @@ c = envanter.ekle("Kapi testi kamerasi", "kamera", "Kapi Testi Musterisi",
 assert c["no"] > 0 and c["durum"] == "calisiyor", c
 PY
 
-python - << PY 2>/dev/null && kontrol "Envantere PAROLA yazilamiyor" 0 || kontrol "Envantere PAROLA yazilamiyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Envantere PAROLA yazilamiyor" 0 || kontrol "Envantere PAROLA yazilamiyor" 1
 $YOL_EKLE
 import envanter, re
 # Yasak alan deseni parola alanlarını yakalamalı
@@ -53,7 +69,7 @@ for alan in ("adres", "model", "konum", "kasa_anahtari"):
     assert not envanter.YASAK_ALANLAR.match(alan), alan
 PY
 
-CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Sir denetimi calisiyor" 0 || kontrol "Sir denetimi calisiyor" 1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" - << PY 2>/dev/null && kontrol "Sir denetimi calisiyor" 0 || kontrol "Sir denetimi calisiyor" 1
 $YOL_EKLE
 import envanter
 # Not alanına parola görünümlü içerik konursa yakalanmalı
@@ -71,7 +87,7 @@ finally:
     envanter.yaz(veri)
 PY
 
-CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Bakim takibi hesaplaniyor" 0 || kontrol "Bakim takibi hesaplaniyor" 1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" - << PY 2>/dev/null && kontrol "Bakim takibi hesaplaniyor" 0 || kontrol "Bakim takibi hesaplaniyor" 1
 $YOL_EKLE
 import envanter
 from datetime import date, timedelta
@@ -82,14 +98,14 @@ gerekenler = envanter.bakim_gerekenler()
 assert any(g["no"] == c["no"] and g["gecikme"] > 0 for g in gerekenler), gerekenler
 PY
 
-CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/saha/envanter.py" liste --sinir 3 2>/dev/null | grep -q "CİHAZ ENVANTERİ" \
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$P/scripts/saha/envanter.py" liste --sinir 3 2>/dev/null | grep -q "CİHAZ ENVANTERİ" \
   && kontrol "Envanter listelenebiliyor" 0 || kontrol "Envanter listelenebiliyor" 1
 
 echo ""
 echo "--- 3. TOPLU DOSYA ISLEMI (T80) ---"
 rm -rf _calisma/toplu-testi 2>/dev/null
 mkdir -p _calisma/toplu-testi
-python - << 'PY'
+"$PY_KOMUT" - << 'PY'
 from pathlib import Path
 k = Path("_calisma/toplu-testi")
 for ad in ["Ürün Görseli 1.JPG", "ÖZEL rapor.PDF", "test  dosya.txt",
@@ -97,7 +113,7 @@ for ad in ["Ürün Görseli 1.JPG", "ÖZEL rapor.PDF", "test  dosya.txt",
     (k / ad).write_text("x", encoding="utf-8")
 PY
 
-python - << PY 2>/dev/null && kontrol "Sade ad donusumu dogru" 0 || kontrol "Sade ad donusumu dogru" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Sade ad donusumu dogru" 0 || kontrol "Sade ad donusumu dogru" 1
 $YOL_EKLE
 import toplu
 assert toplu.sade_ad("Ürün Görseli 1.JPG") == "urun-gorseli-1.jpg", toplu.sade_ad("Ürün Görseli 1.JPG")
@@ -106,7 +122,7 @@ assert toplu.sade_ad("zaten-uygun.png") == "zaten-uygun.png"
 assert toplu.sade_ad("Şirket Logosu.SVG") == "sirket-logosu.svg"
 PY
 
-python - << PY 2>/dev/null && kontrol "Adlandirma plani uretiliyor" 0 || kontrol "Adlandirma plani uretiliyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Adlandirma plani uretiliyor" 0 || kontrol "Adlandirma plani uretiliyor" 1
 $YOL_EKLE
 import toplu
 plan = toplu.adlandirma_plani("_calisma/toplu-testi")
@@ -115,16 +131,16 @@ assert len(plan) == 4, [(a.name, b.name) for a, b in plan]
 assert not any(a.name == "zaten-uygun.png" for a, b in plan)
 PY
 
-python "$P/scripts/veri/toplu.py" adlandir _calisma/toplu-testi > _calisma/tp.txt 2>&1
+"$PY_KOMUT" "$P/scripts/veri/toplu.py" adlandir _calisma/toplu-testi > _calisma/tp.txt 2>&1
 grep -q "DENEME" _calisma/tp.txt \
   && kontrol "Onaysiz calistirma DENEME modunda" 0 || kontrol "Onaysiz calistirma DENEME modunda" 1
 
-python - << PY 2>/dev/null && kontrol "Deneme modunda dosya DEGISMIYOR" 0 || kontrol "Deneme modunda dosya DEGISMIYOR" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Deneme modunda dosya DEGISMIYOR" 0 || kontrol "Deneme modunda dosya DEGISMIYOR" 1
 from pathlib import Path
 assert (Path("_calisma/toplu-testi") / "Ürün Görseli 1.JPG").exists(), "dosya degismis"
 PY
 
-python - << PY 2>/dev/null && kontrol "Ayni ada dusen dosyalar ayristiriliyor" 0 || kontrol "Ayni ada dusen dosyalar ayristiriliyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Ayni ada dusen dosyalar ayristiriliyor" 0 || kontrol "Ayni ada dusen dosyalar ayristiriliyor" 1
 $YOL_EKLE
 from pathlib import Path
 import toplu
@@ -140,7 +156,7 @@ hedefler = [b.name for a, b in plan]
 assert len(hedefler) == len(set(hedefler)), hedefler
 PY
 
-python "$P/scripts/veri/toplu.py" listele _calisma/toplu-testi 2>/dev/null | grep -q "KLASÖR ÖZETİ" \
+"$PY_KOMUT" "$P/scripts/veri/toplu.py" listele _calisma/toplu-testi 2>/dev/null | grep -q "KLASÖR ÖZETİ" \
   && kontrol "Klasor ozeti uretiliyor" 0 || kontrol "Klasor ozeti uretiliyor" 1
 
 echo ""
@@ -148,7 +164,7 @@ echo "--- 4. KESIF - PLANLAMA VE ARASTIRMA (E19) ---"
 [ -f "$P/skills/proje-kesif/SKILL.md" ] && kontrol "proje-kesif becerisi var" 0 || kontrol "proje-kesif becerisi var" 1
 [ -f "$P/commands/kesif.md" ] && kontrol "kesif komutu var" 0 || kontrol "kesif komutu var" 1
 
-python - << PY 2>/dev/null && kontrol "Dort asama tanimli ve sirali" 0 || kontrol "Dort asama tanimli ve sirali" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Dort asama tanimli ve sirali" 0 || kontrol "Dort asama tanimli ve sirali" 1
 $YOL_EKLE
 import kesif
 assert kesif.ASAMALAR == ["istek", "arastirma", "netlestirme", "plan"], kesif.ASAMALAR
@@ -157,7 +173,7 @@ for asama in kesif.ASAMALAR:
     assert len(kesif.SORULAR[asama]) >= 5, (asama, len(kesif.SORULAR[asama]))
 PY
 
-CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Bos asama ATLANAMIYOR" 0 || kontrol "Bos asama ATLANAMIYOR" 1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" - << PY 2>/dev/null && kontrol "Bos asama ATLANAMIYOR" 0 || kontrol "Bos asama ATLANAMIYOR" 1
 $YOL_EKLE
 import kesif
 kesif.baslat("kapi-testi-kesif", "Test")
@@ -166,7 +182,7 @@ assert veri is None, "bos asama atlandi"
 assert "atlanamaz" in mesaj.lower(), mesaj
 PY
 
-CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Bulgu eklenince ilerlenebiliyor" 0 || kontrol "Bulgu eklenince ilerlenebiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" - << PY 2>/dev/null && kontrol "Bulgu eklenince ilerlenebiliyor" 0 || kontrol "Bulgu eklenince ilerlenebiliyor" 1
 $YOL_EKLE
 import kesif
 kesif.bulgu_ekle("Ornek istek", proje="kapi-testi-kesif")
@@ -174,7 +190,7 @@ veri, mesaj = kesif.ilerle("kapi-testi-kesif")
 assert veri is not None and veri["asama"] == "arastirma", (veri, mesaj)
 PY
 
-CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Kesif bitmeden KODLAMAYA GECILMEZ" 0 || kontrol "Kesif bitmeden KODLAMAYA GECILMEZ" 1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" - << PY 2>/dev/null && kontrol "Kesif bitmeden KODLAMAYA GECILMEZ" 0 || kontrol "Kesif bitmeden KODLAMAYA GECILMEZ" 1
 $YOL_EKLE
 import kesif
 hazir, mesaj = kesif.kodlamaya_hazir_mi("kapi-testi-kesif")
@@ -182,7 +198,7 @@ assert hazir is False, mesaj
 assert "sürüyor" in mesaj.lower() or "suruyor" in mesaj.lower(), mesaj
 PY
 
-CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Dort asama bitince kodlamaya gecilebiliyor" 0 || kontrol "Dort asama bitince kodlamaya gecilebiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" - << PY 2>/dev/null && kontrol "Dort asama bitince kodlamaya gecilebiliyor" 0 || kontrol "Dort asama bitince kodlamaya gecilebiliyor" 1
 $YOL_EKLE
 import kesif
 for asama in ("arastirma", "netlestirme", "plan"):
@@ -192,7 +208,7 @@ hazir, mesaj = kesif.kodlamaya_hazir_mi("kapi-testi-kesif")
 assert hazir is True, mesaj
 PY
 
-CLAUDE_PROJECT_DIR="$KUM" python - << PY 2>/dev/null && kontrol "Kesiften faz plani uretilebiliyor" 0 || kontrol "Kesiften faz plani uretilebiliyor" 1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" - << PY 2>/dev/null && kontrol "Kesiften faz plani uretilebiliyor" 0 || kontrol "Kesiften faz plani uretilebiliyor" 1
 import subprocess, sys
 from pathlib import Path
 p = subprocess.run([sys.executable, "plugins/enver-framework/scripts/plan/kesif.py",

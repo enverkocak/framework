@@ -4,6 +4,22 @@
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 GECEN=0; KALAN=0
@@ -24,13 +40,13 @@ echo ""
 echo "--- 1. BETIK DOSYALARI ---"
 for b in saglik/saglik.py kurulum/sihirbaz.py; do
   [ -f "$P/scripts/$b" ] && kontrol "scripts/$b var" 0 || kontrol "scripts/$b var" 1
-  python -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
+  "$PY_KOMUT" -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
     && kontrol "scripts/$b sozdizimi gecerli" 0 || kontrol "scripts/$b sozdizimi gecerli" 1
 done
 
 echo ""
 echo "--- 2. SAGLIK KONTROLU (T82) ---"
-python "$P/scripts/saglik/saglik.py" bak > _calisma/sg.txt 2>&1
+"$PY_KOMUT" "$P/scripts/saglik/saglik.py" bak > _calisma/sg.txt 2>&1
 GECTI_KODU=$?
 grep -q "SAĞLIK KONTROLÜ" _calisma/sg.txt \
   && kontrol "Saglik kontrolu calisiyor" 0 || kontrol "Saglik kontrolu calisiyor" 1
@@ -38,7 +54,7 @@ grep -q "SAĞLIK KONTROLÜ" _calisma/sg.txt \
 [ "$GECTI_KODU" -eq 0 ] && kontrol "Framework saglikli (bozuk bulgu yok)" 0 \
   || { kontrol "Framework saglikli" 1; grep "BOZUK" _calisma/sg.txt | head -5; }
 
-python - << PY 2>/dev/null && kontrol "Koruma olcumu KAYITLI degil CALISIYOR mu bakiyor" 0 || kontrol "Koruma olcumu davranis olcuyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Koruma olcumu KAYITLI degil CALISIYOR mu bakiyor" 0 || kontrol "Koruma olcumu davranis olcuyor" 1
 $YOL_EKLE
 import saglik
 # Her ölçümde gerçek bir girdi ve beklenen karar olmalı
@@ -49,7 +65,7 @@ for dosya, arac, girdiler, beklenen, mesaj in saglik.KORUMA_OLCUMLERI:
     assert mesaj, dosya
 PY
 
-python - << PY 2>/dev/null && kontrol "Bozuk koruma YAKALANIYOR" 0 || kontrol "Bozuk koruma YAKALANIYOR" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Bozuk koruma YAKALANIYOR" 0 || kontrol "Bozuk koruma YAKALANIYOR" 1
 $YOL_EKLE
 import json, saglik, shutil
 from pathlib import Path
@@ -69,16 +85,16 @@ bulgular = saglik.kancalari_kontrol()
 assert not any(d[0] == saglik.BOZUK for d in bulgular), bulgular
 PY
 
-python "$P/scripts/saglik/saglik.py" istatistik 2>/dev/null | grep -q "FRAMEWORK İSTATİSTİĞİ" \
+"$PY_KOMUT" "$P/scripts/saglik/saglik.py" istatistik 2>/dev/null | grep -q "FRAMEWORK İSTATİSTİĞİ" \
   && kontrol "Istatistik uretiliyor" 0 || kontrol "Istatistik uretiliyor" 1
 
 echo ""
 echo "--- 3. CAKISMA DENETIMI (T84) ---"
-python "$P/scripts/saglik/saglik.py" cakisma > _calisma/ck.txt 2>&1 \
+"$PY_KOMUT" "$P/scripts/saglik/saglik.py" cakisma > _calisma/ck.txt 2>&1 \
   && kontrol "Cakisma denetimi gecti" 0 \
   || { kontrol "Cakisma denetimi gecti" 1; grep "BOZUK" _calisma/ck.txt | head -4; }
 
-python - << PY 2>/dev/null && kontrol "Harf farkiyla cakisma yakalanabiliyor" 0 || kontrol "Harf farkiyla cakisma yakalanabiliyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Harf farkiyla cakisma yakalanabiliyor" 0 || kontrol "Harf farkiyla cakisma yakalanabiliyor" 1
 $YOL_EKLE
 import saglik, re
 kaynak = open("plugins/enver-framework/scripts/saglik/saglik.py", encoding="utf-8").read()
@@ -89,14 +105,14 @@ PY
 
 echo ""
 echo "--- 4. DIL TUTARLILIGI (E18) ---"
-python - << PY 2>/dev/null && kontrol "Dil dosyalari ayni anahtarlari tasiyor" 0 || kontrol "Dil dosyalari ayni anahtarlari tasiyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Dil dosyalari ayni anahtarlari tasiyor" 0 || kontrol "Dil dosyalari ayni anahtarlari tasiyor" 1
 $YOL_EKLE
 import saglik
 bulgular = saglik.dili_kontrol()
 assert not any(d[0] == saglik.BOZUK for d in bulgular), bulgular
 PY
 
-python - << PY 2>/dev/null && kontrol "Dil degistirilebiliyor" 0 || kontrol "Dil degistirilebiliyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Dil degistirilebiliyor" 0 || kontrol "Dil degistirilebiliyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
 import ayarlar, metin
@@ -115,18 +131,18 @@ PY
 
 echo ""
 echo "--- 5. KURULUM SIHIRBAZI (T92) ---"
-python "$P/scripts/kurulum/sihirbaz.py" kontrol > _calisma/sh.txt 2>&1
+"$PY_KOMUT" "$P/scripts/kurulum/sihirbaz.py" kontrol > _calisma/sh.txt 2>&1
 grep -q "ORTAM KONTROLÜ" _calisma/sh.txt \
   && kontrol "Ortam kontrolu calisiyor" 0 || kontrol "Ortam kontrolu calisiyor" 1
 
-python - << PY 2>/dev/null && kontrol "Kasa ve gunluk asla depoya girmiyor" 0 || kontrol "Kasa ve gunluk asla depoya girmiyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Kasa ve gunluk asla depoya girmiyor" 0 || kontrol "Kasa ve gunluk asla depoya girmiyor" 1
 $YOL_EKLE
 import sihirbaz
 sorunlar = sihirbaz.kisisel_veri_kontrol(paylasim=False)
 assert not sorunlar, sorunlar
 PY
 
-python - << PY 2>/dev/null && kontrol "Paylasimda hafiza cikarilmasi gerektigi biliniyor" 0 || kontrol "Paylasimda hafiza cikarilmasi gerektigi biliniyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Paylasimda hafiza cikarilmasi gerektigi biliniyor" 0 || kontrol "Paylasimda hafiza cikarilmasi gerektigi biliniyor" 1
 $YOL_EKLE
 import sihirbaz
 assert "hafiza" in sihirbaz.PAYLASIMDA_CIKAR, sihirbaz.PAYLASIMDA_CIKAR
@@ -140,11 +156,11 @@ PY
 echo ""
 echo "--- 6. PAYLASIMA HAZIRLAMA ---"
 rm -rf _calisma/paylasim-kapi 2>/dev/null
-python "$P/scripts/kurulum/sihirbaz.py" paylasima-hazirla \
+"$PY_KOMUT" "$P/scripts/kurulum/sihirbaz.py" paylasima-hazirla \
   --hedef _calisma/paylasim-kapi --uzerine-yaz > _calisma/pz.txt 2>&1 \
   && kontrol "Temiz kopya uretiliyor" 0 || kontrol "Temiz kopya uretiliyor" 1
 
-python - << PY 2>/dev/null && kontrol "Temiz kopyada hafiza YOK" 0 || kontrol "Temiz kopyada hafiza YOK" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Temiz kopyada hafiza YOK" 0 || kontrol "Temiz kopyada hafiza YOK" 1
 from pathlib import Path
 hedef = Path("_calisma/paylasim-kapi")
 assert hedef.is_dir(), "kopya uretilmemis"
@@ -153,7 +169,7 @@ assert not (hedef / "kasa").exists(), "kasa kopyaya girmis"
 assert not (hedef / ".claude" / "proje.json").exists(), "proje tanimi kopyaya girmis"
 PY
 
-python - << PY 2>/dev/null && kontrol "Temiz kopyada framework govdesi VAR" 0 || kontrol "Temiz kopyada framework govdesi VAR" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Temiz kopyada framework govdesi VAR" 0 || kontrol "Temiz kopyada framework govdesi VAR" 1
 from pathlib import Path
 hedef = Path("_calisma/paylasim-kapi")
 for gereken in ("README.md", "plugins/enver-framework/hooks/hooks.json",
@@ -163,7 +179,7 @@ for gereken in ("README.md", "plugins/enver-framework/hooks/hooks.json",
     assert (hedef / gereken).exists(), gereken
 PY
 
-python - << PY 2>/dev/null && kontrol "Temiz kopyada musteri bilgisi YOK" 0 || kontrol "Temiz kopyada musteri bilgisi YOK" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Temiz kopyada musteri bilgisi YOK" 0 || kontrol "Temiz kopyada musteri bilgisi YOK" 1
 import json
 from pathlib import Path
 hedef = Path("_calisma/paylasim-kapi")
@@ -180,7 +196,7 @@ echo "--- 7. DEGISIKLIK GUNLUGU (T94) ---"
 grep -q "### Neden" DEGISIKLIKLER.md \
   && kontrol "Her surumde 'neden' yaziyor" 0 || kontrol "Her surumde 'neden' yaziyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Gunlukteki surum plugin surumuyle uyumlu" 0 || kontrol "Gunlukteki surum plugin surumuyle uyumlu" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Gunlukteki surum plugin surumuyle uyumlu" 0 || kontrol "Gunlukteki surum plugin surumuyle uyumlu" 1
 import json, re
 from pathlib import Path
 p = json.load(open("plugins/.claude-plugin/plugin.json", encoding="utf-8"))

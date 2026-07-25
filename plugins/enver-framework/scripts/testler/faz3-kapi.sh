@@ -4,6 +4,22 @@
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 # Yazan kontroller gerçek hafızaya değil kum havuzuna yazar
@@ -26,7 +42,7 @@ for b in hafiza/hafiza.py hafiza/oturum.py hafiza/defter.py \
          senkron/makine.py senkron/senkron.py \
          index/proje-index.py statusline.py; do
   [ -f "$P/scripts/$b" ] && kontrol "scripts/$b var" 0 || kontrol "scripts/$b var" 1
-  python -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
+  "$PY_KOMUT" -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
     && kontrol "scripts/$b sozdizimi gecerli" 0 || kontrol "scripts/$b sozdizimi gecerli" 1
 done
 
@@ -47,13 +63,13 @@ kontrol "kasa/ depoya GIRMEZ" $S
 
 echo ""
 echo "--- 3. MAKINE KIMLIGI (E13) ---"
-python "$P/scripts/senkron/makine.py" durum > _calisma/mk.txt 2>&1
+"$PY_KOMUT" "$P/scripts/senkron/makine.py" durum > _calisma/mk.txt 2>&1
 grep -q "TANINIYOR" _calisma/mk.txt && kontrol "Bu makine taniniyor" 0 || kontrol "Bu makine taniniyor" 1
 [ -f "hafiza/makineler.json" ] && kontrol "Makine kaydi dosyasi var" 0 || kontrol "Makine kaydi dosyasi var" 1
-python -c "import json;d=json.load(open('hafiza/makineler.json',encoding='utf-8'));assert d['makineler']" 2>/dev/null \
+"$PY_KOMUT" -c "import json;d=json.load(open('hafiza/makineler.json',encoding='utf-8'));assert d['makineler']" 2>/dev/null \
   && kontrol "Makine kaydi gecerli" 0 || kontrol "Makine kaydi gecerli" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Makine kaydinda sabit disk yolu sorunu yok" 0 || kontrol "Makine kaydinda sabit disk yolu sorunu yok" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Makine kaydinda sabit disk yolu sorunu yok" 0 || kontrol "Makine kaydinda sabit disk yolu sorunu yok" 1
 import json, sys
 sys.path.insert(0, "plugins/enver-framework/scripts/senkron")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -68,12 +84,12 @@ PY
 
 echo ""
 echo "--- 4. OTURUM KAYDI VE OZETI (T16-T18, E5) ---"
-CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/oturum.py" kaydet not "Kapi testi olayi" > /dev/null 2>&1 \
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$P/scripts/hafiza/oturum.py" kaydet not "Kapi testi olayi" > /dev/null 2>&1 \
   && kontrol "Ham gunluge kayit yazilabiliyor" 0 || kontrol "Ham gunluge kayit yazilabiliyor" 1
 
 [ -f "$KUM/gunluk/komutlar.jsonl" ] && kontrol "Ham gunluk dosyasi olustu" 0 || kontrol "Ham gunluk dosyasi olustu" 1
 
-CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/oturum.py" kaydet komut "mysql -u root --password=GizliParola123 db" > _calisma/gz.txt 2>&1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$P/scripts/hafiza/oturum.py" kaydet komut "mysql -u root --password=GizliParola123 db" > _calisma/gz.txt 2>&1
 grep -q "GizliParola123" _calisma/gz.txt && S=1 || S=0
 kontrol "Parola kayda gecerken GIZLENIYOR" $S
 grep -q "GizliParola123" "$KUM/gunluk/komutlar.jsonl" && S=1 || S=0
@@ -84,8 +100,8 @@ ls hafiza/oturumlar/*.md >/dev/null 2>&1 && kontrol "Oturum ozeti uretilmis" 0 |
 
 echo ""
 echo "--- 5. ACILIS BRIFINGI (E5/T19) ---"
-echo '{"session_id":"t","source":"startup"}' | python plugins/enver-framework/hooks/oturum-acilis.py > _calisma/br.json 2>&1
-python -c "
+echo '{"session_id":"t","source":"startup"}' | "$PY_KOMUT" plugins/enver-framework/hooks/oturum-acilis.py > _calisma/br.json 2>&1
+"$PY_KOMUT" -c "
 import json
 d=json.load(open('_calisma/br.json',encoding='utf-8'))
 m=d['hookSpecificOutput']['additionalContext']
@@ -95,22 +111,22 @@ assert 'Makine' in m
 
 echo ""
 echo "--- 6. DEFTERLER (T21/T23) ---"
-CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/defter.py" karar ekle "Kapi testi karari" "Test amacli kayit." > /dev/null 2>&1 \
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$P/scripts/hafiza/defter.py" karar ekle "Kapi testi karari" "Test amacli kayit." > /dev/null 2>&1 \
   && kontrol "Karar eklenebiliyor" 0 || kontrol "Karar eklenebiliyor" 1
 [ -f "$KUM/hafiza/kararlar.md" ] && kontrol "Karar defteri olustu" 0 || kontrol "Karar defteri olustu" 1
 
-CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/defter.py" hata ekle "Kapi testi hatasi belirtisi" "Cozum adimi." --nerede "kapi testi" > /dev/null 2>&1 \
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$P/scripts/hafiza/defter.py" hata ekle "Kapi testi hatasi belirtisi" "Cozum adimi." --nerede "kapi testi" > /dev/null 2>&1 \
   && kontrol "Hata eklenebiliyor" 0 || kontrol "Hata eklenebiliyor" 1
 
-CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/defter.py" hata ara "kapi testi" 2>/dev/null | grep -q "belirtisi" \
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$P/scripts/hafiza/defter.py" hata ara "kapi testi" 2>/dev/null | grep -q "belirtisi" \
   && kontrol "Hata aramasi calisiyor" 0 || kontrol "Hata aramasi calisiyor" 1
 
-CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/defter.py" hata ara "qxzv-hicbir-kayitta-bulunmayan-ifade-7788" > /dev/null 2>&1 && S=1 || S=0
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$P/scripts/hafiza/defter.py" hata ara "qxzv-hicbir-kayitta-bulunmayan-ifade-7788" > /dev/null 2>&1 && S=1 || S=0
 kontrol "Bulunamayan aramada dogru sonuc" $S
 
 echo ""
 echo "--- 7. PROJE INDEX'LERI (E6/T86) ---"
-python "$P/scripts/index/proje-index.py" uret > _calisma/ix.txt 2>&1 \
+"$PY_KOMUT" "$P/scripts/index/proje-index.py" uret > _calisma/ix.txt 2>&1 \
   && kontrol "Index uretilebiliyor" 0 || kontrol "Index uretilebiliyor" 1
 [ -f "plugins/enver-framework/scripts/ICINDEKILER.md" ] && kontrol "Icindekiler belgesi uretilmis" 0 || kontrol "Icindekiler belgesi uretilmis" 1
 
@@ -131,16 +147,16 @@ grep -q "cakisma_var_mi" "$P/scripts/index/proje-index.py" \
 
 # Önce üret, sonra kontrol et. Yeni klasör eklendikçe index eskiyor;
 # bu bir hata değil. Ölçülecek şey, üretim sonrası güncel olup olmadığı.
-python "$P/scripts/index/proje-index.py" uret > /dev/null 2>&1
-python "$P/scripts/index/proje-index.py" kontrol > /dev/null 2>&1 \
+"$PY_KOMUT" "$P/scripts/index/proje-index.py" uret > /dev/null 2>&1
+"$PY_KOMUT" "$P/scripts/index/proje-index.py" kontrol > /dev/null 2>&1 \
   && kontrol "Index uretim sonrasi guncel" 0 || kontrol "Index uretim sonrasi guncel" 1
 
 echo ""
 echo "--- 8. SENKRON (E13) ---"
-python "$P/scripts/senkron/senkron.py" durum > _calisma/sk.txt 2>&1
+"$PY_KOMUT" "$P/scripts/senkron/senkron.py" durum > _calisma/sk.txt 2>&1
 grep -q "Makine" _calisma/sk.txt && kontrol "Senkron durumu okunabiliyor" 0 || kontrol "Senkron durumu okunabiliyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Senkron kapsami sadece hafiza" 0 || kontrol "Senkron kapsami sadece hafiza" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Senkron kapsami sadece hafiza" 0 || kontrol "Senkron kapsami sadece hafiza" 1
 import ast
 kaynak = open("plugins/enver-framework/scripts/senkron/senkron.py", encoding="utf-8").read()
 for dugum in ast.walk(ast.parse(kaynak)):
@@ -154,11 +170,11 @@ PY
 echo ""
 echo "--- 9. DURUM SATIRI (T89) ---"
 echo '{"workspace":{"project_dir":"'"$KOK"'"},"cost":{"total_cost_usd":1.5}}' \
-  | python "$P/scripts/statusline.py" > _calisma/sl.txt 2>&1
+  | "$PY_KOMUT" "$P/scripts/statusline.py" > _calisma/sl.txt 2>&1
 grep -q "kasa" _calisma/sl.txt && kontrol "Durum satiri kasa durumunu gosteriyor" 0 || kontrol "Durum satiri kasa durumunu gosteriyor" 1
 grep -q "$(basename "$KOK")" _calisma/sl.txt && kontrol "Durum satiri proje adini gosteriyor" 0 || kontrol "Durum satiri proje adini gosteriyor" 1
 
-echo "" | python "$P/scripts/statusline.py" > /dev/null 2>&1 \
+echo "" | "$PY_KOMUT" "$P/scripts/statusline.py" > /dev/null 2>&1 \
   && kontrol "Durum satiri bos girdide cokmuyor" 0 || kontrol "Durum satiri bos girdide cokmuyor" 1
 
 # Jeton sayaci: sahte bir oturum kaydi uretilip sayim dogrulanir.
@@ -169,14 +185,14 @@ printf '%s\n%s\n' \
   '{"message":{"usage":{"input_tokens":0,"cache_creation_input_tokens":0,"cache_read_input_tokens":900000,"output_tokens":1000}}}' \
   > "$KUM/oturum-kaydi.jsonl"
 echo '{"workspace":{"project_dir":"'"$KOK"'"},"transcript_path":"'"$KUM/oturum-kaydi.jsonl"'"}' \
-  | python "$P/scripts/statusline.py" > _calisma/sl2.txt 2>&1
+  | "$PY_KOMUT" "$P/scripts/statusline.py" > _calisma/sl2.txt 2>&1
 grep -q "3k jeton" _calisma/sl2.txt \
   && kontrol "Jeton sayaci yeni jetonu sayiyor (onbellek okumasi haric)" 0 \
   || { kontrol "Jeton sayaci yeni jetonu sayiyor (onbellek okumasi haric)" 1; cat _calisma/sl2.txt; }
 grep -q "bağlam" _calisma/sl2.txt \
   && kontrol "Durum satiri baglam dolulugunu gosteriyor" 0 || kontrol "Durum satiri baglam dolulugunu gosteriyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Faz gostergesi motorun kaydindan okunuyor" 0 || kontrol "Faz gostergesi motorun kaydindan okunuyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Faz gostergesi motorun kaydindan okunuyor" 0 || kontrol "Faz gostergesi motorun kaydindan okunuyor" 1
 # Gerileme koruması: gösterge bir dönem belgedeki başlıktan okunuyordu;
 # belge değişince sessizce boşaldı. Kaynak motorun kaydı olmalı.
 kaynak = open("plugins/enver-framework/scripts/statusline.py", encoding="utf-8").read()
@@ -186,7 +202,7 @@ PY
 
 echo ""
 echo "--- 10. KANCA KAYDI ---"
-python - << 'PY' 2>/dev/null && kontrol "Yeni kancalar settings.json'da" 0 || kontrol "Yeni kancalar settings.json'da" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Yeni kancalar settings.json'da" 0 || kontrol "Yeni kancalar settings.json'da" 1
 import json
 d = json.load(open(".claude/settings.json", encoding="utf-8"))
 metin = json.dumps(d)
@@ -196,7 +212,7 @@ assert "SessionStart" in d["hooks"]
 assert d.get("statusLine")
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Kurulum betigi yeni kancalari taniyor" 0 || kontrol "Kurulum betigi yeni kancalari taniyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Kurulum betigi yeni kancalari taniyor" 0 || kontrol "Kurulum betigi yeni kancalari taniyor" 1
 import ast, sys
 kaynak = open("plugins/enver-framework/scripts/kurulum/kanca-kaydet.py", encoding="utf-8").read()
 for dugum in ast.walk(ast.parse(kaynak)):
@@ -212,7 +228,7 @@ PY
 
 echo ""
 echo "--- 11. YAZIM DENETIMI KESKINLIGI ---"
-python "$P/scripts/testler/yazim-testleri.py" "$KOK" > _calisma/yz.txt 2>&1
+"$PY_KOMUT" "$P/scripts/testler/yazim-testleri.py" "$KOK" > _calisma/yz.txt 2>&1
 HATA=$(grep -c "HATA" _calisma/yz.txt)
 [ "$HATA" -eq 0 ] && kontrol "Yazim senaryolari (0 hata)" 0 \
                   || { kontrol "Yazim senaryolari ($HATA hata)" 1; grep "HATA" _calisma/yz.txt; }
@@ -222,7 +238,7 @@ echo "--- 12. HAFIZAYA TEST SIZINTISI ---"
 # Kapı testleri bir dönem gerçek hafızaya yazdı; açılış brifingi test
 # çöpüyle doldu. Testler artık kum havuzuna yazıyor. Bu kontrol, yeni
 # bir testin havuzu atlamasini yakalar.
-python "$P/scripts/testler/sizinti-kontrol.py" "$KOK" > _calisma/sz.txt 2>&1 \
+"$PY_KOMUT" "$P/scripts/testler/sizinti-kontrol.py" "$KOK" > _calisma/sz.txt 2>&1 \
   && kontrol "Gercek hafizada test kaydi yok" 0 \
   || { kontrol "Gercek hafizada test kaydi yok" 1; head -8 _calisma/sz.txt; }
 
@@ -232,8 +248,8 @@ python "$P/scripts/testler/sizinti-kontrol.py" "$KOK" > _calisma/sz.txt 2>&1 \
 # Ham gunluk ozetlendikten sonra DONDURULMELI. Dondurulmezse her ozet
 # butun gecmisi yeniden ozetler; "Sure" ilk gunden baslar ve ozet
 # "bu oturumda ne oldu" sorusuna cevap veremez olur.
-CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/oturum.py" kaydet not "Donme denemesi" > /dev/null 2>&1
-CLAUDE_PROJECT_DIR="$KUM" python "$P/scripts/hafiza/oturum.py" bitir --not "deneme" --sirada "yok" > /dev/null 2>&1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$P/scripts/hafiza/oturum.py" kaydet not "Donme denemesi" > /dev/null 2>&1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$P/scripts/hafiza/oturum.py" bitir --not "deneme" --sirada "yok" > /dev/null 2>&1
 [ -f "$KUM/gunluk/komutlar.jsonl" ] && S=1 || S=0
 kontrol "Ham gunluk ozetten sonra donduruluyor" $S
 ls "$KUM"/gunluk/komutlar-*.jsonl >/dev/null 2>&1 \

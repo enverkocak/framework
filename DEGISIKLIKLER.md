@@ -7,6 +7,42 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.1.6 — Kapı testleri tek makineye bağlı kalmaktan çıktı
+
+Çerçeve ikinci bir bilgisayarda denenecekti. Denemeden önce testler
+tarandı: **motorun kendisinde sabit yol yok** - kancalar, betikler ve
+hafıza katmanı yolu `proje_kok()` üzerinden çözüyor. Ama testlerin kendisi
+geliştirme makinesine bağlıydı; başka bir makinede kırmızı yanan kapılar,
+gerçek hatayla karıştırılırdı.
+
+**Yorumlayıcı adı varsayılıyordu.** 241 çağrının hepsi `python` diyordu.
+macOS'ta o komut çoğu kurulumda yoktur, yalnız `python3` bulunur - takım
+orada toptan çökerdi. Yorumlayıcı artık her betiğin başında bir kez
+çözülüyor.
+
+Seçim sırasında **adayın var olması yeterli sayılmıyor, çalışması
+gerekiyor.** Bu düzeltme yazılırken ortaya çıktı: bu makinede `python3`
+adıyla Microsoft Store kısayolu geliyor, `command -v` onu buluyor ama
+çalıştırılınca "Python was not found" diyor. İlk sürüm tam bu yüzden 285
+kontrolü düşürdü - takım kendi düzeltmesindeki hatayı yakaladı.
+
+**Müşteri projesi denemesi sabit sürücü yolundaydı.** Faz 0, muafiyet
+işareti taşımayan bir depoda izin yakalandığını ölçmek için
+`D:/Projeler/_test-musteri` açıyordu. Artık sistemin geçici dizini
+kullanılıyor; yol, kabuğun ve Python'un aynı çözeceği biçime getiriliyor.
+
+**Tarama kökü testi makineye bakıyordu.** Faz 4, kökün `D:/Projeler`
+olmasını bekliyordu. Oysa ölçülmesi gereken **kural**: tarama serbest
+dolaşmaz, tanımlı köklerle sınırlıdır. Kök makineye göre değişir ve ayar
+dosyasında durur. Test artık kuralı ölçüyor: kök tanımlı mı, gerçekten
+var mı, dosya sisteminin kökü değil mi, bütün projeler onun altında mı.
+
+**CI iki işletim sisteminde koşuyor.** `windows-latest` yanına
+`macos-latest` eklendi. Taşınabilirlik iddiası ancak ölçülürse doğrudur;
+artık her push'ta yeniden sorulacak.
+
+Tam takım (Windows): **562 geçti, 0 kaldı.**
+
 ## 3.1.5 — Temizlik kaynağa inmeyince kalıcı olmuyordu
 
 3.1.2'de hafıza test artığından temizlenmişti. Bu sürümde ilk oturum özeti

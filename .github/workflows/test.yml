@@ -15,7 +15,15 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    # İki işletim sistemi: çerçeve Windows'ta geliştiriliyor ama
+    # taşınabilirlik iddiası ancak ölçülürse doğrudur. macOS koşusu,
+    # "python3 var mı", "sabit sürücü yolu kalmış mı", "bash 3.2
+    # uyumlu mu" sorularını her push'ta yeniden sorar.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Depoyu al
         uses: actions/checkout@v4

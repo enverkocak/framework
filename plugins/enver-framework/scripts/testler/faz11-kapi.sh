@@ -5,6 +5,22 @@ KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/n
 P="$KOK/plugins/enver-framework"
 T="$P/scripts/tasarim"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 GECEN=0; KALAN=0
@@ -24,19 +40,19 @@ echo ""
 
 echo "--- 1. BETIK ---"
 [ -f "$T/cihaz.py" ] && kontrol "tasarim/cihaz.py var" 0 || kontrol "tasarim/cihaz.py var" 1
-python -c "import ast;ast.parse(open('$T/cihaz.py',encoding='utf-8').read())" 2>/dev/null \
+"$PY_KOMUT" -c "import ast;ast.parse(open('$T/cihaz.py',encoding='utf-8').read())" 2>/dev/null \
   && kontrol "tasarim/cihaz.py sozdizimi gecerli" 0 || kontrol "tasarim/cihaz.py sozdizimi gecerli" 1
 
 echo ""
 echo "--- 2. CIHAZ SINIFLARI (E20) ---"
-python - << PY 2>/dev/null && kontrol "Bes cihaz sinifi tanimli" 0 || kontrol "Bes cihaz sinifi tanimli" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Bes cihaz sinifi tanimli" 0 || kontrol "Bes cihaz sinifi tanimli" 1
 $YOL_EKLE
 import cihaz
 adlar = [a for a, _, _, _, _ in cihaz.CIHAZ_SINIFLARI]
 assert adlar == ["mobil", "buyuk-mobil", "tablet", "web", "masaustu"], adlar
 PY
 
-python - << PY 2>/dev/null && kontrol "Sinif araliklari bosluksuz ve ortusmesiz" 0 || kontrol "Sinif araliklari bosluksuz ve ortusmesiz" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Sinif araliklari bosluksuz ve ortusmesiz" 0 || kontrol "Sinif araliklari bosluksuz ve ortusmesiz" 1
 $YOL_EKLE
 import cihaz
 sinirlar = [(alt, ust) for _, _, alt, ust, _ in cihaz.CIHAZ_SINIFLARI]
@@ -48,7 +64,7 @@ for sira in range(len(sinirlar) - 1):
 assert sinirlar[-1][1] is None, sinirlar
 PY
 
-python - << PY 2>/dev/null && kontrol "Genislikten sinif dogru bulunuyor" 0 || kontrol "Genislikten sinif dogru bulunuyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Genislikten sinif dogru bulunuyor" 0 || kontrol "Genislikten sinif dogru bulunuyor" 1
 $YOL_EKLE
 import cihaz
 olcumler = [(320, "mobil"), (479, "mobil"), (480, "buyuk-mobil"),
@@ -61,7 +77,7 @@ PY
 
 echo ""
 echo "--- 3. CIHAZ KATMANI CSS ---"
-python "$T/cihaz.py" css > _calisma/cihaz.css 2>/dev/null \
+"$PY_KOMUT" "$T/cihaz.py" css > _calisma/cihaz.css 2>/dev/null \
   && kontrol "CSS uretilebiliyor" 0 || kontrol "CSS uretilebiliyor" 1
 
 for parca in "min-width: 480px" "min-width: 768px" "min-width: 1024px" "min-width: 1440px"; do
@@ -69,7 +85,7 @@ for parca in "min-width: 480px" "min-width: 768px" "min-width: 1024px" "min-widt
     && kontrol "Kesme noktasi var: $parca" 0 || kontrol "Kesme noktasi var: $parca" 1
 done
 
-python - << 'PY' 2>/dev/null && kontrol "Cihazin kendisi de taniniyor" 0 || kontrol "Cihazin kendisi de taniniyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Cihazin kendisi de taniniyor" 0 || kontrol "Cihazin kendisi de taniniyor" 1
 icerik = open("_calisma/cihaz.css", encoding="utf-8").read()
 # Ekran genişliği tek ölçüt değil
 for ozellik in ["hover: none", "pointer: coarse", "hover: hover", "pointer: fine",
@@ -78,13 +94,13 @@ for ozellik in ["hover: none", "pointer: coarse", "hover: hover", "pointer: fine
     assert ozellik in icerik, ozellik
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Yatay kayma engelleniyor" 0 || kontrol "Yatay kayma engelleniyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Yatay kayma engelleniyor" 0 || kontrol "Yatay kayma engelleniyor" 1
 icerik = open("_calisma/cihaz.css", encoding="utf-8").read()
 assert "overflow-x: hidden" in icerik
 assert "max-width: 100%" in icerik
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Dokunma hedefi ve okuma genisligi tanimli" 0 || kontrol "Dokunma hedefi ve okuma genisligi tanimli" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Dokunma hedefi ve okuma genisligi tanimli" 0 || kontrol "Dokunma hedefi ve okuma genisligi tanimli" 1
 icerik = open("_calisma/cihaz.css", encoding="utf-8").read()
 assert "--dokunma-hedefi: 44px" in icerik, "dokunma hedefi yok"
 assert "--okuma-genisligi" in icerik
@@ -92,7 +108,7 @@ assert "--okuma-genisligi" in icerik
 assert "--dokunma-hedefi: 48px" in icerik, "dokunmatikte hedef buyumuyor"
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Yazdirma katmani var" 0 || kontrol "Yazdirma katmani var" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Yazdirma katmani var" 0 || kontrol "Yazdirma katmani var" 1
 icerik = open("_calisma/cihaz.css", encoding="utf-8").read()
 assert "@media print" in icerik
 PY
@@ -101,11 +117,11 @@ echo ""
 echo "--- 4. SAYFA ISKELETI ---"
 rm -rf _calisma/cihaz-iskelet 2>/dev/null
 mkdir -p _calisma/cihaz-iskelet
-python "$T/cihaz.py" iskelet --hedef _calisma/cihaz-iskelet/index.html > /dev/null 2>&1 \
+"$PY_KOMUT" "$T/cihaz.py" iskelet --hedef _calisma/cihaz-iskelet/index.html > /dev/null 2>&1 \
   && kontrol "Iskelet uretilebiliyor" 0 || kontrol "Iskelet uretilebiliyor" 1
-python "$T/cihaz.py" css --hedef _calisma/cihaz-iskelet/cihaz.css > /dev/null 2>&1
+"$PY_KOMUT" "$T/cihaz.py" css --hedef _calisma/cihaz-iskelet/cihaz.css > /dev/null 2>&1
 
-python - << 'PY' 2>/dev/null && kontrol "Iskelette goruntu alani etiketi var" 0 || kontrol "Iskelette goruntu alani etiketi var" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Iskelette goruntu alani etiketi var" 0 || kontrol "Iskelette goruntu alani etiketi var" 1
 from pathlib import Path
 icerik = Path("_calisma/cihaz-iskelet/index.html").read_text(encoding="utf-8")
 assert 'name="viewport"' in icerik
@@ -113,7 +129,7 @@ assert "width=device-width" in icerik
 assert 'lang="tr"' in icerik
 PY
 
-python "$T/cihaz.py" denetle _calisma/cihaz-iskelet 2>/dev/null | grep -q "sorunu bulunamadı" \
+"$PY_KOMUT" "$T/cihaz.py" denetle _calisma/cihaz-iskelet 2>/dev/null | grep -q "sorunu bulunamadı" \
   && kontrol "Uretilen iskelet kendi denetiminden geciyor" 0 \
   || kontrol "Uretilen iskelet kendi denetiminden geciyor" 1
 
@@ -121,7 +137,7 @@ echo ""
 echo "--- 5. CIHAZ UYUMU DENETIMI ---"
 rm -rf _calisma/cihaz-kotu 2>/dev/null
 mkdir -p _calisma/cihaz-kotu
-python - << 'PY'
+"$PY_KOMUT" - << 'PY'
 from pathlib import Path
 k = Path("_calisma/cihaz-kotu")
 (k / "k.html").write_text(
@@ -133,7 +149,7 @@ k = Path("_calisma/cihaz-kotu")
     '.a { transition: all .3s; }\n', encoding="utf-8")
 PY
 
-python "$T/cihaz.py" denetle _calisma/cihaz-kotu > _calisma/cd.txt 2>&1
+"$PY_KOMUT" "$T/cihaz.py" denetle _calisma/cihaz-kotu > _calisma/cd.txt 2>&1
 YUKSEK=$(grep -c "\[YÜKSEK\]" _calisma/cd.txt)
 [ "$YUKSEK" -ge 3 ] && kontrol "Uyumsuz sayfada $YUKSEK yuksek bulgu" 0 \
                     || kontrol "Uyumsuz sayfada yeterli bulgu yok ($YUKSEK)" 1
@@ -142,7 +158,7 @@ for konu in "Görüntü alanı" "kesme noktası" "Sabit piksel"; do
   grep -qi "$konu" _calisma/cd.txt && kontrol "Yakalandi: $konu" 0 || kontrol "Yakalanmadi: $konu" 1
 done
 
-python - << PY 2>/dev/null && kontrol "Kesme noktasi sabit genislik sanilmiyor" 0 || kontrol "Kesme noktasi sabit genislik sanilmiyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Kesme noktasi sabit genislik sanilmiyor" 0 || kontrol "Kesme noktasi sabit genislik sanilmiyor" 1
 $YOL_EKLE
 import cihaz, re
 desen = [d[3] for d in cihaz.DENETIMLER if d[0] == "sabit-genislik"][0]
@@ -153,14 +169,14 @@ assert not desen.search(".k { max-width: 1320px; }")
 assert desen.search(".k { width: 1200px; }")
 PY
 
-python - << PY 2>/dev/null && kontrol "Olcek kilidi yakalaniyor" 0 || kontrol "Olcek kilidi yakalaniyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Olcek kilidi yakalaniyor" 0 || kontrol "Olcek kilidi yakalaniyor" 1
 $YOL_EKLE
 import cihaz
 desen = [d[3] for d in cihaz.DENETIMLER if d[0] == "olcek-kilitli"][0]
 assert desen.search('<meta name="viewport" content="width=device-width, user-scalable=no">')
 PY
 
-python - << PY 2>/dev/null && kontrol "Bos klasorde 'uyumlu' denmiyor" 0 || kontrol "Bos klasorde 'uyumlu' denmiyor" 1
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Bos klasorde 'uyumlu' denmiyor" 0 || kontrol "Bos klasorde 'uyumlu' denmiyor" 1
 import subprocess, sys
 from pathlib import Path
 Path("_calisma/cihaz-bos").mkdir(parents=True, exist_ok=True)

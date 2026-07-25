@@ -11,6 +11,22 @@ KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/n
 P="$KOK/plugins/enver-framework"
 T="$P/scripts/testler"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma/komple
 
 export ENVER_GERILEME_ATLA=1
@@ -98,7 +114,7 @@ senaryo() {
     return
   fi
 
-  python "$BETIK" "$KOK" > "$CIKTI" 2>&1
+  "$PY_KOMUT" "$BETIK" "$KOK" > "$CIKTI" 2>&1
   SONUC=$(grep -oE "[0-9]+ geçti, [0-9]+ kaldı" "$CIKTI" | tail -1)
   GECEN=$(echo "$SONUC" | grep -oE "^[0-9]+")
   KALAN=$(echo "$SONUC" | grep -oE "[0-9]+ kaldı" | grep -oE "[0-9]+")
@@ -130,7 +146,7 @@ senaryo "Tam yetki guvenligi" "$T/tam-yetki-testleri.py" "tam-yetki"
 echo ""
 echo "BELGE YOLLARI"
 echo "------------------------------------------------------------------"
-python "$T/yol-denetim.py" "$KOK" > _calisma/komple/yol.txt 2>&1
+"$PY_KOMUT" "$T/yol-denetim.py" "$KOK" > _calisma/komple/yol.txt 2>&1
 if [ $? -eq 0 ]; then
   printf "  [GECTI ] Belgelerdeki yollar dogru
 "
@@ -154,7 +170,7 @@ if [ "$YAPISAL_MI" -eq 1 ]; then
   SAGLIK_KODU=0
   SAGLIK_OZET="atlandi"
 else
-python "$P/scripts/saglik/saglik.py" bak > _calisma/komple/saglik.txt 2>&1
+"$PY_KOMUT" "$P/scripts/saglik/saglik.py" bak > _calisma/komple/saglik.txt 2>&1
 SAGLIK_KODU=$?
 SAGLIK_OZET=$(grep -oE "[0-9]+ iyi · [0-9]+ uyarı · [0-9]+ bozuk" _calisma/komple/saglik.txt | tail -1)
 
@@ -210,30 +226,30 @@ if [ "$YAPISAL_MI" -eq 1 ]; then
   echo "  Bu denetimler proje kaydi, faz plani ve tasarim kimligi ister;"
   echo "  bunlar kurulum ve ilk kullanimda olusur."
 else
-islevsel "Komut rehberi uretiliyor" python "$P/scripts/index-uret.py"
-islevsel "Proje panosu calisiyor" python "$P/scripts/projeler/kayit.py" liste
-islevsel "Sistem semasi uretiliyor" python "$P/scripts/projeler/sema.py" uret --hedef _calisma/komple/sema.html
-islevsel "Faz durumu okunuyor" python "$P/scripts/faz/faz.py" durum
-islevsel "Tasarim kimligi gecerli" python "$P/scripts/tasarim/kimlik.py" denetle
-islevsel "Imza on planda degil" python "$P/scripts/tasarim/imza.py" denetle
-islevsel "Cihaz katmani uretiliyor" python "$P/scripts/tasarim/cihaz.py" css
-islevsel "Arama calisiyor" python "$P/scripts/ara.py" kasa
-islevsel "Gorev ozeti uretiliyor" python "$P/scripts/is/gorev.py" ozet
-islevsel_sinyal "Hizmet takvimi okunuyor" python "$P/scripts/is/takvim.py" liste --sinir 3
-islevsel "Envanter listeleniyor" python "$P/scripts/saha/envanter.py" liste --sinir 3
-islevsel "Yedek listesi okunuyor" python "$P/scripts/sunucu/yedek.py" liste --sinir 3
-islevsel "Kurulum ortami hazir" python "$P/scripts/kurulum/sihirbaz.py" kontrol
-islevsel "Senkron durumu okunuyor" python "$P/scripts/senkron/senkron.py" durum
-islevsel "Makine taniniyor" python "$P/scripts/senkron/makine.py" durum
+islevsel "Komut rehberi uretiliyor" "$PY_KOMUT" "$P/scripts/index-uret.py"
+islevsel "Proje panosu calisiyor" "$PY_KOMUT" "$P/scripts/projeler/kayit.py" liste
+islevsel "Sistem semasi uretiliyor" "$PY_KOMUT" "$P/scripts/projeler/sema.py" uret --hedef _calisma/komple/sema.html
+islevsel "Faz durumu okunuyor" "$PY_KOMUT" "$P/scripts/faz/faz.py" durum
+islevsel "Tasarim kimligi gecerli" "$PY_KOMUT" "$P/scripts/tasarim/kimlik.py" denetle
+islevsel "Imza on planda degil" "$PY_KOMUT" "$P/scripts/tasarim/imza.py" denetle
+islevsel "Cihaz katmani uretiliyor" "$PY_KOMUT" "$P/scripts/tasarim/cihaz.py" css
+islevsel "Arama calisiyor" "$PY_KOMUT" "$P/scripts/ara.py" kasa
+islevsel "Gorev ozeti uretiliyor" "$PY_KOMUT" "$P/scripts/is/gorev.py" ozet
+islevsel_sinyal "Hizmet takvimi okunuyor" "$PY_KOMUT" "$P/scripts/is/takvim.py" liste --sinir 3
+islevsel "Envanter listeleniyor" "$PY_KOMUT" "$P/scripts/saha/envanter.py" liste --sinir 3
+islevsel "Yedek listesi okunuyor" "$PY_KOMUT" "$P/scripts/sunucu/yedek.py" liste --sinir 3
+islevsel "Kurulum ortami hazir" "$PY_KOMUT" "$P/scripts/kurulum/sihirbaz.py" kontrol
+islevsel "Senkron durumu okunuyor" "$PY_KOMUT" "$P/scripts/senkron/senkron.py" durum
+islevsel "Makine taniniyor" "$PY_KOMUT" "$P/scripts/senkron/makine.py" durum
 # Guncelleme kontrolu: aga bagimli olmayan kismi olculur (import + surum).
 # Banner ve fetch aga bagli oldugu icin burada zorlanmaz.
-islevsel "Guncelleme modulu okunuyor" python -c "import sys; sys.path.insert(0, r'$P/scripts'); import guncelleme; assert guncelleme.yerel_surum(); assert callable(guncelleme.banner)"
+islevsel "Guncelleme modulu okunuyor" "$PY_KOMUT" -c "import sys; sys.path.insert(0, r'$P/scripts'); import guncelleme; assert guncelleme.yerel_surum(); assert callable(guncelleme.banner)"
 # Surum araci: alti yerdeki surum tutarli mi (yayin oncesi guvenlik agi).
-islevsel "Surum tutarli" python "$P/scripts/surum.py" durum
+islevsel "Surum tutarli" "$PY_KOMUT" "$P/scripts/surum.py" durum
 # Devralma: bu depo uzerinde tarama calisiyor mu. "tara" hicbir seye dokunmaz,
 # yalniz _calisma/devralma/ altina rapor birakir - testte guvenli.
-islevsel "Devralma taramasi calisiyor" python "$P/scripts/projeler/devral.py" tara --yol "$KOK"
-islevsel "Devralma bosluk raporu okunuyor" python "$P/scripts/projeler/devral.py" bosluk --yol "$KOK"
+islevsel "Devralma taramasi calisiyor" "$PY_KOMUT" "$P/scripts/projeler/devral.py" tara --yol "$KOK"
+islevsel "Devralma bosluk raporu okunuyor" "$PY_KOMUT" "$P/scripts/projeler/devral.py" bosluk --yol "$KOK"
 fi
 
 # ---------------------------------------------------------------- güvenlik
@@ -256,10 +272,10 @@ guvenlik() {
 }
 
 # Bu komutlar BAŞARISIZ olmalı
-guvenlik "Kasa parolasiz acilmiyor" python "$P/scripts/kasa/kasa.py" liste
-guvenlik "Kasa yanlis parolayi reddediyor" python "$P/scripts/kasa/kasa.py" ac --parola "kesinlikle-yanlis-parola-98765"
+guvenlik "Kasa parolasiz acilmiyor" "$PY_KOMUT" "$P/scripts/kasa/kasa.py" liste
+guvenlik "Kasa yanlis parolayi reddediyor" "$PY_KOMUT" "$P/scripts/kasa/kasa.py" ac --parola "kesinlikle-yanlis-parola-98765"
 
-python - << 'PY' > /dev/null 2>&1
+"$PY_KOMUT" - << 'PY' > /dev/null 2>&1
 import subprocess, sys
 from pathlib import Path
 kok = Path(".")
@@ -279,7 +295,7 @@ else
   BOZUK_BOLUMLER="$BOZUK_BOLUMLER guvenlik"
 fi
 
-python - << 'PY' > /dev/null 2>&1
+"$PY_KOMUT" - << 'PY' > /dev/null 2>&1
 import re, subprocess, sys
 sonuc = subprocess.run(["git", "ls-files"], capture_output=True, text=True, encoding="utf-8")
 desen = re.compile(r'(?i)(parola|password|sifre|secret|api[_-]?key|token)\s*[:=]\s*["\'][^"\']{8,}["\']')

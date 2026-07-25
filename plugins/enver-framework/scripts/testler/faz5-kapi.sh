@@ -4,6 +4,22 @@
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 GECEN=0; KALAN=0
@@ -20,12 +36,12 @@ echo ""
 echo "--- 1. BETIK VE KANCA DOSYALARI ---"
 for b in faz/faz.py faz/mod.py faz/izole.py; do
   [ -f "$P/scripts/$b" ] && kontrol "scripts/$b var" 0 || kontrol "scripts/$b var" 1
-  python -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
+  "$PY_KOMUT" -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
     && kontrol "scripts/$b sozdizimi gecerli" 0 || kontrol "scripts/$b sozdizimi gecerli" 1
 done
 for k in tam-yetki kalite-kapisi; do
   [ -f "plugins/enver-framework/hooks/$k.py" ] && kontrol "plugins/enver-framework/hooks/$k.py var" 0 || kontrol "plugins/enver-framework/hooks/$k.py var" 1
-  python -c "import ast;ast.parse(open('plugins/enver-framework/hooks/$k.py',encoding='utf-8').read())" 2>/dev/null \
+  "$PY_KOMUT" -c "import ast;ast.parse(open('plugins/enver-framework/hooks/$k.py',encoding='utf-8').read())" 2>/dev/null \
     && kontrol "plugins/enver-framework/hooks/$k.py sozdizimi gecerli" 0 || kontrol "plugins/enver-framework/hooks/$k.py sozdizimi gecerli" 1
 done
 
@@ -33,7 +49,7 @@ echo ""
 echo "--- 2. FAZ MOTORU (T34) ---"
 [ -f "hafiza/faz-plani.json" ] && kontrol "Faz plani var" 0 || kontrol "Faz plani var" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Plan gecerli ve tutarli" 0 || kontrol "Plan gecerli ve tutarli" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Plan gecerli ve tutarli" 0 || kontrol "Plan gecerli ve tutarli" 1
 import json
 d = json.load(open("hafiza/faz-plani.json", encoding="utf-8"))
 fazlar = d["fazlar"]
@@ -51,14 +67,14 @@ PY
 
 # Bütün fazlar tamamlandıysa aktif faz OLMAZ - bu geçerli bir durumdur.
 # Ölçülecek şey durumun okunabilmesi, aktif faz bulunması değil.
-python "$P/scripts/faz/faz.py" durum > _calisma/fz.txt 2>&1
+"$PY_KOMUT" "$P/scripts/faz/faz.py" durum > _calisma/fz.txt 2>&1
 grep -qE "Aktif faz|Bütün fazlar tamamlandı" _calisma/fz.txt   && kontrol "Faz durumu okunabiliyor" 0 || kontrol "Faz durumu okunabiliyor" 1
 grep -q "İLERLEME" _calisma/fz.txt && kontrol "Ilerleme gosteriliyor" 0 || kontrol "Ilerleme gosteriliyor" 1
 
-python "$P/scripts/faz/faz.py" plan 2>/dev/null | grep -q "FAZ PLANI" \
+"$PY_KOMUT" "$P/scripts/faz/faz.py" plan 2>/dev/null | grep -q "FAZ PLANI" \
   && kontrol "Plan listelenebiliyor" 0 || kontrol "Plan listelenebiliyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Aktif faz dogru hesaplaniyor" 0 || kontrol "Aktif faz dogru hesaplaniyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Aktif faz dogru hesaplaniyor" 0 || kontrol "Aktif faz dogru hesaplaniyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/faz")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -74,7 +90,7 @@ aktif = faz.aktif_faz()
 assert aktif == beklenen, (aktif, beklenen)
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Her fazin kapi komutu tanimli" 0 || kontrol "Her fazin kapi komutu tanimli" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Her fazin kapi komutu tanimli" 0 || kontrol "Her fazin kapi komutu tanimli" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/faz")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -92,11 +108,11 @@ PY
 
 echo ""
 echo "--- 3. CALISMA MODLARI (T59) ---"
-python "$P/scripts/faz/mod.py" > _calisma/md.txt 2>&1
+"$PY_KOMUT" "$P/scripts/faz/mod.py" > _calisma/md.txt 2>&1
 grep -q "Çalışma modu" _calisma/md.txt && kontrol "Mod durumu okunabiliyor" 0 || kontrol "Mod durumu okunabiliyor" 1
 grep -q "tam-yetki" _calisma/md.txt && kontrol "Butun modlar listeleniyor" 0 || kontrol "Butun modlar listeleniyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Mod degistirilebiliyor ve geri alinabiliyor" 0 || kontrol "Mod degistirilebiliyor ve geri alinabiliyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Mod degistirilebiliyor ve geri alinabiliyor" 0 || kontrol "Mod degistirilebiliyor ve geri alinabiliyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/faz")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -112,7 +128,7 @@ PY
 
 echo ""
 echo "--- 4. TAM YETKI GUVENLIGI (E12) ---"
-python "$P/scripts/testler/tam-yetki-testleri.py" "$KOK" > _calisma/ty.txt 2>&1
+"$PY_KOMUT" "$P/scripts/testler/tam-yetki-testleri.py" "$KOK" > _calisma/ty.txt 2>&1
 HATA=$(grep -c "HATA" _calisma/ty.txt)
 TOPLAM=$(grep -c "^  \[" _calisma/ty.txt)
 [ "$HATA" -eq 0 ] && kontrol "Tam yetki senaryolari ($TOPLAM senaryo, $HATA hata)" 0 \
@@ -122,7 +138,7 @@ TOPLAM=$(grep -c "^  \[" _calisma/ty.txt)
 # engeller AYRI kancalarda durur. Test, o güvenlik ağının nerede olduğunun
 # BELGELENDİĞİNİ doğrular - bir gün biri bu bağı koparırsa yakalansın.
 # (String listesi değil yapı ölçülür: hangi korumanın devrede olduğu.)
-python - << 'PY' 2>/dev/null && kontrol "Sert engellerin yeri belgeli" 0 || kontrol "Sert engellerin yeri belgeli" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Sert engellerin yeri belgeli" 0 || kontrol "Sert engellerin yeri belgeli" 1
 kaynak = open("plugins/enver-framework/hooks/tam-yetki.py", encoding="utf-8").read()
 for koruma in ["veri-koruma", "kasa-koruma", "git-gizlilik-koruma", "sunucu-koruma"]:
     assert koruma in kaynak, koruma
@@ -130,7 +146,7 @@ for koruma in ["veri-koruma", "kasa-koruma", "git-gizlilik-koruma", "sunucu-koru
 assert "engelle" in kaynak and "izin ver" in kaynak
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Kanca cokerse tam yetki kapali kalir" 0 || kontrol "Kanca cokerse tam yetki kapali kalir" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Kanca cokerse tam yetki kapali kalir" 0 || kontrol "Kanca cokerse tam yetki kapali kalir" 1
 import json, subprocess, sys
 # Bozuk girdi verildiğinde kanca izin VERMEMELI
 p = subprocess.run([sys.executable, "plugins/enver-framework/hooks/tam-yetki.py"], input="bozuk-json",
@@ -141,7 +157,7 @@ PY
 
 echo ""
 echo "--- 5. KALITE KAPISI (T5) ---"
-python - << 'PY' 2>/dev/null && kontrol "Tam yetki kapaliyken kalite kapisi sessiz" 0 || kontrol "Tam yetki kapaliyken kalite kapisi sessiz" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Tam yetki kapaliyken kalite kapisi sessiz" 0 || kontrol "Tam yetki kapaliyken kalite kapisi sessiz" 1
 import json, subprocess, sys
 sys.path.insert(0, "plugins/enver-framework/scripts/faz")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -157,7 +173,7 @@ assert cikti.get("decision") != "block", cikti
 mod.mod_ayarla(onceki)
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Sonsuz dongu korumasi var" 0 || kontrol "Sonsuz dongu korumasi var" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Sonsuz dongu korumasi var" 0 || kontrol "Sonsuz dongu korumasi var" 1
 import json, subprocess, sys
 p = subprocess.run([sys.executable, "plugins/enver-framework/hooks/kalite-kapisi.py"],
                    input=json.dumps({"stop_hook_active": True}),
@@ -171,7 +187,7 @@ grep -q "stop_hook_active" plugins/enver-framework/hooks/kalite-kapisi.py \
 
 echo ""
 echo "--- 6. IZOLE DENEME ALANI (T51) ---"
-python - << 'PY' 2>/dev/null && kontrol "Deneme alani proje DISINDA aciliyor" 0 || kontrol "Deneme alani proje DISINDA aciliyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Deneme alani proje DISINDA aciliyor" 0 || kontrol "Deneme alani proje DISINDA aciliyor" 1
 import sys
 from pathlib import Path
 sys.path.insert(0, "plugins/enver-framework/scripts/faz")
@@ -187,7 +203,7 @@ grep -q "arsiv.arsivle" "$P/scripts/faz/izole.py" \
 
 echo ""
 echo "--- 7. KANCA KAYDI ---"
-python - << 'PY' 2>/dev/null && kontrol "Yeni kancalar settings.json'da" 0 || kontrol "Yeni kancalar settings.json'da" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Yeni kancalar settings.json'da" 0 || kontrol "Yeni kancalar settings.json'da" 1
 import json
 d = json.load(open(".claude/settings.json", encoding="utf-8"))
 metin = json.dumps(d)
@@ -196,7 +212,7 @@ assert "kalite-kapisi" in metin
 assert "Stop" in d["hooks"]
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Kurulum betigi yeni kancalari taniyor" 0 || kontrol "Kurulum betigi yeni kancalari taniyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Kurulum betigi yeni kancalari taniyor" 0 || kontrol "Kurulum betigi yeni kancalari taniyor" 1
 import ast, sys
 kaynak = open("plugins/enver-framework/scripts/kurulum/kanca-kaydet.py", encoding="utf-8").read()
 for dugum in ast.walk(ast.parse(kaynak)):
@@ -218,7 +234,7 @@ grep -q "kontrolsüzlük değil" "$P/commands/faz.md" \
 
 echo ""
 echo "--- 9. YAZIM DENETIMI ---"
-python "$P/scripts/testler/yazim-testleri.py" "$KOK" > _calisma/yz.txt 2>&1
+"$PY_KOMUT" "$P/scripts/testler/yazim-testleri.py" "$KOK" > _calisma/yz.txt 2>&1
 HATA=$(grep -c "HATA" _calisma/yz.txt)
 [ "$HATA" -eq 0 ] && kontrol "Yazim senaryolari (0 hata)" 0 \
                   || { kontrol "Yazim senaryolari ($HATA hata)" 1; grep "HATA" _calisma/yz.txt; }

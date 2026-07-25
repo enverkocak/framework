@@ -4,14 +4,30 @@
 
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 # Sunucu değerleri HARITADAN okunur; teste gömülmez.
 # Bu dosya paylaşılan kopyada da bulunacağı için kişisel değer taşıyamaz.
 HARITA="plugins/enver-framework/references/sunucu-haritasi.json"
-ADRES=$(python -c "import json;d=json.load(open('$HARITA',encoding='utf-8'));print(d['sunucular'][0]['adres'])")
-KORUNAN=$(python -c "import json;d=json.load(open('$HARITA',encoding='utf-8'));print(d['korunan_kok_dizinler'][0])")
-IZINLI=$(python -c "import json;d=json.load(open('$HARITA',encoding='utf-8'));print(d['sunucular'][0]['projeler'][0]['dizin'])")
+ADRES=$("$PY_KOMUT" -c "import json;d=json.load(open('$HARITA',encoding='utf-8'));print(d['sunucular'][0]['adres'])")
+KORUNAN=$("$PY_KOMUT" -c "import json;d=json.load(open('$HARITA',encoding='utf-8'));print(d['korunan_kok_dizinler'][0])")
+IZINLI=$("$PY_KOMUT" -c "import json;d=json.load(open('$HARITA',encoding='utf-8'));print(d['sunucular'][0]['projeler'][0]['dizin'])")
 
 GECEN=0
 KALAN=0
@@ -85,7 +101,7 @@ echo "--- 3. KANCA DOSYALARI ---"
 # beklenen durumdur, eksiklik değildir.
 if [ -f ".claude/settings.json" ]; then
   kontrol "settings.json var" GECMELI 0
-  python -c "import json;d=json.load(open('.claude/settings.json'));assert d['hooks']['PreToolUse'];assert d['hooks']['PostToolUse']" 2>/dev/null && S=0 || S=1
+  "$PY_KOMUT" -c "import json;d=json.load(open('.claude/settings.json'));assert d['hooks']['PreToolUse'];assert d['hooks']['PostToolUse']" 2>/dev/null && S=0 || S=1
   kontrol "settings.json gecerli ve kancalari tanimliyor" GECMELI $S
 else
   kontrol "Ayar dosyasi yok - kurulum betigi uretecek (atlandi)" GECMELI 0
@@ -95,7 +111,7 @@ fi
 for k in sunucu-koruma git-gizlilik-koruma iz-kontrol; do
   [ -f "plugins/enver-framework/hooks/$k.py" ] && S=0 || S=1
   kontrol "plugins/enver-framework/hooks/$k.py var" GECMELI $S
-  python -c "import ast,sys;ast.parse(open('plugins/enver-framework/hooks/$k.py',encoding='utf-8').read())" 2>/dev/null && S=0 || S=1
+  "$PY_KOMUT" -c "import ast,sys;ast.parse(open('plugins/enver-framework/hooks/$k.py',encoding='utf-8').read())" 2>/dev/null && S=0 || S=1
   kontrol "plugins/enver-framework/hooks/$k.py sozdizimi gecerli" GECMELI $S
 done
 
@@ -105,7 +121,7 @@ kontrol "Eski adli kanca dosyasi kalmadi" GECMELI $S
 echo ""
 echo "--- 4. KANCA DAVRANISI ---"
 
-ct() { python "plugins/enver-framework/hooks/$1.py"; }
+ct() { "$PY_KOMUT" "plugins/enver-framework/hooks/$1.py"; }
 
 # Tek tırnak değişken genişletmez; hook '$ADRES' metnini görür ve
 # gerçek bir adres saymaz. Bu yüzden JSON printf ile kuruluyor.
@@ -129,12 +145,17 @@ printf '{"tool_name":"Bash","tool_input":{"command":"gh repo create yeni --priva
 ct git-gizlilik-koruma < _calisma/gp3.json | grep -q '"deny"' && S=1 || S=0
 kontrol "Gizli depo olusturma GECIYOR" GECMELI $S
 
-mkdir -p "D:/Projeler/_test-musteri"
-printf 'Claude ile yazildi\n' > "D:/Projeler/_test-musteri/kod.php"
-printf '{"tool_name":"Write","tool_input":{"file_path":"D:/Projeler/_test-musteri/kod.php"}}' > _calisma/iz1.json
+# Muafiyet isareti tasimayan bir depo gerekir: cerceve deposunun DISINDA,
+# sistemin gecici dizininde acilir. Sabit surucu yolu yazilirsa test
+# yalniz tek makinede calisir. Yol, kabugun ve Python'un ayni sekilde
+# cozecegi bicime getirilir; yoksa kanca dosyayi bulamaz.
+MUSTERI="$(mktemp -d)"
+MUSTERI="$(cd "$MUSTERI" && { pwd -W 2>/dev/null || pwd; })"
+printf 'Claude ile yazildi\n' > "$MUSTERI/kod.php"
+printf '{"tool_name":"Write","tool_input":{"file_path":"%s/kod.php"}}' "$MUSTERI" > _calisma/iz1.json
 ct iz-kontrol < _calisma/iz1.json | grep -q "IZ BULUNDU" && S=0 || S=1
 kontrol "Musteri projesinde iz YAKALANIYOR" GECMELI $S
-rm -rf "D:/Projeler/_test-musteri"
+# Gecici dizin silinmez: kural geregi silme yok, sistem kendi temizler.
 
 # .iz-muaf her deponun KENDI işaretidir; paylaşılan kopyada bulunmaz,
 # kurulum sihirbazı oluşturur. Yokluğu bir eksiklik değil, kurulum adımıdır.
@@ -151,8 +172,8 @@ fi
 echo ""
 echo "--- 5. SURUM VE DUPLIKAT ---"
 
-P=$(python -c "import json;print(json.load(open('plugins/.claude-plugin/plugin.json'))['version'])" 2>/dev/null)
-M=$(python -c "import json;print(json.load(open('plugins/.claude-plugin/marketplace.json'))['plugins'][0]['version'])" 2>/dev/null)
+P=$("$PY_KOMUT" -c "import json;print(json.load(open('plugins/.claude-plugin/plugin.json'))['version'])" 2>/dev/null)
+M=$("$PY_KOMUT" -c "import json;print(json.load(open('plugins/.claude-plugin/marketplace.json'))['plugins'][0]['version'])" 2>/dev/null)
 # Surum README'de ilk satirda olmayabilir (dil gecisi satiri var);
 # rozette ya da baslikta. Dosyadaki ilk X.Y.Z'yi al.
 R=$(grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+" README.md | head -1)
@@ -193,7 +214,7 @@ echo "--- 7. ANA DIZIN DUZENI ---"
 
 # Beklenen üst düzey içerik references/dizin-düzeni.json'dan okunur.
 # Yeni klasör eklendiğinde sadece o dosya güncellenir, test değişmez.
-ANA=$(python - << 'PYKOD'
+ANA=$("$PY_KOMUT" - << 'PYKOD'
 import json, os, sys
 duzen = json.load(open("plugins/enver-framework/references/dizin-duzeni.json", encoding="utf-8"))
 beklenen = set(duzen["kalici"]) | set(duzen["uretilen"])

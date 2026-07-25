@@ -5,6 +5,22 @@ KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/n
 P="$KOK/plugins/enver-framework"
 T="$P/scripts/tasarim"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 GECEN=0; KALAN=0
@@ -21,17 +37,17 @@ echo ""
 echo "--- 1. BETIK DOSYALARI ---"
 for b in kimlik.py ilham.py kalip-denetim.py imza.py; do
   [ -f "$T/$b" ] && kontrol "tasarim/$b var" 0 || kontrol "tasarim/$b var" 1
-  python -c "import ast;ast.parse(open('$T/$b',encoding='utf-8').read())" 2>/dev/null \
+  "$PY_KOMUT" -c "import ast;ast.parse(open('$T/$b',encoding='utf-8').read())" 2>/dev/null \
     && kontrol "tasarim/$b sozdizimi gecerli" 0 || kontrol "tasarim/$b sozdizimi gecerli" 1
 done
 
 echo ""
 echo "--- 2. KIMLIK URETECI (E8) ---"
 [ -f ".claude/tasarim-kimligi.json" ] && kontrol "Bu projenin kimligi var" 0 || kontrol "Bu projenin kimligi var" 1
-python "$T/kimlik.py" denetle > /dev/null 2>&1 \
+"$PY_KOMUT" "$T/kimlik.py" denetle > /dev/null 2>&1 \
   && kontrol "Kimlik okunabilirlik olcutunu karsiliyor" 0 || kontrol "Kimlik okunabilirlik olcutunu karsiliyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Farkli projeler farkli ana ton aliyor" 0 || kontrol "Farkli projeler farkli ana ton aliyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Farkli projeler farkli ana ton aliyor" 0 || kontrol "Farkli projeler farkli ana ton aliyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/tasarim")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -52,7 +68,7 @@ for i, a in enumerate(tonlar):
         assert fark >= kimlik.EN_KUCUK_TON_FARKI, (a, b, fark)
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Uretilen her kimlik okunabilir" 0 || kontrol "Uretilen her kimlik okunabilir" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Uretilen her kimlik okunabilir" 0 || kontrol "Uretilen her kimlik okunabilir" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/tasarim")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -69,7 +85,7 @@ assert round(kimlik.karsitlik("#000000", "#ffffff"), 1) == 21.0
 assert round(kimlik.karsitlik("#ffffff", "#ffffff"), 1) == 1.0
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Gorsel dil ogeleri de degisiyor" 0 || kontrol "Gorsel dil ogeleri de degisiyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Gorsel dil ogeleri de degisiyor" 0 || kontrol "Gorsel dil ogeleri de degisiyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/tasarim")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -83,7 +99,7 @@ for sira in range(14):
 assert len(birlesimler) >= 8, len(birlesimler)
 PY
 
-python "$T/kimlik.py" css > _calisma/kimlik.css 2>/dev/null
+"$PY_KOMUT" "$T/kimlik.py" css > _calisma/kimlik.css 2>/dev/null
 grep -q "prefers-color-scheme: dark" _calisma/kimlik.css \
   && kontrol "CSS ciktisi koyu tema iceriyor" 0 || kontrol "CSS ciktisi koyu tema iceriyor" 1
 grep -q -- "--aralik-1" _calisma/kimlik.css \
@@ -93,7 +109,7 @@ echo ""
 echo "--- 3. ILHAM KAYNAKLARI ---"
 [ -f "$P/references/yazi-tipi-eslesmeleri.json" ] && kontrol "Yazi tipi katalogu var" 0 || kontrol "Yazi tipi katalogu var" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Katalogda en az 10 karakterde esleme var" 0 || kontrol "Katalogda en az 10 karakterde esleme var" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Katalogda en az 10 karakterde esleme var" 0 || kontrol "Katalogda en az 10 karakterde esleme var" 1
 import json
 d = json.load(open("plugins/enver-framework/references/yazi-tipi-eslesmeleri.json",
                    encoding="utf-8"))
@@ -106,13 +122,13 @@ for e in esler:
         assert e.get(alan), (e.get("ad"), alan)
 PY
 
-python "$T/ilham.py" yazitipi sec --karakter luks 2>/dev/null | grep -q "yazi-baslik" \
+"$PY_KOMUT" "$T/ilham.py" yazitipi sec --karakter luks 2>/dev/null | grep -q "yazi-baslik" \
   && kontrol "Yazi tipi onerisi CSS uretiyor" 0 || kontrol "Yazi tipi onerisi CSS uretiyor" 1
 
-python "$T/ilham.py" yazitipi sec --karakter luks 2>/dev/null | grep -q "Yükleme:" \
+"$PY_KOMUT" "$T/ilham.py" yazitipi sec --karakter luks 2>/dev/null | grep -q "Yükleme:" \
   && kontrol "Yukleme adresi uretiliyor" 0 || kontrol "Yukleme adresi uretiliyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Ag yoksa yedek yigin devrede" 0 || kontrol "Ag yoksa yedek yigin devrede" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Ag yoksa yedek yigin devrede" 0 || kontrol "Ag yoksa yedek yigin devrede" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/tasarim")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -129,7 +145,7 @@ echo ""
 echo "--- 4. KALIP DENETIMI (E8 cekirdegi) ---"
 rm -rf _calisma/kalip-sablon 2>/dev/null
 mkdir -p _calisma/kalip-sablon
-python - << 'PY'
+"$PY_KOMUT" - << 'PY'
 from pathlib import Path
 Path("_calisma/kalip-sablon/s.html").write_text("""<!doctype html>
 <html><head><meta name="generator" content="X"><style>
@@ -142,7 +158,7 @@ body{font-family:'Inter',sans-serif}
 <a href="#" class="btn btn-primary">Get Started</a></section>
 </body></html>""", encoding="utf-8")
 PY
-python "$T/kalip-denetim.py" tara _calisma/kalip-sablon > _calisma/kd.txt 2>&1
+"$PY_KOMUT" "$T/kalip-denetim.py" tara _calisma/kalip-sablon > _calisma/kd.txt 2>&1
 YUKSEK=$(grep -c "\[YÜKSEK\]" _calisma/kd.txt)
 [ "$YUKSEK" -ge 6 ] && kontrol "Sablon sayfada $YUKSEK yuksek bulgu yakalandi" 0 \
                     || kontrol "Sablon sayfada yeterli bulgu yok ($YUKSEK)" 1
@@ -153,7 +169,7 @@ done
 
 rm -rf _calisma/kalip-temiz 2>/dev/null
 mkdir -p _calisma/kalip-temiz
-python - << 'PY'
+"$PY_KOMUT" - << 'PY'
 from pathlib import Path
 Path("_calisma/kalip-temiz/t.html").write_text("""<!doctype html>
 <html lang="tr"><head><meta charset="utf-8"><style>
@@ -168,20 +184,20 @@ Path("_calisma/kalip-temiz/t.html").write_text("""<!doctype html>
 <article><h2>Ikinci bolum</h2></article></section>
 </body></html>""", encoding="utf-8")
 PY
-python "$T/kalip-denetim.py" tara _calisma/kalip-temiz 2>/dev/null | grep -q "bulunamadı" \
+"$PY_KOMUT" "$T/kalip-denetim.py" tara _calisma/kalip-temiz 2>/dev/null | grep -q "bulunamadı" \
   && kontrol "Ozgun sayfada yanlis alarm yok" 0 || kontrol "Ozgun sayfada yanlis alarm yok" 1
 
-python "$T/kalip-denetim.py" kurallar 2>/dev/null | grep -q "yapılacak" \
+"$PY_KOMUT" "$T/kalip-denetim.py" kurallar 2>/dev/null | grep -q "yapılacak" \
   && kontrol "Her kural icin yapilacak is yaziyor" 0 || kontrol "Her kural icin yapilacak is yaziyor" 1
 
 echo ""
 echo "--- 5. IZ KIMLIGI (E8 revizyonu) ---"
 [ -f ".claude/imza.json" ] && kontrol "Imza ayari var" 0 || kontrol "Imza ayari var" 1
 
-python "$T/imza.py" denetle > /dev/null 2>&1 \
+"$PY_KOMUT" "$T/imza.py" denetle > /dev/null 2>&1 \
   && kontrol "Imza on planda DEGIL" 0 || kontrol "Imza on planda DEGIL" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Imza bicimi projeye gore degisiyor" 0 || kontrol "Imza bicimi projeye gore degisiyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Imza bicimi projeye gore degisiyor" 0 || kontrol "Imza bicimi projeye gore degisiyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/tasarim")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -192,7 +208,7 @@ bicimler = {k["bicim"] for k in kayitlar.values()}
 assert len(bicimler) >= 3, bicimler
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Sirket bilgisi projeye gore verilebiliyor" 0 || kontrol "Sirket bilgisi projeye gore verilebiliyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Sirket bilgisi projeye gore verilebiliyor" 0 || kontrol "Sirket bilgisi projeye gore verilebiliyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/tasarim")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -205,7 +221,7 @@ assert "Baska Sirket A.S." in icerik, icerik
 assert "Enver KOCAK" in icerik, icerik
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Goze batan imza yakalaniyor" 0 || kontrol "Goze batan imza yakalaniyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Goze batan imza yakalaniyor" 0 || kontrol "Goze batan imza yakalaniyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/tasarim")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -217,7 +233,7 @@ iyi = '<p style="font-size:.72rem;opacity:.45">Enver KOCAK</p>'
 assert not imza.denetle(iyi), imza.denetle(iyi)
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Butun imza bicimleri uretilebiliyor" 0 || kontrol "Butun imza bicimleri uretilebiliyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Butun imza bicimleri uretilebiliyor" 0 || kontrol "Butun imza bicimleri uretilebiliyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/tasarim")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")

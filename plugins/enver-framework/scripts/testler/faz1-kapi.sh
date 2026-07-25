@@ -4,6 +4,22 @@
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 GECEN=0; KALAN=0
@@ -25,11 +41,11 @@ done
 echo ""
 echo "--- 2. DIL KATMANI (E18) ---"
 for f in tr en; do
-  python -c "import json;json.load(open('$P/diller/$f.json',encoding='utf-8'))" 2>/dev/null \
+  "$PY_KOMUT" -c "import json;json.load(open('$P/diller/$f.json',encoding='utf-8'))" 2>/dev/null \
     && kontrol "diller/$f.json gecerli JSON" 0 || kontrol "diller/$f.json gecerli JSON" 1
 done
 
-python -c "
+"$PY_KOMUT" -c "
 import json
 tr=json.load(open('$P/diller/tr.json',encoding='utf-8'))
 en=json.load(open('$P/diller/en.json',encoding='utf-8'))
@@ -44,14 +60,14 @@ assert anahtarlar(tr)==anahtarlar(en), anahtarlar(tr)^anahtarlar(en)
 " 2>/dev/null && kontrol "tr ve en ayni anahtarlara sahip" 0 || kontrol "tr ve en ayni anahtarlara sahip" 1
 
 cd "$P/scripts/ortak" || exit 1
-python -c "
+"$PY_KOMUT" -c "
 import sys,io
 sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 import metin
 assert metin.al('korumalar.engellendi')=='ENGELLENDİ'
 " 2>/dev/null && kontrol "Turkce metin dogru okunuyor" 0 || kontrol "Turkce metin dogru okunuyor" 1
 
-python -c "
+"$PY_KOMUT" -c "
 import ayarlar,metin,json,os
 from pathlib import Path
 h=Path.home()/'.claude'/'enver'/'ayarlar.json'
@@ -66,7 +82,7 @@ assert metin.al('korumalar.engellendi')=='ENGELLENDİ'
 if eski is not None: h.write_text(eski,encoding='utf-8')
 " 2>/dev/null && kontrol "Dil degistirilebiliyor (tr <-> en)" 0 || kontrol "Dil degistirilebiliyor (tr <-> en)" 1
 
-python -c "
+"$PY_KOMUT" -c "
 import metin
 assert metin.al('boyle.bir.anahtar.yok')=='boyle.bir.anahtar.yok'
 " 2>/dev/null && kontrol "Eksik anahtar cokmuyor" 0 || kontrol "Eksik anahtar cokmuyor" 1
@@ -75,12 +91,12 @@ echo ""
 echo "--- 3. BETIK KATMANI (T3) ---"
 cd "$KOK" || exit 1
 for f in ortak/ayarlar.py ortak/metin.py ortak/yollar.py ortak/arsiv.py index-uret.py kurulum/kanca-kaydet.py; do
-  python -c "import ast;ast.parse(open('$P/scripts/$f',encoding='utf-8').read())" 2>/dev/null \
+  "$PY_KOMUT" -c "import ast;ast.parse(open('$P/scripts/$f',encoding='utf-8').read())" 2>/dev/null \
     && kontrol "scripts/$f sozdizimi gecerli" 0 || kontrol "scripts/$f sozdizimi gecerli" 1
 done
 
 cd "$P/scripts/ortak" || exit 1
-python -c "
+"$PY_KOMUT" -c "
 import yollar
 from pathlib import Path
 k=yollar.proje_kok('$KOK')
@@ -103,14 +119,14 @@ echo "--- 5. KOMUT REHBERI (E14) ---"
 [ -f "$P/commands/index.md" ] && kontrol "index komutu var" 0 || kontrol "index komutu var" 1
 [ -f "$P/skills/index-rehber/SKILL.md" ] && kontrol "index-rehber becerisi var" 0 || kontrol "index-rehber becerisi var" 1
 
-python "$P/scripts/index-uret.py" > _calisma/rehber.txt 2>/dev/null && kontrol "Rehber uretilebiliyor" 0 || kontrol "Rehber uretilebiliyor" 1
+"$PY_KOMUT" "$P/scripts/index-uret.py" > _calisma/rehber.txt 2>/dev/null && kontrol "Rehber uretilebiliyor" 0 || kontrol "Rehber uretilebiliyor" 1
 grep -q "/index" _calisma/rehber.txt && kontrol "Rehberde index komutu listeleniyor" 0 || kontrol "Rehberde index komutu listeleniyor" 1
 grep -q "index-rehber" _calisma/rehber.txt && kontrol "Rehberde beceriler listeleniyor" 0 || kontrol "Rehberde beceriler listeleniyor" 1
 grep -q "iz-kontrol.py" _calisma/rehber.txt && kontrol "Rehberde korumalar listeleniyor" 0 || kontrol "Rehberde korumalar listeleniyor" 1
 grep -q "Açıklama" _calisma/rehber.txt && kontrol "Rehber Turkce karakterle uretiliyor" 0 || kontrol "Rehber Turkce karakterle uretiliyor" 1
 
-python "$P/scripts/index-uret.py" --json > _calisma/rehber.json 2>/dev/null
-python -c "
+"$PY_KOMUT" "$P/scripts/index-uret.py" --json > _calisma/rehber.json 2>/dev/null
+"$PY_KOMUT" -c "
 import json
 d=json.load(open('_calisma/rehber.json',encoding='utf-8'))
 assert len(d['komutlar'])>=17, len(d['komutlar'])
@@ -127,13 +143,13 @@ echo "--- 6. WINDOWS KATMANI (T35) ---"
 # ayri kanca kaydi yapmaz. Olculecek yapisal invariant: plugin hooks.json
 # TASIYOR ve butun kancalari tanimliyor - "/plugin install" korumalari da getirir.
 HJ="plugins/enver-framework/hooks/hooks.json"
-python -c "import json,sys; d=json.load(open('$HJ',encoding='utf-8')); h=d['hooks']; assert h.get('PreToolUse') and h.get('PostToolUse') and h.get('SessionStart') and h.get('Stop'); s=json.dumps(h); assert 'veri-koruma.py' in s and 'kasa-koruma.py' in s and 'CLAUDE_PLUGIN_ROOT' in s" 2>/dev/null \
+"$PY_KOMUT" -c "import json,sys; d=json.load(open('$HJ',encoding='utf-8')); h=d['hooks']; assert h.get('PreToolUse') and h.get('PostToolUse') and h.get('SessionStart') and h.get('Stop'); s=json.dumps(h); assert 'veri-koruma.py' in s and 'kasa-koruma.py' in s and 'CLAUDE_PLUGIN_ROOT' in s" 2>/dev/null \
   && kontrol "Plugin hooks.json korumalari tanimliyor (tek teslim)" 0 || kontrol "Plugin hooks.json korumalari tanimliyor (tek teslim)" 1
 grep -q "kanca-kaydet.py" kurulum.sh && kontrol "kurulum.sh kanca KAYDETMIYOR (plugin veriyor)" 1 || kontrol "kurulum.sh kanca KAYDETMIYOR (plugin veriyor)" 0
 
 echo ""
 echo "--- 7. PAKETLEME (T2) ---"
-python -c "
+"$PY_KOMUT" -c "
 import json
 p=json.load(open('$KOK/plugins/.claude-plugin/plugin.json',encoding='utf-8'))
 m=json.load(open('$KOK/plugins/.claude-plugin/marketplace.json',encoding='utf-8'))

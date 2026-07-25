@@ -4,6 +4,22 @@
 KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/null || pwd; })}"
 P="$KOK/plugins/enver-framework"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 GECEN=0; KALAN=0
@@ -20,17 +36,17 @@ echo ""
 echo "--- 1. BETIK DOSYALARI ---"
 for b in projeler/proje.py projeler/kayit.py projeler/sema.py projeler/tani.py ara.py; do
   [ -f "$P/scripts/$b" ] && kontrol "scripts/$b var" 0 || kontrol "scripts/$b var" 1
-  python -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
+  "$PY_KOMUT" -c "import ast;ast.parse(open('$P/scripts/$b',encoding='utf-8').read())" 2>/dev/null \
     && kontrol "scripts/$b sozdizimi gecerli" 0 || kontrol "scripts/$b sozdizimi gecerli" 1
 done
 
 echo ""
 echo "--- 2. PROJE TANIMI (E11 temeli) ---"
 [ -f ".claude/proje.json" ] && kontrol "Bu projenin tanimi var" 0 || kontrol "Bu projenin tanimi var" 1
-python "$P/scripts/projeler/proje.py" dogrula > /dev/null 2>&1 \
+"$PY_KOMUT" "$P/scripts/projeler/proje.py" dogrula > /dev/null 2>&1 \
   && kontrol "Tanim gecerli" 0 || kontrol "Tanim gecerli" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Tanimda gizli bilgi YOK" 0 || kontrol "Tanimda gizli bilgi YOK" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Tanimda gizli bilgi YOK" 0 || kontrol "Tanimda gizli bilgi YOK" 1
 import json, re, glob
 for yol in [".claude/proje.json"] + glob.glob("hafiza/projeler/*.json"):
     ham = open(yol, encoding="utf-8").read()
@@ -40,7 +56,7 @@ PY
 
 echo ""
 echo "--- 3. MERKEZI KAYIT (E11) ---"
-python "$P/scripts/projeler/kayit.py" liste > _calisma/pl.txt 2>&1
+"$PY_KOMUT" "$P/scripts/projeler/kayit.py" liste > _calisma/pl.txt 2>&1
 grep -q "PROJELER" _calisma/pl.txt && kontrol "Proje listesi uretiliyor" 0 || kontrol "Proje listesi uretiliyor" 1
 
 # Tanımlı olma bilgisi kayıttan değil, o anki durumdan okunmalı
@@ -50,26 +66,32 @@ TANIMSIZ=$(cat _calisma/tanimsiz.txt)
 # Çıktı Türkçe karakterli; ASCII aramak yanıltıyordu.
 grep -q "buradas" _calisma/pl.txt && kontrol "Mevcut proje isaretleniyor" 0 || kontrol "Mevcut proje isaretleniyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Tarama koku D:/Projeler ile sinirli" 0 || kontrol "Tarama koku D:/Projeler ile sinirli" 1
-import json, sys
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Tarama koku tanimli ve sinirli" 0 || kontrol "Tarama koku tanimli ve sinirli" 1
+import json
 from pathlib import Path
+# Olculen KURAL: tarama serbest dolasmaz, tanimli koklerle sinirlidir.
+# Kokun kendisi makineye gore degisir ve ayar dosyasinda durur; testin
+# belirli bir surucu yolunu beklemesi cerceveyi tek makineye baglardi.
 yol = Path.home() / ".claude" / "enver" / "projeler.json"
 veri = json.loads(yol.read_text(encoding="utf-8"))
 kokler = veri.get("kokler", [])
-assert kokler, "kok tanimli degil"
+assert kokler, "kok tanimli degil - tarama sinirsiz olurdu"
 for kok in kokler:
-    assert Path(kok).resolve() == Path("D:/Projeler").resolve(), kok
+    p = Path(kok).resolve()
+    assert p.is_dir(), f"kok yok: {p}"
+    # Dosya sisteminin koku kok olamaz: sinirlama anlamsizlasir
+    assert p.parent != p, f"kok cok genis: {p}"
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Butun projeler kok altinda" 0 || kontrol "Butun projeler kok altinda" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Butun projeler kok altinda" 0 || kontrol "Butun projeler kok altinda" 1
 import json, sys
 from pathlib import Path
 yol = Path.home() / ".claude" / "enver" / "projeler.json"
 veri = json.loads(yol.read_text(encoding="utf-8"))
-kok = Path("D:/Projeler").resolve()
+kokler = [Path(k).resolve() for k in veri.get("kokler", [])]
 for ad, kayit in veri.get("projeler", {}).items():
     p = Path(kayit["yol"]).resolve()
-    assert kok in p.parents or p == kok, f"{ad}: {p}"
+    assert any(k in p.parents or p == k for k in kokler), f"{ad}: {p}"
 PY
 
 echo ""
@@ -78,7 +100,7 @@ echo "--- 4. CIFT KAYIT (proje + merkezi yansima) ---"
 SAYI=$(ls hafiza/projeler/*.json 2>/dev/null | wc -l)
 [ "$SAYI" -ge 20 ] && kontrol "Merkezi yansimada $SAYI tanim var" 0 || kontrol "Merkezi yansimada yeterli tanim ($SAYI)" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Asil kayit merkezi yansimadan ustun" 0 || kontrol "Asil kayit merkezi yansimadan ustun" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Asil kayit merkezi yansimadan ustun" 0 || kontrol "Asil kayit merkezi yansimadan ustun" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/projeler")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -100,7 +122,7 @@ PY
 echo ""
 echo "--- 5. PROJEYE GECMEDEN SORGU (E10) ---"
 # Sorgulanacak proje HARITADAN alınır; teste gömülmez
-ILK_PROJE=$(python -c "
+ILK_PROJE=$("$PY_KOMUT" -c "
 import json, sys
 from pathlib import Path
 yol = Path.home() / '.claude' / 'enver' / 'projeler.json'
@@ -111,24 +133,24 @@ try:
 except Exception:
     print('')
 ")
-python "$P/scripts/projeler/kayit.py" sor "$ILK_PROJE" "teknoloji" > _calisma/sr.txt 2>&1
+"$PY_KOMUT" "$P/scripts/projeler/kayit.py" sor "$ILK_PROJE" "teknoloji" > _calisma/sr.txt 2>&1
 grep -qi "teknolojiler" _calisma/sr.txt && kontrol "Gecmeden bilgi alinabiliyor" 0 || kontrol "Gecmeden bilgi alinabiliyor" 1
 
-python "$P/scripts/projeler/kayit.py" goster "olmayan-proje-12345" > /dev/null 2>&1 && S=1 || S=0
+"$PY_KOMUT" "$P/scripts/projeler/kayit.py" goster "olmayan-proje-12345" > /dev/null 2>&1 && S=1 || S=0
 kontrol "Olmayan proje dogru sekilde reddediliyor" $S
 
 echo ""
 echo "--- 6. GORSEL SEMA (E4) ---"
-python "$P/scripts/projeler/sema.py" uret --hedef _calisma/test-sema.html > _calisma/sm.txt 2>&1 \
+"$PY_KOMUT" "$P/scripts/projeler/sema.py" uret --hedef _calisma/test-sema.html > _calisma/sm.txt 2>&1 \
   && kontrol "Sema uretilebiliyor" 0 || kontrol "Sema uretilebiliyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Sema tek dosya, dis kaynak yok" 0 || kontrol "Sema tek dosya, dis kaynak yok" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Sema tek dosya, dis kaynak yok" 0 || kontrol "Sema tek dosya, dis kaynak yok" 1
 import re
 h = open("_calisma/test-sema.html", encoding="utf-8").read()
 assert not re.search(r'(src|href)=["\']https?://', h), "dis kaynak var"
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Sema butun projeleri ciziyor" 0 || kontrol "Sema butun projeleri ciziyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Sema butun projeleri ciziyor" 0 || kontrol "Sema butun projeleri ciziyor" 1
 import re, json
 from pathlib import Path
 h = open("_calisma/test-sema.html", encoding="utf-8").read()
@@ -137,33 +159,33 @@ veri = json.loads((Path.home() / ".claude" / "enver" / "projeler.json").read_tex
 assert kutu == len(veri["projeler"]), f"{kutu} kutu, {len(veri['projeler'])} proje"
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Sema tiklanabilir ve ayrinti paneli var" 0 || kontrol "Sema tiklanabilir ve ayrinti paneli var" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Sema tiklanabilir ve ayrinti paneli var" 0 || kontrol "Sema tiklanabilir ve ayrinti paneli var" 1
 h = open("_calisma/test-sema.html", encoding="utf-8").read()
 for parca in ['class="dugum"', 'id="panel"', "addEventListener", "function kacir"]:
     assert parca in h, parca
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Sema karanlik tema ve mobil uyumlu" 0 || kontrol "Sema karanlik tema ve mobil uyumlu" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Sema karanlik tema ve mobil uyumlu" 0 || kontrol "Sema karanlik tema ve mobil uyumlu" 1
 h = open("_calisma/test-sema.html", encoding="utf-8").read()
 assert "prefers-color-scheme: dark" in h
 assert "@media (max-width: 900px)" in h
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Semada gizli bilgi YOK" 0 || kontrol "Semada gizli bilgi YOK" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Semada gizli bilgi YOK" 0 || kontrol "Semada gizli bilgi YOK" 1
 import re
 h = open("_calisma/test-sema.html", encoding="utf-8").read()
 assert not re.search(r'"(parola|password|sifre|secret|token|api_key)"\s*:\s*"[^"]{4,}"', h, re.I)
 PY
 
-python "$P/scripts/projeler/sema.py" ozet 2>/dev/null | grep -q "SİSTEM ŞEMASI" \
+"$PY_KOMUT" "$P/scripts/projeler/sema.py" ozet 2>/dev/null | grep -q "SİSTEM ŞEMASI" \
   && kontrol "Sema metin ozeti calisiyor" 0 || kontrol "Sema metin ozeti calisiyor" 1
 
 echo ""
 echo "--- 7. OTOMATIK TANIMA ---"
-python "$P/scripts/projeler/tani.py" bu --deneme > /dev/null 2>&1 \
+"$PY_KOMUT" "$P/scripts/projeler/tani.py" bu --deneme > /dev/null 2>&1 \
   && kontrol "Tanima deneme modu calisiyor" 0 || kontrol "Tanima deneme modu calisiyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Tanima elle yazilani ezmiyor" 0 || kontrol "Tanima elle yazilani ezmiyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Tanima elle yazilani ezmiyor" 0 || kontrol "Tanima elle yazilani ezmiyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/projeler")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -177,7 +199,7 @@ assert yeni["teknolojiler"] == ["Python"]
 assert "teknolojiler" in doldurulan and "gorev" not in doldurulan
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Tahmin edilen alanlar isaretleniyor" 0 || kontrol "Tahmin edilen alanlar isaretleniyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Tahmin edilen alanlar isaretleniyor" 0 || kontrol "Tahmin edilen alanlar isaretleniyor" 1
 import json, glob
 bulundu = False
 for yol in glob.glob("hafiza/projeler/*.json"):
@@ -190,13 +212,13 @@ PY
 
 echo ""
 echo "--- 8. TEK ARAMA (T88) ---"
-python "$P/scripts/ara.py" "kasa" > _calisma/ar.txt 2>&1
+"$PY_KOMUT" "$P/scripts/ara.py" "kasa" > _calisma/ar.txt 2>&1
 grep -q "eşleşme" _calisma/ar.txt && kontrol "Arama sonuc uretiyor" 0 || kontrol "Arama sonuc uretiyor" 1
 
-python "$P/scripts/ara.py" "sifre" 2>/dev/null | grep -q "Kasa aranmaz\|kasada" \
+"$PY_KOMUT" "$P/scripts/ara.py" "sifre" 2>/dev/null | grep -q "Kasa aranmaz\|kasada" \
   && kontrol "Gizli konuda kasaya yonlendiriyor" 0 || kontrol "Gizli konuda kasaya yonlendiriyor" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Turkce karakter farki aramayi bozmuyor" 0 || kontrol "Turkce karakter farki aramayi bozmuyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Turkce karakter farki aramayi bozmuyor" 0 || kontrol "Turkce karakter farki aramayi bozmuyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -207,7 +229,7 @@ assert a and b, (len(a), len(b))
 assert len(a) == len(b), (len(a), len(b))
 PY
 
-python "$P/scripts/ara.py" "qxzv-hicbir-kayitta-bulunmayan-ifade-7788" > /dev/null 2>&1 && S=1 || S=0
+"$PY_KOMUT" "$P/scripts/ara.py" "qxzv-hicbir-kayitta-bulunmayan-ifade-7788" > /dev/null 2>&1 && S=1 || S=0
 kontrol "Bulunamayan aramada dogru sonuc" $S
 
 echo ""

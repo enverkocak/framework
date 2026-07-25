@@ -9,6 +9,22 @@ KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/n
 P="$KOK/plugins/enver-framework"
 S="$P/scripts/sunucu"
 cd "$KOK" || exit 1
+
+# Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
+# "python" komutu yoktur, yalniz "python3" bulunur.
+#
+# Adayin VAR olmasi yetmez, CALISMASI gerekir: Windows'ta "python3"
+# adiyla Microsoft Store kisayolu gelir; komut bulunur ama calistirilinca
+# "Python was not found" der. Her aday bir kez denenir.
+PY_KOMUT=""
+for _aday in python3 python py; do
+  if command -v "$_aday" >/dev/null 2>&1 && "$_aday" -c "import sys" >/dev/null 2>&1; then
+    PY_KOMUT="$_aday"; break
+  fi
+done
+if [ -z "$PY_KOMUT" ]; then
+  echo "Calisan Python bulunamadi (python3, python ya da py gerekli)"; exit 1
+fi
 mkdir -p _calisma
 
 GECEN=0; KALAN=0
@@ -25,7 +41,7 @@ echo ""
 echo "--- 1. BETIK DOSYALARI ---"
 for b in yedek.py sertifika.py deploy.py kontrol.py; do
   [ -f "$S/$b" ] && kontrol "sunucu/$b var" 0 || kontrol "sunucu/$b var" 1
-  python -c "import ast;ast.parse(open('$S/$b',encoding='utf-8').read())" 2>/dev/null \
+  "$PY_KOMUT" -c "import ast;ast.parse(open('$S/$b',encoding='utf-8').read())" 2>/dev/null \
     && kontrol "sunucu/$b sozdizimi gecerli" 0 || kontrol "sunucu/$b sozdizimi gecerli" 1
 done
 
@@ -35,7 +51,7 @@ rm -rf _calisma/yedek-testi 2>/dev/null
 mkdir -p _calisma/yedek-testi
 printf 'ilk surum\n' > _calisma/yedek-testi/veri.txt
 
-python - << 'PY' 2>/dev/null && kontrol "Yedek alinabiliyor" 0 || kontrol "Yedek alinabiliyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Yedek alinabiliyor" 0 || kontrol "Yedek alinabiliyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/sunucu")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -47,7 +63,7 @@ assert bilgi["neden"] == "Kapi testi"
 assert (hedef / "yedek-bilgisi.json").is_file()
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Yedekte neden bilgisi tutuluyor" 0 || kontrol "Yedekte neden bilgisi tutuluyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Yedekte neden bilgisi tutuluyor" 0 || kontrol "Yedekte neden bilgisi tutuluyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/sunucu")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -59,7 +75,7 @@ assert liste[0].get("neden"), liste[0]
 assert liste[0].get("kaynak"), liste[0]
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Geri donus calisiyor ve kendisi de geri alinabiliyor" 0 || kontrol "Geri donus calisiyor ve kendisi de geri alinabiliyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Geri donus calisiyor ve kendisi de geri alinabiliyor" 0 || kontrol "Geri donus calisiyor ve kendisi de geri alinabiliyor" 1
 import sys
 from pathlib import Path
 sys.path.insert(0, "plugins/enver-framework/scripts/sunucu")
@@ -81,7 +97,7 @@ PY
 
 echo ""
 echo "--- 3. SERTIFIKA TAKIBI (T47) ---"
-python - << 'PY' 2>/dev/null && kontrol "Sertifika cozumleyicisi calisiyor" 0 || kontrol "Sertifika cozumleyicisi calisiyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Sertifika cozumleyicisi calisiyor" 0 || kontrol "Sertifika cozumleyicisi calisiyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/sunucu")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -94,7 +110,7 @@ if sonuc["durum"] != "ulasilamadi":
     assert sonuc.get("kalan_gun") is not None, sonuc
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Ulasilamayan adres cokme yapmiyor" 0 || kontrol "Ulasilamayan adres cokme yapmiyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Ulasilamayan adres cokme yapmiyor" 0 || kontrol "Ulasilamayan adres cokme yapmiyor" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/sunucu")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -106,7 +122,7 @@ assert sonuc["durum"] == "ulasilamadi", sonuc
 assert "hata" in sonuc
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Uyari esikleri tanimli" 0 || kontrol "Uyari esikleri tanimli" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Uyari esikleri tanimli" 0 || kontrol "Uyari esikleri tanimli" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/sunucu")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -118,14 +134,14 @@ PY
 
 echo ""
 echo "--- 4. DEPLOY GUVENLIK ZINCIRI (T14) ---"
-python "$S/deploy.py" kontrol > _calisma/dp.txt 2>&1
+"$PY_KOMUT" "$S/deploy.py" kontrol > _calisma/dp.txt 2>&1
 grep -q "DEPLOY GÜVENLİK ZİNCİRİ" _calisma/dp.txt \
   && kontrol "Zincir calisiyor" 0 || kontrol "Zincir calisiyor" 1
 
 grep -q "Hazırlık" _calisma/dp.txt \
   && kontrol "Hazirlik adimi var" 0 || kontrol "Hazirlik adimi var" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Hedef tanimsizsa zincir DURUYOR" 0 || kontrol "Hedef tanimsizsa zincir DURUYOR" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Hedef tanimsizsa zincir DURUYOR" 0 || kontrol "Hedef tanimsizsa zincir DURUYOR" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/sunucu")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -143,7 +159,7 @@ deploy.adim_hazirlik(z3, {"ad": "x", "sunucu": "s", "dizin": "/var/www/x/"})
 assert not z3.durdu, "tam tanimda zincir durdu"
 PY
 
-python - << 'PY' 2>/dev/null && kontrol "Testler gecmezse zincir DURUYOR" 0 || kontrol "Testler gecmezse zincir DURUYOR" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Testler gecmezse zincir DURUYOR" 0 || kontrol "Testler gecmezse zincir DURUYOR" 1
 import sys
 sys.path.insert(0, "plugins/enver-framework/scripts/sunucu")
 sys.path.insert(0, "plugins/enver-framework/scripts/ortak")
@@ -166,7 +182,7 @@ echo ""
 echo "--- 5. TESLIM ONCESI DENETIMLER (T44/T45/T46) ---"
 rm -rf _calisma/kontrol-kapi 2>/dev/null
 mkdir -p _calisma/kontrol-kapi
-python - << 'PY'
+"$PY_KOMUT" - << 'PY'
 from pathlib import Path
 Path("_calisma/kontrol-kapi/k.html").write_text(
     '<!doctype html><html><head></head><body><img src="a.png">'
@@ -178,7 +194,7 @@ Path("_calisma/kontrol-kapi/k.php").write_text(
     '<?php\n$api_key = "' + ornek_anahtar + '";\neval($k);\n',
     encoding="utf-8")
 PY
-python "$S/kontrol.py" tara _calisma/kontrol-kapi > _calisma/kt.txt 2>&1
+"$PY_KOMUT" "$S/kontrol.py" tara _calisma/kontrol-kapi > _calisma/kt.txt 2>&1
 for alan in "GÜVENLİK" "ERİŞİLEBİLİRLİK" "ARAMA" "BAŞARIM"; do
   grep -q "$alan" _calisma/kt.txt && kontrol "$alan alani denetleniyor" 0 || kontrol "$alan alani denetleniyor" 1
 done
@@ -191,7 +207,7 @@ grep -qi "acikta anahtar\|açıkta anahtar" _calisma/kt.txt \
 
 rm -rf _calisma/kontrol-temiz 2>/dev/null
 mkdir -p _calisma/kontrol-temiz
-python - << 'PY'
+"$PY_KOMUT" - << 'PY'
 from pathlib import Path
 Path("_calisma/kontrol-temiz/t.html").write_text(
     '<!doctype html><html lang="tr"><head><title>Sayfa</title>'
@@ -200,10 +216,10 @@ Path("_calisma/kontrol-temiz/t.html").write_text(
     '<script src="a.js" defer></script></body></html>',
     encoding="utf-8")
 PY
-python "$S/kontrol.py" tara _calisma/kontrol-temiz 2>/dev/null | grep -q "bulgu yok" \
+"$PY_KOMUT" "$S/kontrol.py" tara _calisma/kontrol-temiz 2>/dev/null | grep -q "bulgu yok" \
   && kontrol "Temiz sayfada yanlis alarm yok" 0 || kontrol "Temiz sayfada yanlis alarm yok" 1
 
-python - << 'PY' 2>/dev/null && kontrol "Bos klasorde 'sorun yok' denmiyor" 0 || kontrol "Bos klasorde 'sorun yok' denmiyor" 1
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Bos klasorde 'sorun yok' denmiyor" 0 || kontrol "Bos klasorde 'sorun yok' denmiyor" 1
 import subprocess, sys
 from pathlib import Path
 Path("_calisma/kontrol-bos").mkdir(parents=True, exist_ok=True)
