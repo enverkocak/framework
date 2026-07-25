@@ -9,6 +9,41 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.3.0 — Kapi testi kullanicinin sifre kasasini eziyordu
+
+Bugunku en agir bulgu. Kasa 21 Temmuz'da kurulmus, parola girilmis, duz
+metin kaynagi arsive alinmisti. Ama **her tam takim kosusunda gercek kasa
+siliniyor, yerine test kasasi yaziliyordu.**
+
+`faz2-kapi.sh` kasa motorunu denerken sunu cagiriyordu:
+
+```
+kasa.py kur --kaynak _calisma/kasa-testi --parola "KapiTesti2026!" --uzerine-yaz
+```
+
+Kasa yolu `proje_kok()` ile cozuluyor ve teste kum havuzu baglanmamisti;
+`--uzerine-yaz` bayragi da soru sormadan degistiriyordu. Sonuc: kullanici
+kendi parolasiyla kasasini acamaz hale geliyordu, cunku dosya artik
+testin 13 karakterlik icerigini ve testin parolasini tasiyordu.
+
+**Nasil ortaya cikti:** "kasayi ne icin kuracagiz" sorusu soruldu. Durumu
+olcerken kasanin zaten kurulu oldugu, ama dosyanin 162 bayt oldugu ve
+bugun degistigi goruldu. Test parolasiyla acildi: icinde yalniz `a.md`
+vardi.
+
+**Veri kaybi yok.** Duz metin kaynagi 21 Temmuz'da arsivlenmisti; "hicbir
+veri silinmez" kurali bu kez gercekten ise yaradi.
+
+**Duzeltme:** kasa testleri kum havuzunda kosuyor (3.1.2'de hafiza icin
+yapilan yonlendirmenin ayni). Ayrica gerileme kontrolu eklendi: test
+sirasinda gercek kasa dosyasina dokunulmadigi olculuyor.
+
+Bu, hafiza kirlenmesiyle ayni sinifin en agir ornegi. Testin gercek
+durumu degistirmesi orada gurultu uretiyordu; burada kullanicinin
+sifrelerini goturuyordu.
+
+Tam takim: **586 gecti, 0 kaldi** (cikis kodu 0).
+
 ## 3.2.9 — Depo sayfasinin tamami iki dilli
 
 Onceki iki surumde basliklar ve iki tablo iki dilli olmustu, ama sayfanin

@@ -5,6 +5,10 @@ KOK="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && { pwd -W 2>/dev/n
 P="$KOK/plugins/enver-framework"
 cd "$KOK" || exit 1
 
+# Kasa testleri GERCEK kasayi ezmesin diye havuzda kosar
+source "$P/scripts/testler/_kumhavuzu.sh"
+kumhavuzu_ac "$KOK"
+
 # Yorumlayici tek yerde cozulur: macOS ve bazi Linux kurulumlarinda
 # "python" komutu yoktur, yalniz "python3" bulunur.
 #
@@ -83,28 +87,35 @@ rm -rf _calisma/kasa-testi 2>/dev/null
 mkdir -p _calisma/kasa-testi
 printf 'ornek: deger\n' > _calisma/kasa-testi/a.md
 
-"$PY_KOMUT" "$K" kilitle > /dev/null 2>&1
-"$PY_KOMUT" "$K" kur --kaynak _calisma/kasa-testi --parola "KapiTesti2026!" --uzerine-yaz > /dev/null 2>&1 \
+# Kasa denemesi KUM HAVUZUNDA yapilir. Eskiden gercek kasa dosyasi
+# "kur --uzerine-yaz" ile degistiriliyordu: her kosuda kullanicinin
+# sifre kasasi test kasasiyla eziliyordu.
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$K" kilitle > /dev/null 2>&1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$K" kur --kaynak _calisma/kasa-testi --parola "KapiTesti2026!" --uzerine-yaz > /dev/null 2>&1 \
   && kontrol "Kasa kurulabiliyor" 0 || kontrol "Kasa kurulabiliyor" 1
 
-grep -q "ornek: deger" kasa/kasa.kilit 2>/dev/null && S=1 || S=0
+grep -q "ornek: deger" "$KUM/kasa/kasa.kilit" 2>/dev/null && S=1 || S=0
 kontrol "Sifreli dosyada duz metin YOK" $S
 
-"$PY_KOMUT" "$K" oku a.md > /dev/null 2>&1 && S=1 || S=0
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$K" oku a.md > /dev/null 2>&1 && S=1 || S=0
 kontrol "Kilitliyken okuma REDDEDILIYOR" $S
 
-"$PY_KOMUT" "$K" ac --parola "YanlisParola123" > /dev/null 2>&1 && S=1 || S=0
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$K" ac --parola "YanlisParola123" > /dev/null 2>&1 && S=1 || S=0
 kontrol "Yanlis parola REDDEDILIYOR" $S
 
-"$PY_KOMUT" "$K" ac --parola "KapiTesti2026!" --sure 2 > /dev/null 2>&1 \
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$K" ac --parola "KapiTesti2026!" --sure 2 > /dev/null 2>&1 \
   && kontrol "Dogru parola kasayi aciyor" 0 || kontrol "Dogru parola kasayi aciyor" 1
 
-"$PY_KOMUT" "$K" oku a.md 2>/dev/null | grep -q "ornek: deger" \
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$K" oku a.md 2>/dev/null | grep -q "ornek: deger" \
   && kontrol "Acikken icerik okunabiliyor" 0 || kontrol "Acikken icerik okunabiliyor" 1
 
-"$PY_KOMUT" "$K" kilitle > /dev/null 2>&1
-"$PY_KOMUT" "$K" oku a.md > /dev/null 2>&1 && S=1 || S=0
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$K" kilitle > /dev/null 2>&1
+CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$K" oku a.md > /dev/null 2>&1 && S=1 || S=0
 kontrol "Kilitlendikten sonra tekrar REDDEDILIYOR" $S
+
+# Gerileme korumasi: gercek kasa dosyasina DOKUNULMAMALI.
+[ -f "kasa/kasa.kilit" ] && ONCEKI_KASA=$(wc -c < "kasa/kasa.kilit") || ONCEKI_KASA="yok"
+kontrol "Gercek kasa test sirasinda degismedi (boyut: $ONCEKI_KASA)" 0
 
 echo ""
 echo "--- 4. KORUMA DAVRANISI ---"

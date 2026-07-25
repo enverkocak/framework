@@ -10,6 +10,42 @@ teaches nothing.
 
 ---
 
+## 3.3.0 — A gate test was destroying the user's password vault
+
+The most serious finding of the day. The vault was created on 21 July, a
+password was set, and the plaintext source was archived. Yet **every full
+suite run deleted the real vault and wrote a test vault in its place.**
+
+While exercising the vault engine, `faz2-kapi.sh` called:
+
+```
+kasa.py kur --kaynak _calisma/kasa-testi --parola "KapiTesti2026!" --uzerine-yaz
+```
+
+The vault path resolves through `proje_kok()`, the test had never been
+wired to the sandbox, and the overwrite flag replaced the file without
+asking. The result: the user could no longer open the vault with their own
+password, because the file now held the test's 13-character content and
+the test's password.
+
+**How it surfaced:** the question "what are we setting the vault up for?"
+was asked. Measuring the state showed the vault was already installed —
+but the file was 162 bytes and had changed today. It opened with the test
+password: `a.md` was all it contained.
+
+**No data was lost.** The plaintext source had been archived on 21 July;
+the "nothing is ever deleted" rule genuinely paid off here.
+
+**Fix:** the vault tests run in the sandbox (the same redirection applied
+to memory in 3.1.2), plus a regression check measuring that the real vault
+file is untouched during the run.
+
+This is the gravest instance of the same class as the memory pollution.
+There, a test writing to real state produced noise; here it took away the
+user's passwords.
+
+Full suite: **586 passed, 0 failed** (exit code 0).
+
 ## 3.2.9 — The whole repository page is bilingual
 
 The previous two releases made the headings and two tables bilingual, but
