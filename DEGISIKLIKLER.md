@@ -9,6 +9,26 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.3.1 — Kasa kontrolu yazdiriyordu, olcmuyordu
+
+3.3.0'da eklenen gerileme kontrolu kasanin boyutunu **yazdiriyor** ama
+karsilastirma yapmiyordu; kontrol her kosuda kosulsuz geciyordu. Yani
+kasa yeniden ezilse bile takim "gecti" derdi.
+
+Olcmeyen bir kontrol, kontrol degildir - bugun bunun uc ornegi cikti
+(kosucunun kalan bolumu saymamasi, panelin kendi menusunu yanlis
+saymasi, ve bu).
+
+Artik kasa bolumunun basinda dosyanin boyut ve zaman damgasi alinip
+bolum sonunda karsilastiriliyor. Kasa icerigi hicbir yerde okunmaz;
+yalniz ust veriye bakilir.
+
+**Gercek kasayla dogrulandi:** kullanicinin kasasi arsivdeki kaynaktan
+geri yuklendi (3 dosya, 1846 bayt), test parolasi artik acmiyor, ve tam
+takim kosusundan sonra dosya birebir ayni kaldi.
+
+Tam takim: **586 gecti, 0 kaldi** (cikis kodu 0).
+
 ## 3.3.0 — Kapi testi kullanicinin sifre kasasini eziyordu
 
 Bugunku en agir bulgu. Kasa 21 Temmuz'da kurulmus, parola girilmis, duz

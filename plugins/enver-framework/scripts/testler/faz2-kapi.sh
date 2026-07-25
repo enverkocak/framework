@@ -87,6 +87,14 @@ rm -rf _calisma/kasa-testi 2>/dev/null
 mkdir -p _calisma/kasa-testi
 printf 'ornek: deger\n' > _calisma/kasa-testi/a.md
 
+# Gercek kasanin durumu once kaydedilir, bolum sonunda karsilastirilir.
+GERCEK_KASA="kasa/kasa.kilit"
+if [ -f "$GERCEK_KASA" ]; then
+  KASA_ONCE="$(wc -c < "$GERCEK_KASA")-$(date -r "$GERCEK_KASA" +%s 2>/dev/null || echo 0)"
+else
+  KASA_ONCE="yok"
+fi
+
 # Kasa denemesi KUM HAVUZUNDA yapilir. Eskiden gercek kasa dosyasi
 # "kur --uzerine-yaz" ile degistiriliyordu: her kosuda kullanicinin
 # sifre kasasi test kasasiyla eziliyordu.
@@ -114,8 +122,16 @@ CLAUDE_PROJECT_DIR="$KUM" "$PY_KOMUT" "$K" oku a.md > /dev/null 2>&1 && S=1 || S
 kontrol "Kilitlendikten sonra tekrar REDDEDILIYOR" $S
 
 # Gerileme korumasi: gercek kasa dosyasina DOKUNULMAMALI.
-[ -f "kasa/kasa.kilit" ] && ONCEKI_KASA=$(wc -c < "kasa/kasa.kilit") || ONCEKI_KASA="yok"
-kontrol "Gercek kasa test sirasinda degismedi (boyut: $ONCEKI_KASA)" 0
+# Bir kapi testi bir donem 'kur --uzerine-yaz' ile kullanicinin
+# kasasini eziyordu. Burada boyut ve zaman damgasi ONCE/SONRA
+# karsilastirilir; yalnizca yazdiran bir kontrol hicbir sey olcmez.
+if [ -f "$GERCEK_KASA" ]; then
+  KASA_SONRA="$(wc -c < "$GERCEK_KASA")-$(date -r "$GERCEK_KASA" +%s 2>/dev/null || echo 0)"
+else
+  KASA_SONRA="yok"
+fi
+[ "$KASA_ONCE" = "$KASA_SONRA" ] && S=0 || S=1
+kontrol "Gercek kasa test sirasinda DEGISMEDI" $S
 
 echo ""
 echo "--- 4. KORUMA DAVRANISI ---"

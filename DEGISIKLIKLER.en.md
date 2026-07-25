@@ -10,6 +10,26 @@ teaches nothing.
 
 ---
 
+## 3.3.1 — The vault check printed but did not measure
+
+The regression check added in 3.3.0 **printed** the vault size without
+comparing anything; it passed unconditionally. If the vault were clobbered
+again, the suite would still say "passed".
+
+A check that does not measure is not a check — three examples surfaced
+today (the runner not counting a failed section, the panel miscounting its
+own menu, and this one).
+
+The vault section now records the file's size and timestamp at the start
+and compares them at the end. Vault content is never read; only metadata
+is inspected.
+
+**Verified against the real vault:** the user's vault was restored from
+the archived source (3 files, 1846 bytes), the test password no longer
+opens it, and the file was byte-identical after a full suite run.
+
+Full suite: **586 passed, 0 failed** (exit code 0).
+
 ## 3.3.0 — A gate test was destroying the user's password vault
 
 The most serious finding of the day. The vault was created on 21 July, a
