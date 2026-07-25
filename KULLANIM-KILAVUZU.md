@@ -187,6 +187,16 @@ Yalnız bir bölümü üretmek için: `--yalniz claude-md,hafiza`
 
 Bütün komutlar: `/index`
 
+**Komut çözülmüyorsa ad alanını ekle.** Eklenti olarak kurulu bir makinede
+kısa ad her ortamda çözülmeyebilir; uzun biçim her yerde çalışır:
+
+```
+/enver-framework:panel      /enver-framework:proje-devral
+```
+
+Temiz kurulumda ölçüldü: kısa ad `Unknown command` verebiliyor, ad alanlı
+biçimde 30 komutun 30'u çalışıyor.
+
 ### Günlük
 
 | Komut | Ne zaman |
@@ -543,7 +553,7 @@ Yedi alanı ölçer. **Korumaların yalnız kayıtlı değil, gerçekten çalı�
 bash plugins/enver-framework/scripts/testler/tumunu-calistir.sh
 ```
 
-12 faz kapısı, 121 senaryo, sağlık kontrolü, işlevsel ve güvenlik doğrulamaları.
+12 faz kapısı, 127 senaryo, sağlık kontrolü, işlevsel ve güvenlik doğrulamaları.
 Yaklaşık 40 saniye.
 
 ### Bir koruma yanlış engelliyor

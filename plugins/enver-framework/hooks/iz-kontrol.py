@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
-"""PostToolUse kancası: Yazılan dosyalarda araç izi kontrolü.
+"""PostToolUse kancası: Kod yorumlarında araç izi kontrolü.
 
-Kural: Kodda, yorumlarda, dokümantasyonda hiçbir araç/üretici izi kalmaz.
+KURAL (3.2.0'da daraltıldı)
+Araç izi YALNIZ **kod yorum satırlarında** yasaktır. Belge, düz metin,
+dize değeri, komut ve yol serbesttir.
+
+Neden daraltıldı: eski kural dosyanın tamamını tarıyordu ve çalışmayı
+sürekli kesiyordu - bir kurulum komutu, bir dosya yolu, bir belge cümlesi
+uyarı üretiyordu. Sürekli yanlış öten bir denetim okunmaz hale gelir; asıl
+yakalaması gereken satırı da o gürültünün içinde kaçırır.
+
+Geriye kalan kural nettir ve savunulabilir: teslim edilen kaynak kodun
+yorum satırlarında üretici izi bulunmaz. Yorum, kodu yazanın sesidir;
+orada başka bir ad geçmez.
+
 Geliştirici bilgisi her zaman: Enver KOCAK
-
-Yazma/düzenleme sonrası dosyayı tarar, iz bulursa uyarı döndürür.
 """
 
 import sys
@@ -122,8 +132,107 @@ def muaf_mi(dosya_yolu):
     return False
 
 
+# Hangi uzantıda yorum nasıl yazılır.
+# ( satır yorumu işaretleri , blok yorumu (başlangıç, bitiş) çiftleri )
+YORUM_BICIMLERI = {
+    ".py": (("#",), ()),
+    ".sh": (("#",), ()),
+    ".bash": (("#",), ()),
+    ".ps1": (("#",), (("<#", "#>"),)),
+    ".rb": (("#",), ()),
+    ".yml": (("#",), ()),
+    ".yaml": (("#",), ()),
+    ".toml": (("#",), ()),
+    ".conf": (("#",), ()),
+    ".ini": ((";", "#"), ()),
+    ".sql": (("--",), (("/*", "*/"),)),
+    ".js": (("//",), (("/*", "*/"),)),
+    ".mjs": (("//",), (("/*", "*/"),)),
+    ".cjs": (("//",), (("/*", "*/"),)),
+    ".ts": (("//",), (("/*", "*/"),)),
+    ".jsx": (("//",), (("/*", "*/"),)),
+    ".tsx": (("//",), (("/*", "*/"),)),
+    ".css": ((), (("/*", "*/"),)),
+    ".scss": (("//",), (("/*", "*/"),)),
+    ".php": (("//", "#"), (("/*", "*/"),)),
+    ".c": (("//",), (("/*", "*/"),)),
+    ".h": (("//",), (("/*", "*/"),)),
+    ".cpp": (("//",), (("/*", "*/"),)),
+    ".cs": (("//",), (("/*", "*/"),)),
+    ".java": (("//",), (("/*", "*/"),)),
+    ".go": (("//",), (("/*", "*/"),)),
+    ".rs": (("//",), (("/*", "*/"),)),
+    ".kt": (("//",), (("/*", "*/"),)),
+    ".swift": (("//",), (("/*", "*/"),)),
+    ".html": ((), (("<!--", "-->"),)),
+    ".htm": ((), (("<!--", "-->"),)),
+    ".xml": ((), (("<!--", "-->"),)),
+    ".vue": (("//",), (("/*", "*/"), ("<!--", "-->"))),
+}
+
+
+def yorum_parcalari(icerik, uzanti):
+    """Dosyadaki yorum metinlerini (satır numarasıyla) çıkar.
+
+    Yalnız yorumlar döner. Dize değerleri, kodun kendisi ve düz metin
+    dışarıda kalır - kural artık yalnız yorumları kapsıyor.
+
+    Basit bir tarayıcıdır: dize içindeki `//` gibi durumları ayırt etmez.
+    Bu yönde yanılırsa FAZLA yakalar, az değil; iz denetiminde güvenli
+    taraf budur.
+    """
+    bicim = YORUM_BICIMLERI.get(uzanti)
+    if not bicim:
+        return []
+
+    satir_isaretleri, blok_ciftleri = bicim
+    parcalar = []
+    acik_blok = None
+
+    for numara, satir in enumerate(icerik.splitlines(), 1):
+        kalan = satir
+
+        while kalan:
+            if acik_blok:
+                bitis = acik_blok[1]
+                yer = kalan.find(bitis)
+                if yer == -1:
+                    parcalar.append((numara, kalan, satir))
+                    kalan = ""
+                else:
+                    parcalar.append((numara, kalan[:yer], satir))
+                    kalan = kalan[yer + len(bitis):]
+                    acik_blok = None
+                continue
+
+            # En yakın yorum başlangıcı hangisi?
+            en_yakin = None
+            for isaret in satir_isaretleri:
+                yer = kalan.find(isaret)
+                if yer != -1 and (en_yakin is None or yer < en_yakin[0]):
+                    en_yakin = (yer, isaret, None)
+            for cift in blok_ciftleri:
+                yer = kalan.find(cift[0])
+                if yer != -1 and (en_yakin is None or yer < en_yakin[0]):
+                    en_yakin = (yer, cift[0], cift)
+
+            if en_yakin is None:
+                break
+
+            yer, isaret, cift = en_yakin
+            kalan = kalan[yer + len(isaret):]
+
+            if cift is None:          # satır sonuna kadar yorum
+                parcalar.append((numara, kalan, satir))
+                kalan = ""
+            else:                     # blok yorumu başladı
+                acik_blok = cift
+
+    return parcalar
+
+
 def dosya_tara(dosya_yolu):
-    """Dosya içeriğinde iz ara, bulursa uyarı sözlüğü döndür."""
+    """Dosyanın YORUM satırlarında iz ara, bulursa uyarı döndür."""
     if not dosya_yolu or not os.path.isfile(dosya_yolu):
         return None
 
@@ -139,24 +248,28 @@ def dosya_tara(dosya_yolu):
     bulunanlar = []
     yerler = []
 
-    # Satır satır bakılır; muaf biçimler satırdan çıkarıldıktan SONRA aranır.
-    # Böylece `claude plugin install` sessiz kalır, "generated with Claude"
-    # yakalanır - ikisi aynı satırda olsa bile.
-    for numara, satir in enumerate(icerik.splitlines(), 1):
-        kalan_satir = MUAF_BAGLAM_DESENI.sub(" ", satir)
+    # YALNIZ yorumlara bakılır. Kodun kendisi, dize değerleri, belge metni
+    # ve komutlar kapsam dışıdır - kural 3.2.0'da buraya daraltıldı.
+    uzanti = os.path.splitext(dosya_yolu.lower())[1]
+
+    # Muaf biçimler yorumdan çıkarıldıktan SONRA aranır: bir yorum kurulum
+    # yolunu ya da komutunu anlatıyor olabilir, bu iz değildir.
+    for numara, yorum, tam_satir in yorum_parcalari(icerik, uzanti):
+        kalan = MUAF_BAGLAM_DESENI.sub(" ", yorum)
 
         for desen in IZ_DESENLERI:
-            eslesme = re.search(desen, kalan_satir, re.IGNORECASE)
+            eslesme = re.search(desen, kalan, re.IGNORECASE)
             if eslesme:
                 bulunanlar.append(eslesme.group())
                 if len(yerler) < 5:
-                    yerler.append(f"satir {numara}: {satir.strip()[:80]}")
+                    yerler.append(f"satir {numara}: {tam_satir.strip()[:80]}")
+                break
 
     if not bulunanlar:
         return None
 
     mesaj = (
-        "IZ BULUNDU - temizlenmesi gerekiyor\n"
+        "IZ BULUNDU - kod yorumunda arac adi geciyor\n"
         "\n"
         f"Dosya: {dosya_yolu}\n"
         f"Bulunan ifadeler: {', '.join(sorted(set(bulunanlar)))}\n"
@@ -167,13 +280,13 @@ def dosya_tara(dosya_yolu):
 
     mesaj += (
         "\n"
-        "Kural: Kodda, yorumlarda ve dokumantasyonda arac izi kalmaz.\n"
+        "Kural: Kod YORUM satirlarinda arac izi bulunmaz.\n"
         "Gelistirici bilgisi: Enver KOCAK\n"
         "\n"
-        "Yol, ortam degiskeni ve kurulum komutu iz sayilmaz; bunlar zaten\n"
-        "muaf. Uyari geldiyse duz metinde arac adi geciyor demektir.\n"
+        "Belge, duz metin, dize degeri, komut ve yol SERBESTTIR; denetim\n"
+        "onlara bakmaz. Uyari geldiyse ifade bir yorum satirindadir.\n"
         "\n"
-        "Bu ifadeleri simdi kaldir."
+        "Yorumu kendi sozlerinle yaz."
     )
 
     return {

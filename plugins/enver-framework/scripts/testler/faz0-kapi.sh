@@ -151,7 +151,8 @@ kontrol "Gizli depo olusturma GECIYOR" GECMELI $S
 # cozecegi bicime getirilir; yoksa kanca dosyayi bulamaz.
 MUSTERI="$(mktemp -d)"
 MUSTERI="$(cd "$MUSTERI" && { pwd -W 2>/dev/null || pwd; })"
-printf 'Claude ile yazildi\n' > "$MUSTERI/kod.php"
+# Kural yalniz YORUM satirlarini kapsar; fikstur de yorum yazar.
+printf '<?php\n// Claude ile yazildi\n$x = 1;\n' > "$MUSTERI/kod.php"
 printf '{"tool_name":"Write","tool_input":{"file_path":"%s/kod.php"}}' "$MUSTERI" > _calisma/iz1.json
 ct iz-kontrol < _calisma/iz1.json | grep -q "IZ BULUNDU" && S=0 || S=1
 kontrol "Musteri projesinde iz YAKALANIYOR" GECMELI $S

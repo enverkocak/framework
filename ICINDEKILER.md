@@ -14,7 +14,7 @@
 
 | Dosya | Ne işe yarar |
 |-------|--------------|
-| `CLAUDE.md` | 1. Kodda, yorumlarda, commit'lerde ve dokümantasyonda **üretim aracı izi |
+| `CLAUDE.md` | 1. **Kod yorum satırlarında** üretim aracı adı geçmez. Yorum, kodu |
 | `CONTRIBUTING.md` | Türkçe aşağıda · English below. |
 | `DEGISIKLIKLER.md` | Enver Framework'ün sürüm geçmişi. |
 | `guncelle.ps1` | Enver Framework - Guncelleme (Windows) |

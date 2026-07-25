@@ -68,49 +68,49 @@ def dene(ad, icerik, uyari_bekleniyor, aciklama):
         kalan += 1
 
 
-print("\n  Gerçek iz - uyarmalı")
-dene("g1.py", "# Generated with Claude\nx = 1\n", True, "üretici satırı")
-dene("g2.txt", "Co-Authored-By: Claude <noreply@anthropic.com>\n", True, "ortak yazar satırı")
-dene("g3.md", "Bu belge yapay zeka ile hazırlandı.\n", True, "yapay zeka ifadesi")
-dene("g4.py", "# ChatGPT ile üretilen yardımcı\n", True, "başka araç adı")
-dene("g5.js", "// Copilot suggested this block\n", True, "Copilot")
-dene("g6.md", "Model olarak GPT-4 kullanıldı.\n", True, "model adı")
-dene("g7.py", "# LLM cikti ayristirici\n", True, "LLM kısaltması")
+print("\n  KOD YORUMUNDA iz - uyarmali")
+# Kural 3.2.0'da daraltildi: yalniz yorum satirlari kapsam icinde.
+dene("g1.py", "# Generated with Claude\nx = 1\n", True, "Python yorumu")
+dene("g2.js", "// Copilot suggested this block\nlet x = 1;\n", True, "JavaScript yorumu")
+dene("g3.php", "<?php\n# yapay zeka ile uretildi\n$x = 1;\n", True, "PHP diyez yorumu")
+dene("g4.php", "<?php\n// ChatGPT ciktisi\n$x = 1;\n", True, "PHP cift egik yorum")
+dene("g5.css", "/* GPT-4 ile uretilen stil */\n.a { color: red; }\n", True, "CSS blok yorumu")
+dene("g6.html", "<!-- Co-Authored-By: Claude -->\n<p>merhaba</p>\n", True, "HTML yorumu")
+dene("g7.sql", "-- LLM ciktisi\nSELECT 1;\n", True, "SQL yorumu")
+dene("g8.py", "x = 1\n# yapay zeka notu\ny = 2\n", True, "kod arasinda yorum")
 
-print("\n  Kurulumun kendisi - sessiz kalmalı")
-dene("m1.md", "claude plugin install enver-framework@enver-framework\n",
-     False, "kurulum komutu")
-dene("m2.md", "claude plugin marketplace add anthropics/claude-plugins-community\n",
-     False, "pazar yeri komutu + depo adı")
-dene("m3.json", '{"komut": "python ${CLAUDE_PLUGIN_ROOT}/hooks/veri-koruma.py"}\n',
-     False, "ortam değişkeni")
-dene("m4.py", 'YOL = "~/.claude/vault/index.md"\n', False, "ayar dizini yolu")
-dene("m5.md", "Kurallar CLAUDE.md dosyasına yazılır.\n", False, "kural dosyasının adı")
-dene("m6.md", "Belge: https://code.claude.com/docs/en/plugins\n", False, "belge adresi")
-dene("m7.md", "Onaylanınca @claude-community altında görünür.\n", False, "pazar yeri etiketi")
-dene("m8.sh", 'curl -s https://raw.githubusercontent.com/anthropics/claude-plugins-community/main/x.json\n',
-     False, "katalog adresi")
+print("\n  YORUM DISI kullanim - artik sessiz kalmali")
+# Belge, duz metin, dize degeri ve komut serbest. Eski kural bunlara
+# otuyordu ve calismayi surekli kesiyordu.
+dene("s1.md", "Bu belge yapay zeka ile hazirlandi.\n", False, "belge metni")
+dene("s2.txt", "Co-Authored-By: Claude <x@y.z>\n", False, "duz metin dosyasi")
+dene("s3.py", 'mesaj = "Claude ile uretildi"\n', False, "dize degeri")
+dene("s4.json", '{"not": "yapay zeka ciktisi"}\n', False, "JSON alani (yorum yok)")
+dene("s5.js", 'const ad = "ChatGPT";\n', False, "JavaScript dize degeri")
+dene("s6.md", "# Baslik\n\nGPT-4 karsilastirmasi.\n", False, "belge basligi")
 
-print("\n  Dosya yolu içindeki klasör adı - sessiz kalmalı")
-# Çerçevenin çalışma deposu bu adı taşıyor; mutlak yol yazan her betik
-# ve kurulum belgesi adı geçirmek zorunda. Yol makine biçimidir.
-dene("y1.py", 'KOK = "D:/Projeler/enver-claude-framework"\n',
-     False, "Windows mutlak yolu")
-dene("y2.sh", 'cd /home/enver/enver-claude-framework/plugins || exit 1\n',
-     False, "Linux yolu")
-dene("y3.md", "Depo: `enver-claude-framework/plugins/enver-framework/`\n",
-     False, "belgede göreli yol")
+print("\n  Kurulumun kendisi - yorumda bile sessiz kalmali")
+dene("m1.py", "# Kurulum: claude plugin install enver-framework\n",
+     False, "yorumdaki kurulum komutu")
+dene("m2.py", "# Ayar yolu: ~/.claude/settings.json\n", False, "yorumdaki yol")
+dene("m3.sh", "# Kok: ${CLAUDE_PLUGIN_ROOT}/hooks\n", False, "yorumdaki ortam degiskeni")
+dene("m4.py", "# Depo: D:/Projeler/enver-claude-framework\n", False, "yorumdaki mutlak yol")
+dene("m5.md", "claude plugin marketplace add anthropics/claude-plugins-community\n",
+     False, "belgede pazar yeri komutu")
+dene("m6.js", "// Belge: https://code.claude.com/docs/en/plugins\n",
+     False, "yorumdaki belge adresi")
 
-print("\n  Muaf biçim ile gerçek iz aynı satırda - yine uyarmalı")
-dene("k1.md", "claude plugin install x  # bu satir Claude tarafindan uretildi\n",
-     True, "komut + üretici ifadesi aynı satırda")
-dene("k2.py", 'KOK = "D:/Projeler/enver-claude-framework"  # Claude Code ile uretildi\n',
-     True, "yol + üretici ifadesi aynı satırda")
+print("\n  Muaf bicim ile gercek iz ayni yorumda - yine uyarmali")
+dene("k1.py", "# claude plugin install x  (bu satir Claude tarafindan uretildi)\n",
+     True, "yorumda komut + uretici ifadesi")
+dene("k2.php", "<?php\n// D:/Projeler/x - Claude Code ile uretildi\n$x=1;\n",
+     True, "yorumda yol + uretici ifadesi")
 
-print("\n  İlgisiz içerik - sessiz kalmalı")
-dene("i1.py", 'mesaj = "İşlem tamamlandı"\n', False, "sıradan Türkçe kod")
-dene("i2.md", "# Başlık\n\nMüşteri sipariş listesi.\n", False, "sıradan belge")
+print("\n  Ilgisiz icerik - sessiz kalmali")
+dene("i1.py", 'mesaj = "Islem tamamlandi"  # kullaniciya gosterilir\n',
+     False, "siradan kod ve yorum")
+dene("i2.md", "# Baslik\n\nMusteri siparis listesi.\n", False, "siradan belge")
 
 print()
-print(f"  Senaryo sonucu: {gecen} geçti, {kalan} kaldı")
+print(f"  Senaryo sonucu: {gecen} gecti, {kalan} kaldi")
 sys.exit(1 if kalan else 0)

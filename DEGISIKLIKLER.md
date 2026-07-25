@@ -7,6 +7,55 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.2.0 — İz kuralı kod yorumlarına daraltıldı
+
+**Kural değişti (Enver'in kararı).** Araç izi yasağı artık yalnız **kod
+yorum satırlarını** kapsıyor. Belge, düz metin, dize değeri, komut ve yol
+serbest.
+
+**Neden:** eski kural dosyanın tamamını tarıyordu ve çalışmayı sürekli
+kesiyordu. Bir kurulum komutu, bir dosya yolu, bir belge cümlesi, hatta
+test verisinin kendisi uyarı üretiyordu. Bugün tek oturumda dört kez
+yanlış öttü. Sürekli yanlış uyaran bir denetim okunmaz hale gelir ve asıl
+yakalaması gereken satırı da o gürültünün içinde kaçırır.
+
+Geriye kalan kural nettir ve savunulabilir: teslim edilen kaynak kodun
+yorum satırlarında üretici izi bulunmaz. Yorum, kodu yazanın sesidir;
+orada başka bir ad geçmez.
+
+**Ne yapıldı:**
+
+- `iz-kontrol.py` artık dosyayı yorum yorum tarıyor. 30'dan fazla uzantı
+  için yorum biçimi tanımlı: `#`, `//`, `/* */`, `<!-- -->`, `--`, `<# #>`.
+  Blok yorumları satırlar arasında takip ediliyor.
+- Muafiyet mantığı korundu: bir yorum kurulum komutunu ya da dosya yolunu
+  anlatıyorsa iz sayılmaz. Aynı yorumda hem yol hem üretici ifadesi varsa
+  yine uyarır.
+- Basit bir tarayıcıdır; dize içindeki `//` gibi durumları ayırt etmez.
+  Bu yönde yanılırsa **fazla** yakalar, az değil — iz denetiminde güvenli
+  taraf budur.
+- `devral.py` aynı ayıklayıcıyı kancadan alıyor. Devralma taraması ile
+  denetim tek tanımı paylaşır, ayrı düşemezler.
+- Senaryolar baştan yazıldı: 18 → **24**. Sekizi yorumdaki izi yakalıyor
+  (Python, JavaScript, PHP iki biçim, CSS, HTML, SQL), altısı yorum dışı
+  kullanımın artık serbest olduğunu ölçüyor, altısı kurulum biçimlerinin
+  yorumda bile sessiz kaldığını.
+- `CLAUDE.md`, `CLAUDE.ornek.md` ve `references/kurallar.md` yeni kuralı
+  anlatıyor. Commit yazarlığı kuralı ayrı ve yerinde duruyor: yazar Enver
+  KOCAK'tır, ortak yazar eklenmez.
+
+### İkinci bilgisayarda ölçüm
+
+Çerçeve ikinci bir makineye (SSH ile, sıfırdan kurulum) kuruldu ve **30
+komutun 30'u** çözüldü. Ama kısa ad çalışmıyor: `/panel` orada
+`Unknown command` veriyor, `/enver-framework:panel` çalışıyor. Aynı sürüm,
+aynı eklenti, aynı ayar — farkın kaynağı bulunamadı.
+
+Kılavuzlara ad alanlı biçim eklendi. Yeni kuran biri kısa adı deneyip
+"çalışmıyor" demesin diye; ölçülen gerçek yazıldı, tahmin değil.
+
+Tam takım: **540 geçti, 0 kaldı.** Senaryo toplamı 127.
+
 ## 3.1.7 — Sağlık kontrolü temiz kurulumu hasta sanıyordu
 
 Çerçeve ilk kez **ikinci bir bilgisayara** kuruldu (SSH ile, sıfırdan:

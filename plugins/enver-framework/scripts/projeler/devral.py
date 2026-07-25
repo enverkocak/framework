@@ -123,7 +123,20 @@ KIMLIK_MUAF = re.compile(
     r"(?i)(\.claude|claude\.md|CLAUDE_[A-Z_]+|claude[-_]plugin|claude plugin|claude/)"
 )
 
-# Kimlik kuralına aykırı izler (kural 1-3)
+def _yorum_ayikla(icerik, uzanti):
+    """Kancadaki yorum ayıklayıcıyı kullan - kural tek yerde tanımlıdır."""
+    try:
+        import importlib.util
+        yol = (Path(__file__).resolve().parents[2] / "hooks" / "iz-kontrol.py")
+        tanim = importlib.util.spec_from_file_location("iz_kontrol", yol)
+        modul = importlib.util.module_from_spec(tanim)
+        tanim.loader.exec_module(modul)
+        return modul.yorum_parcalari(icerik, uzanti)
+    except Exception:
+        return []
+
+
+# Kimlik kuralına aykırı izler (kural 1-3) - YALNIZ yorum satırlarında
 KIMLIK_DESENLERI = [
     ("araç adı", re.compile(r"(?i)\b(claude|copilot|chatgpt|gemini|cursor\.ai)\b")),
     ("model adı", re.compile(r"(?i)\bgpt-?[0-9]|\bllm\b")),
@@ -364,7 +377,9 @@ def icerik_tara(kok, dosyalar):
             continue
         okunan += 1
         goreli = _goreli(kok, yol)
-        belge_mi = yol.suffix.lower() in (".md", ".txt")
+        yorumlar = {}
+        for numara, metin, _ in _yorum_ayikla(icerik, yol.suffix.lower()):
+            yorumlar[numara] = yorumlar.get(numara, "") + " " + metin
 
         for numara, satir in enumerate(icerik.splitlines(), 1):
             if len(satir) > 1000:
@@ -383,9 +398,13 @@ def icerik_tara(kok, dosyalar):
                     sirlar.append({"dosya": goreli, "satir": numara, "tur": ad})
                     break
 
-            if not belge_mi and not KIMLIK_MUAF.search(satir):
+            # Kimlik kuralı YALNIZ kod yorumlarını kapsar (3.2.0).
+            # Yorum metni kancadan gelir; denetim ile devralma aynı
+            # tanımı kullanır, ayrı düşemezler.
+            yorum = yorumlar.get(numara)
+            if yorum and not KIMLIK_MUAF.search(yorum):
                 for ad, desen in KIMLIK_DESENLERI:
-                    if desen.search(satir):
+                    if desen.search(yorum):
                         kimlik.append({"dosya": goreli, "satir": numara, "tur": ad})
                         break
 

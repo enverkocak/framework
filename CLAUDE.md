@@ -5,8 +5,8 @@
 
 ## KİMLİK KURALLARI
 
-1. Kodda, yorumlarda, commit'lerde ve dokümantasyonda **üretim aracı izi
-   bırakılmaz.**
+1. **Kod yorum satırlarında** üretim aracı adı geçmez. Yorum, kodu
+   yazanın sesidir. Belge, düz metin, dize değeri, komut ve yol serbesttir.
 2. Geliştirici bilgisi her zaman aynı olacak:
    `<ADIN> | <siten> | <e-postan> | <telefonun>`
 3. Ortak yazar (`Co-Authored-By`) satırı hiçbir commit'e eklenmez.

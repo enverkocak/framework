@@ -293,8 +293,11 @@ python plugins/enver-framework/scripts/saglik/saglik.py istatistik
 bash plugins/enver-framework/scripts/testler/tumunu-calistir.sh
 ```
 
-12 faz kapısı, 121 senaryo, sağlık ve güvenlik doğrulamaları.
+12 faz kapısı, 127 senaryo, sağlık ve güvenlik doğrulamaları.
 Yaklaşık 40 saniye. Hepsi geçmeli.
+
+Kurulumdan sonra komut çözülmezse ad alanlı biçimi dene:
+`/enver-framework:panel` — bu biçim her ortamda çalışır.
 
 ---
 

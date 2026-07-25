@@ -17,7 +17,13 @@ python scripts/kurulum/sihirbaz.py kur --gelistirici "<ad>" --site "<site>" --ep
 
 Belgelerde `ayarlar.kimlik_satiri()` ile kullanılır.
 
-Kodda, yorumlarda, commit mesajlarında ve dokümantasyonda **araç izi bırakılmaz**.
+**Kod yorum satırlarında** araç adı geçmez. Belge, düz metin, dize değeri,
+komut ve yol serbesttir.
+
+Kural 3.2.0'da buraya daraltıldı: dosyanın tamamını tarayan denetim bir
+kurulum komutuna, bir dosya yoluna, bir belge cümlesine ötüyordu. Sürekli
+yanlış uyaran bir denetim okunmaz hale gelir ve asıl yakalaması gereken
+satırı da kaçırır.
 Ortak yazar (`Co-Authored-By`) satırı hiçbir commit'e eklenmez.
 
 ### İki kademeli iz kuralı
