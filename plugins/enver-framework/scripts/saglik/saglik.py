@@ -30,6 +30,7 @@ Geliştirici: Enver KOCAK
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from collections import Counter
@@ -77,7 +78,25 @@ CAKISMA_ESIKLERI = 0.9
 
 
 def _kanca_dizini():
-    return Path(yollar.proje_kok()) / "plugins" / "enver-framework" / "hooks"
+    """Ölçüm, GERÇEKTEN çalışan kancalara sorulmalı.
+
+    Sıra: eklenti kökü (kurulu kullanıcı), sonra çalışma ağacı
+    (geliştirme deposu), sonra kurulu eklenti önbelleği. Yanlış kopyaya
+    sorulan bir ölçüm, raporu gerçek davranıştan koparır.
+    """
+    aday = os.environ.get("CLAUDE_PLUGIN_ROOT")
+    if aday and (Path(aday) / "hooks" / "veri-koruma.py").is_file():
+        return Path(aday) / "hooks"
+
+    calisma = Path(yollar.proje_kok()) / "plugins" / "enver-framework" / "hooks"
+    if (calisma / "veri-koruma.py").is_file():
+        return calisma
+
+    eklenti = _eklenti_kancalari()
+    if eklenti:
+        return eklenti.parent
+
+    return calisma
 
 
 def _ayar_yolu():
@@ -126,30 +145,61 @@ def _kanca_sor(dosya, arac, girdiler):
 
 # ---------------------------------------------------------------- kontroller
 
+def _eklenti_kancalari():
+    """Korumalar eklenti üzerinden mi geliyor? Geliyorsa nereden?
+
+    3.0.0'dan beri kancalar eklentinin `hooks.json` dosyasıyla devreye
+    girer; kurulum betiği ayar dosyasına KAYIT YAPMAZ (çift çalışmasın
+    diye). Bunu bilmeyen bir denetim, eklentiyi kuran her kullanıcıya
+    "hiçbir koruma çalışmıyor olabilir" der - hem de "çerçeve gerçekten
+    çalışıyor mu" sorusunu cevaplamakla görevli araçta.
+    """
+    aday = os.environ.get("CLAUDE_PLUGIN_ROOT")
+    if aday:
+        yol = Path(aday) / "hooks" / "hooks.json"
+        if yol.is_file():
+            return yol
+
+    kurulu = Path.home() / ".claude" / "plugins"
+    if kurulu.is_dir():
+        for yol in sorted(kurulu.rglob("hooks/hooks.json")):
+            return yol
+
+    return None
+
+
 def kancalari_kontrol():
     bulgular = []
 
-    # 1. Ayar dosyasında kayıtlı mı
+    # 1. Korumalar devrede mi? İki geçerli yol vardır:
+    #    a) Eklenti kurulumu - hooks.json ile gelir (normal kullanıcı)
+    #    b) Çalışma ağacı - ayar dosyasına kayıtlı (geliştirme deposu)
+    eklenti = _eklenti_kancalari()
     ayar = _ayar_yolu()
+
     if not ayar.is_file():
-        bulgular.append((BOZUK, "Ayar dosyası yok",
-                         "Korumalar kayıtlı değil; hiçbiri çalışmıyor olabilir. "
-                         "Kaydetmek için: scripts/kurulum/kanca-kaydet.py"))
-        return bulgular
+        if not eklenti:
+            bulgular.append((BOZUK, "Korumalar hiçbir yerde kayıtlı değil",
+                             "Ne eklenti kurulumu ne ayar dosyası bulundu; "
+                             "hiçbiri çalışmıyor olabilir. Eklentiyi kur ya da "
+                             "scripts/kurulum/kanca-kaydet.py çalıştır."))
+            return bulgular
+        # Eklenti yolu geçerli kayıttır. Ama "kayıtlı" ile "çalışıyor"
+        # ayrı şeylerdir: aşağıdaki ölçümler yine de koşar.
+    else:
+        try:
+            veri = json.loads(ayar.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            bulgular.append((BOZUK, "Ayar dosyası okunamıyor", str(ayar)))
+            return bulgular
 
-    try:
-        veri = json.loads(ayar.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        bulgular.append((BOZUK, "Ayar dosyası okunamıyor", str(ayar)))
-        return bulgular
+        kayitli = json.dumps(veri)
+        beklenen_kancalar = {dosya for dosya, *_ in KORUMA_OLCUMLERI}
 
-    kayitli = json.dumps(veri)
-    beklenen_kancalar = {dosya for dosya, *_ in KORUMA_OLCUMLERI}
-
-    for dosya in sorted(beklenen_kancalar):
-        if dosya not in kayitli:
-            bulgular.append((BOZUK, f"{dosya} ayar dosyasında KAYITLI DEĞİL",
-                             "Yazılmış ama devrede değil - en tehlikeli durum."))
+        for dosya in sorted(beklenen_kancalar):
+            if dosya not in kayitli:
+                bulgular.append((BOZUK, f"{dosya} ayar dosyasında KAYITLI DEĞİL",
+                                 "Yazılmış ama devrede değil - en tehlikeli durum."))
 
     # 2. Gerçekten tepki veriyor mu
     for dosya, arac, girdiler, beklenen, hata_mesaji in KORUMA_OLCUMLERI:
@@ -233,13 +283,16 @@ def hafizayi_kontrol():
     for yol, girmemeli in ((".", False),):
         pass
 
-    sonuc = alt_surec.run(["git", "check-ignore", "-q", "gunluk"],
+    # Egik cizgi sart: klasor henuz olusmamissa git "gunluk" adini dizin
+    # saymaz, /gunluk/ deseni eslesmez ve TAZE KURULUMDA yanlis "bozuk"
+    # bildirilir. Olculen sey klasorun varligi degil, kuralin kendisidir.
+    sonuc = alt_surec.run(["git", "check-ignore", "-q", "gunluk/"],
                           cwd=str(kok), capture_output=True)
     if sonuc.returncode != 0:
         bulgular.append((BOZUK, "Ham günlük depoya giriyor",
                          "gunluk/ makineye özeldir, depoya girmemeli."))
 
-    sonuc = alt_surec.run(["git", "check-ignore", "-q", "hafiza"],
+    sonuc = alt_surec.run(["git", "check-ignore", "-q", "hafiza/"],
                           cwd=str(kok), capture_output=True)
     if sonuc.returncode == 0:
         bulgular.append((BOZUK, "Hafıza depoya GİRMİYOR",

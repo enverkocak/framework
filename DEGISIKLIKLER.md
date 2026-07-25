@@ -7,6 +7,40 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.1.7 — Sağlık kontrolü temiz kurulumu hasta sanıyordu
+
+Çerçeve ilk kez **ikinci bir bilgisayara** kuruldu (SSH ile, sıfırdan:
+VS Code, Python, git, Node, Claude Code, sonra eklenti). Kurulum sorunsuz
+geçti, kapı testleri temiz klonda 160/0 verdi. Ama sağlık kontrolü
+**2 BOZUK** bildirdi ve ikisi de yanlış alarmdı.
+
+**"Ayar dosyası yok - hiçbir koruma çalışmıyor olabilir".** Denetim
+korumaları `.claude/settings.json` içinde arıyordu. Oysa 3.0.0'dan beri
+kancalar eklentinin `hooks.json` dosyasıyla geliyor; kurulum betiği
+bilerek kayıt yapmıyor (çift çalışmasın diye). Yani eklentiyi kuran
+**her normal kullanıcıya** bu uyarı çıkıyordu - hem de "çerçeve gerçekten
+çalışıyor mu" sorusunu cevaplamakla görevli araçta. En kötü yanlış alarm
+budur: doğru kurulmuş bir sistemi bozuk gösterir.
+
+Denetim artık iki geçerli yolu da tanıyor: eklenti kurulumu ya da çalışma
+ağacı kaydı. Kancaların hangi kopyadan çalıştığı da düzeltildi - ölçüm
+gerçekten çalışan kopyaya sorulur (`CLAUDE_PLUGIN_ROOT`, sonra çalışma
+ağacı, sonra eklenti önbelleği). "Kayıtlı" ile "çalışıyor" ayrı şeylerdir;
+eklenti yolu bulunduğunda da altı koruma ölçümü yine koşar.
+
+**"Ham günlük depoya giriyor".** `git check-ignore -q gunluk` çağrılıyordu.
+Klasör henüz oluşmamışsa git `gunluk` adını dizin saymaz ve `/gunluk/`
+deseni eşleşmez - taze kurulumda daima yanlış "bozuk". Eğik çizgi eklendi
+(`gunluk/`), aynısı `hafiza/` için de yapıldı. Ölçülen şey klasörün
+varlığı değil kuralın kendisidir.
+
+**Neden ikisi de aynı hikâye:** denetim, sistemin bugünkü gerçeğinden
+kopmuştu. Biri eski kurulum biçimini arıyordu, diğeri henüz var olmayan
+bir klasörü. Sürekli yanlış öten bir sağlık kontrolü, gerçekten bozuk
+olduğu günü de kaçırır.
+
+Ölçüm (terminal1, temiz kurulum): kapı testleri **160 geçti, 0 kaldı**.
+
 ## 3.1.6 — Kapı testleri tek makineye bağlı kalmaktan çıktı
 
 Çerçeve ikinci bir bilgisayarda denenecekti. Denemeden önce testler
