@@ -9,6 +9,30 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.2.7 — Depo sayfasi iki dilde taranabiliyor
+
+3.2.5'te Ingilizce ozet blogu eklenmisti ama sayfanin govdesi hala tek
+dildi: **Neden var, Kurulum, Kilavuzlar, Icinde ne var, Korumalar, Nasil
+calisir, Uyarlama, Test, Katki, Lisans** - hepsi Turkce basliklardi.
+Yabanci okur, ozet blogunu gecince yine Turkce duvara carpiyordu.
+
+Icerik zaten vardi: `README.en.md` tam bir ayna. Eksik olan **isaret**ti.
+
+- Iki README'de de basliklar cift dilli: `## Neden var - Why it exists`,
+  `## Kurulum - Install` ... Boylece sayfa hangi dilde bakilirsa bakilsin
+  taranabiliyor, okur aradigi bolumu bulup Ingilizce belgeye geciyor.
+- Kilavuz tablosu iki sutunlu oldu: her belgenin Turkcesi ve Ingilizcesi
+  yan yana. Once yalniz Turkce satirlar vardi, Ingilizce belgeler
+  sayfadan gorunmuyordu.
+- Depo aciklamasi (About) Ingilizce yazildi; arama sonuclarinda ve sayfa
+  basliginda gorunen metin artik Ingilizce basliyor.
+
+Neden onemli: acik kaynak bir is okunmadan degerlendirilmez. Sayfa,
+okurun dilinde bir tutamak vermiyorsa icerigin tam olmasi kimseye
+ulasmaz.
+
+Tam takim: **584 gecti, 0 kaldi** (cikis kodu 0).
+
 ## 3.2.6 — Yol denetimi kendi belgemdeki hatayi yakaladi
 
 3.2.5'te README'ye eklenen Ingilizce blokta dil dosyasinin yolu eksik

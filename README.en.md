@@ -6,7 +6,7 @@
 
 [![Tests](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-3.2.6-blue.svg)
+![Version](https://img.shields.io/badge/version-3.2.7-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)
 ![Language](https://img.shields.io/badge/docs-Türkçe%20%7C%20English-orange)
 
@@ -20,7 +20,7 @@ language layer and this English guide, so anyone can install and use it.
 
 ---
 
-## Why it exists
+## Why it exists · Neden var
 
 Three problems repeat on long projects. This framework answers each one with a
 **running safeguard**, not a document you forget:
@@ -36,7 +36,7 @@ forgotten. They are enforced, not suggested.
 
 ---
 
-## Install
+## Install · Kurulum
 
 **Fastest** — one line inside Claude Code:
 
@@ -61,7 +61,7 @@ for the encrypted vault. Full walkthrough: [KURULUM-KILAVUZU.md](KURULUM-KILAVUZ
 
 ---
 
-## How it works
+## How it works · Nasıl çalışır
 
 ```mermaid
 flowchart TD
@@ -85,7 +85,7 @@ exactly where you stopped.
 
 ---
 
-## What's inside
+## What's inside · İçinde ne var
 
 **30 commands** · **4 skills** · **5 agents** · **10 protections** · **52 scripts**
 
@@ -122,7 +122,7 @@ All ten and how to relax them are covered in the usage guide.
 
 ---
 
-## Key ideas
+## Key ideas · Temel fikirler
 
 - **Memory that survives sessions** — a decision log and error library mean you
   never re-explain context or re-solve the same bug.
@@ -138,7 +138,7 @@ All ten and how to relax them are covered in the usage guide.
 
 ---
 
-## Customize
+## Customize · Uyarlama
 
 The framework defaults to Turkish and reads identity from settings. What to
 change for yourself:
@@ -154,7 +154,7 @@ fill in your own.
 
 ---
 
-## Test
+## Test · Test
 
 ```bash
 bash plugins/enver-framework/scripts/testler/tumunu-calistir.sh
@@ -165,12 +165,12 @@ single command.
 
 ---
 
-## Contributing
+## Contributing · Katkı
 
 Bug reports and ideas are welcome — open an issue on the repository. See
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## License
+## License · Lisans
 
 MIT — see [LICENSE](LICENSE). Copyright © 2026 Enver KOCAK ·
 [enverkocak.com](https://enverkocak.com)

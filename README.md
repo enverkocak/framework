@@ -6,7 +6,7 @@
 
 [![Testler](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-green.svg)](LICENSE)
-![Sürüm](https://img.shields.io/badge/sürüm-3.2.6-blue.svg)
+![Sürüm](https://img.shields.io/badge/sürüm-3.2.7-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-eklenti-8A2BE2)
 ![Dil](https://img.shields.io/badge/belge-Türkçe%20%7C%20English-orange)
 
@@ -35,7 +35,7 @@ yürütür ve her projeye kendine özgü bir tasarım kimliği üretir.
 
 ---
 
-## Neden var
+## Neden var · Why it exists
 
 Uzun projelerde tekrar eden üç sorun vardır:
 
@@ -49,7 +49,7 @@ Kurallar belge olarak değil, **çalışan koruma** olarak durur. Yani unutulmaz
 
 ---
 
-## Kurulum
+## Kurulum · Install
 
 **En hızlısı** — Claude Code içinde tek satır:
 
@@ -73,17 +73,21 @@ Ayrıntı için [KURULUM-KILAVUZU.md](KURULUM-KILAVUZU.md).
 
 ---
 
-## Kılavuzlar
+## Kılavuzlar · Guides
 
-| Belge | Kim için |
-|-------|----------|
-| [KURULUM-KILAVUZU.md](KURULUM-KILAVUZU.md) | Sıfırdan kuracak olan |
-| [KULLANIM-KILAVUZU.md](KULLANIM-KILAVUZU.md) | Günlük kullanım |
-| [DEGISIKLIKLER.md](DEGISIKLIKLER.md) | Sürüm geçmişi — ne değişti ve neden |
+| Türkçe | English | Kim için · For whom |
+|--------|---------|---------------------|
+| [KURULUM-KILAVUZU.md](KURULUM-KILAVUZU.md) | [Installation](KURULUM-KILAVUZU.en.md) | Sıfırdan kuracak olan · setting up from scratch |
+| [KULLANIM-KILAVUZU.md](KULLANIM-KILAVUZU.md) | [User guide](KULLANIM-KILAVUZU.en.md) | Günlük kullanım · daily use |
+| [DEGISIKLIKLER.md](DEGISIKLIKLER.md) | [Changelog](DEGISIKLIKLER.en.md) | Sürüm geçmişi · what changed and why |
+
+Her belge iki dilde yazılır ve bu bir kapı kontrolüyle ölçülür; biri tek
+dilli kalırsa test kalır.
+*Every document exists in both languages, and a gate check measures it.*
 
 ---
 
-## İçinde ne var
+## İçinde ne var · What's inside
 
 **29 komut** · **3 beceri** · **4 ajan** · **10 koruma** · **48 betik**
 
@@ -119,7 +123,7 @@ Onunun tamamı ve nasıl gevşetileceği kılavuzda anlatılır.
 
 ---
 
-## Nasıl çalışır
+## Nasıl çalışır · How it works
 
 ```mermaid
 flowchart TD
@@ -143,7 +147,7 @@ kaldığın yerden devam edersin.
 
 ---
 
-## Uyarlama
+## Uyarlama · Customize
 
 Çerçeve varsayılan olarak Türkçe çalışır ve kimlik bilgisi ayardan okunur.
 Kendine göre değiştirmen gereken yerler:
@@ -162,7 +166,7 @@ yerde kişisel veri bulunmaz.
 
 ---
 
-## Test
+## Test · Test
 
 ```bash
 bash plugins/enver-framework/scripts/testler/tumunu-calistir.sh
@@ -173,10 +177,10 @@ komutta çalışır.
 
 ---
 
-## Katkı
+## Katkı · Contributing
 
 Hata bildirimi ve öneri için depo üzerinden konu (issue) açabilirsin.
 
-## Lisans
+## Lisans · License
 
 MIT — ayrıntı için [LICENSE](LICENSE).

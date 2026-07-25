@@ -10,6 +10,32 @@ teaches nothing.
 
 ---
 
+## 3.2.7 — The repository page can be scanned in both languages
+
+3.2.5 added an English summary block, but the body of the page was still
+single-language: **Neden var, Kurulum, Kilavuzlar, Icinde ne var,
+Korumalar, Nasil calisir, Uyarlama, Test, Katki, Lisans** were all Turkish
+headings. Past the summary block, a non-Turkish reader hit a wall again.
+
+The content already existed - `README.en.md` is a full mirror. What was
+missing was **signposting**.
+
+- Headings in both READMEs are now bilingual: `## Neden var - Why it
+  exists`, `## Kurulum - Install`, and so on. The page can be scanned in
+  either language, and the reader can jump to the English document from
+  the section they were looking for.
+- The guides table has two columns: Turkish and English side by side.
+  Previously only the Turkish rows were listed, so the English documents
+  were invisible from the page.
+- The repository description (About) is written in English, so search
+  results and the page title now start in English.
+
+Why it matters: open-source work is not evaluated unless it is read. If
+the page offers no handle in the reader's language, complete content
+reaches nobody.
+
+Full suite: **584 passed, 0 failed** (exit code 0).
+
 ## 3.2.6 — The path audit caught an error in my own document
 
 The English block added in 3.2.5 pointed at `diller/en.json`; the real
