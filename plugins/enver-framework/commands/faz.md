@@ -82,3 +82,11 @@ Kapatırken içerik silinmez, arşivlenir.
 
 - `/hafiza` — nerede kaldık
 - `/index` — bütün komutlar
+
+---
+
+## English
+
+**Phase engine** — invoke with `/faz` (or `/enver-framework:faz` if the short name does not resolve).
+
+Active phase, progress, gate check, working mode and full authority. "Done" is a measurement, not an opinion: the gate opens only when the check passes.

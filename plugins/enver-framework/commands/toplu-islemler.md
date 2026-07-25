@@ -59,3 +59,11 @@ Export edilip hicbir yerde import edilmeyen fonksiyonlari bul.
 - Auto-fix oncesinde git status kontrol et (uncommitted changes varsa uyar)
 - Her islem sonucunda oncesi/sonrasi karsilastirma goster
 - Tehlikeli islem yok, ama yine de buyuk degisikliklerde bilgilendir
+
+---
+
+## English
+
+**Bulk operations** — invoke with `/toplu-islemler` (or `/enver-framework:toplu-islemler` if the short name does not resolve).
+
+Auto-fix, unused import cleanup, TODO listing, package updates and dead code detection.

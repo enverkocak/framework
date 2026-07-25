@@ -43,3 +43,11 @@ python "${CLAUDE_PLUGIN_ROOT}/scripts/guncelleme.py" kontrol
   verilir; uygulamak senin kararın.
 - Uzak depo günde bir kez yoklanır; her oturumda ağ trafiği olmaz.
 - Güncelleme geçmişi ve neyin neden değiştiği: `DEGISIKLIKLER.md`.
+
+---
+
+## English
+
+**Update the framework** — invoke with `/guncelle` (or `/enver-framework:guncelle` if the short name does not resolve).
+
+Pulls the latest version from the repository and re-runs the installation. Existing settings are preserved.

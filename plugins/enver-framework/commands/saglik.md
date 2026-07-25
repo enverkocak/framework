@@ -71,3 +71,11 @@ kişisel iletişim bilgisi kalmış mı diye tarar.
 
 - `/index` — bütün komutlar
 - `/faz` — faz motoru ve kapı kontrolleri
+
+---
+
+## English
+
+**Health check** — invoke with `/saglik` (or `/enver-framework:saglik` if the short name does not resolve).
+
+Are the protections actually running, is anything duplicated, is the copy safe to share. "Registered" and "working" are different things: every protection is given real input and its decision is measured.

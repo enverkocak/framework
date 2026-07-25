@@ -59,3 +59,11 @@ Asagidaki alanlari tara:
 - Vault dosyalarina DOKUNMA
 - Silmeden once her zaman kullaniciya sor
 - Eger $ARGUMENTS ile belirli bir alan istenmisse sadece onu temizle
+
+---
+
+## English
+
+**Cleanup** — invoke with `/temizlik` (or `/enver-framework:temizlik` if the short name does not resolve).
+
+Clears memory, plan and temporary files; removes duplicates by archiving them. Nothing is deleted outright.

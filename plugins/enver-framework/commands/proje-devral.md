@@ -149,3 +149,11 @@ Kritik risk varsa kapanışta tekrar söyle. Sessizce geçme.
 - `/kesif` — sorularla planlama
 - `/guvenlik-tara` — derin güvenlik taraması
 - `/faz` — üretilen faz planını yürütür
+
+---
+
+## English
+
+**Take over an existing project** — invoke with `/proje-devral` (or `/enver-framework:proje-devral` if the short name does not resolve).
+
+Scans an existing codebase, reads it with five parallel agents, reports what it learned and asks for approval before writing anything. Existing files are never overwritten; secret values are never printed.

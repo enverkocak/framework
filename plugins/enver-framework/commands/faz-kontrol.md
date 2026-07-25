@@ -125,3 +125,11 @@ npm run build 2>&1 || echo "BUILD_HATASI"
 - Basarisiz kontrollerde detayli hata mesaji goster
 - Menu gosterirken AskUserQuestion ile secim al
 - Kullanicinin secimini bekle, varsayilan secim YAPMA
+
+---
+
+## English
+
+**Run the phase gate** — invoke with `/faz-kontrol` (or `/enver-framework:faz-kontrol` if the short name does not resolve).
+
+Runs the active phase's gate: lint, type check, security, tests, build. The phase does not close unless it passes.

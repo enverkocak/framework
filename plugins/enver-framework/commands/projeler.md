@@ -69,3 +69,11 @@ Elle yazılmış alanların üzerine asla yazmaz.
 - `/sema` — görsel sistem şeması
 - `/ara` — her yerde arama
 - `/kasa` — gizli bilgiler
+
+---
+
+## English
+
+**All projects on one screen** — invoke with `/projeler` (or `/enver-framework:projeler` if the short name does not resolve).
+
+Status, customer and purpose; switch between projects or query one without leaving the current directory.

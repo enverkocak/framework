@@ -56,3 +56,11 @@ Degerleri GIZLE, ornek format + aciklama ekle.
 - .env.example'da gercek degerler ASLA yazilmaz
 - Dokumantasyon Turkce yazilir
 - Mevcut dosya varsa ustten yaz degil, GUNCELLE
+
+---
+
+## English
+
+**Documentation generator** — invoke with `/dokumantasyon` (or `/enver-framework:dokumantasyon` if the short name does not resolve).
+
+API endpoint list, database schema, changelog and architecture diagram, produced from the code itself.

@@ -127,3 +127,11 @@ Tarama sonrasi: "X kritik bulgu var. Duzeltmemi ister misin?"
 - Vault icerigini ASLA raporlama
 - Menu gosterirken AskUserQuestion ile secim al
 - Kullanicinin secimini bekle, varsayilan secim YAPMA
+
+---
+
+## English
+
+**Security scan** — invoke with `/guvenlik-tara` (or `/enver-framework:guvenlik-tara` if the short name does not resolve).
+
+OWASP Top 10, leaked credentials and dependency vulnerabilities. Run before delivery.

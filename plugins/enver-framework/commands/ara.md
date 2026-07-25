@@ -45,3 +45,11 @@ Arama ö/o, ç/c, ş/s farkına takılmaz. `sifre` yazsan da `şifre` bulunur.
 - `/hafiza` — kayıtların kendisi
 - `/projeler` — proje panosu
 - `/kasa` — gizli bilgiler
+
+---
+
+## English
+
+**Single search point** — invoke with `/ara` (or `/enver-framework:ara` if the short name does not resolve).
+
+Searches memory, knowledge notes, project definitions and index documents at once. Turkish character differences are ignored, so `sifre` also finds `sifre`. The vault is never searched; only its location is pointed out.

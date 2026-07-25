@@ -661,3 +661,11 @@ Alt menu yok, direkt calistir:
 8. **Rapor formatli olsun** - Her islem sonunda kutulu rapor ver
 9. **Tehlikeli islemler onay ister** - DB restore, rollback, silme, ortam degisiklik
 10. **Sunucu islemleri proje dizininde kalir** - Diger sitelere DOKUNMA
+
+---
+
+## English
+
+**Main menu** — invoke with `/panel` (or `/enver-framework:panel` if the short name does not resolve).
+
+One entry point to every command: overview of memory, phase state and project information.

@@ -63,3 +63,11 @@ Yeni proje eklendiğinde önce `/projeler` altında `kayit.py tara` çalıştır
 
 - `/projeler` — metin olarak proje panosu
 - `/ara` — her yerde arama
+
+---
+
+## English
+
+**Visual system map** — invoke with `/sema` (or `/enver-framework:sema` if the short name does not resolve).
+
+Which project runs what, for what purpose, and what depends on what. Single HTML file, works offline.

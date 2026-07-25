@@ -84,3 +84,11 @@ Eger proje icin ozel credentials varsa, vault'a yeni dosya eklenmesi gerektigini
 - Global CLAUDE.md kurallari otomatik devralinir (tekrar yazma)
 - Her proje CLAUDE.md'si sadece proje-spesifik kurallari icerir
 - Mevcut bir CLAUDE.md varsa uzerine yazma, once kullaniciya sor
+
+---
+
+## English
+
+**Start a new project** — invoke with `/proje-baslat` (or `/enver-framework:proje-baslat` if the short name does not resolve).
+
+Creates the project skeleton: rules file, phase plan and directory layout.

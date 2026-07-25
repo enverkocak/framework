@@ -64,3 +64,11 @@ Degisiklik gerekiyorsa update-config skill'ini kullan.
 - Vault icerigi ASLA ekrana yazilmaz
 - Memory silmede onay zorunlu
 - Framework guncelleme oncesinde mevcut versiyonu goster
+
+---
+
+## English
+
+**Framework settings** — invoke with `/framework-ayarlari` (or `/enver-framework:framework-ayarlari` if the short name does not resolve).
+
+Memory, vault, hooks, permissions and version management in one place.

@@ -39,3 +39,11 @@ Araç dosyaları hazırlar; **gerisi sana kalır:**
 
 Her commit sürüm artırmaz. Sürüm **yayını** işaretler. Yalnız mevcut sürümü
 belgeleyen değişiklikler (kılavuz düzeltmesi, README sayısı) sürüm artırmaz.
+
+---
+
+## English
+
+**Version bump** — invoke with `/surum` (or `/enver-framework:surum` if the short name does not resolve).
+
+Raises the version in nine places at once and opens a changelog heading. Every commit does not bump the version; a bump marks a release.

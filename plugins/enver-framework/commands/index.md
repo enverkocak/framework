@@ -49,3 +49,11 @@ Kullanıcı `/index panel` gibi bir argüman verdiyse:
 - Rehberdeki bütün metinler `diller/` altındaki dil dosyasından gelir. Kod içine metin gömülmez.
 - Yeni komut eklendiğinde rehber kendiliğinden güncellenir; buraya elle satır eklenmez.
 - Çıktı Türkçe karakterlerle gösterilir (ö, ç, ü, ğ, ı, ş, İ).
+
+---
+
+## English
+
+**Command guide** — invoke with `/index` (or `/enver-framework:index` if the short name does not resolve).
+
+Every command, skill, agent and protection in one list, with detailed usage. The list is generated from the files, never maintained by hand.

@@ -50,3 +50,11 @@ Kullaniciya "Ne arayalim?" sor → `pm2 logs --lines 500 --nostream | grep "aram
 - SSH bilgisi vault'tan okunur
 - Log ciktisinda hassas veri (token, sifre) varsa MASKELE
 - Cok uzun ciktilari ozet goster, detay icin "devami?" sor
+
+---
+
+## English
+
+**Log watching** — invoke with `/log-izle` (or `/enver-framework:log-izle` if the short name does not resolve).
+
+Follows process and web server logs; filters errors, searches, and tails live.

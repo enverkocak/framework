@@ -16,11 +16,14 @@
 |-------|--------------|
 | `CLAUDE.md` | 1. **Kod yorum satırlarında** üretim aracı adı geçmez. Yorum, kodu |
 | `CONTRIBUTING.md` | Türkçe aşağıda · English below. |
-| `DEGISIKLIKLER.md` | Enver Framework'ün sürüm geçmişi. |
+| `DEGISIKLIKLER.en.md` | Türkçe: [`DEGISIKLIKLER.md`](DEGISIKLIKLER.md) |
+| `DEGISIKLIKLER.md` | English: [`DEGISIKLIKLER.en.md`](DEGISIKLIKLER.en.md) |
 | `guncelle.ps1` | Enver Framework - Guncelleme (Windows) |
 | `guncelle.sh` | Enver Framework - Güncelleme |
-| `KULLANIM-KILAVUZU.md` | Enver Framework'ün günlük kullanımı. Ne zaman hangi komutu çalıştıracağını, |
-| `KURULUM-KILAVUZU.md` | Bu framework'ü sıfırdan kurmak için. Hiçbir adım varsayılmaz. |
+| `KULLANIM-KILAVUZU.en.md` | Türkçe: [`KULLANIM-KILAVUZU.md`](KULLANIM-KILAVUZU.md) |
+| `KULLANIM-KILAVUZU.md` | English: [`KULLANIM-KILAVUZU.en.md`](KULLANIM-KILAVUZU.en.md) |
+| `KURULUM-KILAVUZU.en.md` | Türkçe: [`KURULUM-KILAVUZU.md`](KURULUM-KILAVUZU.md) |
+| `KURULUM-KILAVUZU.md` | English: [`KURULUM-KILAVUZU.en.md`](KURULUM-KILAVUZU.en.md) |
 | `kurulum.ps1` | Enver Framework - Kurulum (Windows) |
 | `kurulum.sh` | Enver Framework - Otomatik Kurulum |
 | `LICENSE` | - |

@@ -59,3 +59,11 @@ python "${CLAUDE_PLUGIN_ROOT}/scripts/ortak/arsiv.py" vault "Kasa duz metin kayn
 
 - `/guvenlik-tara` — sır sızıntısı taraması
 - `/index` — bütün komutlar
+
+---
+
+## English
+
+**Password vault** — invoke with `/kasa` (or `/enver-framework:kasa` if the short name does not resolve).
+
+Opens, reads, updates and locks secrets. Decrypted content is never written to disk, and the password is typed in your own terminal - never into the conversation.

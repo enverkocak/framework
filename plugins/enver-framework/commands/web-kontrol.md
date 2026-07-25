@@ -361,3 +361,11 @@ Sorun bulunursa kullaniciya sor:
 - SMS dogrulama kodu gerekirse kullaniciya sor ve bekle
 - Menu gosterirken AskUserQuestion araci ile kullanicidan secim al
 - Kullanicinin secimini bekle, varsayilan secim YAPMA
+
+---
+
+## English
+
+**Live site check** — invoke with `/web-kontrol` (or `/enver-framework:web-kontrol` if the short name does not resolve).
+
+Opens the live site in a browser and checks interface, behaviour, login and links.

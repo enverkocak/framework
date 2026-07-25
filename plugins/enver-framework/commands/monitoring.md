@@ -75,3 +75,11 @@ Her domain icin: `curl -sI -o /dev/null -w "%{http_code}" https://[domain]`
 - SSH bilgisi vault'tan okunur
 - Sunucuda sadece READ-ONLY komutlar calistirilir
 - Kritik esiklerde uyari ver (disk >80%, RAM >90%, SSL <30 gun)
+
+---
+
+## English
+
+**Server health** — invoke with `/monitoring` (or `/enver-framework:monitoring` if the short name does not resolve).
+
+Uptime, SSL certificates, CPU/RAM/disk, process and database connection checks.

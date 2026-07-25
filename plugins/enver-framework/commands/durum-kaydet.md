@@ -88,3 +88,11 @@ DURUM KAYDEDILDI
 - Detayli ol ama gereksiz uzatma
 - Yarim kalan isler icin dosya yolu ve satir numarasi ver
 - Kasa dosyalarini ve sirlari kayda gecirme
+
+---
+
+## English
+
+**Save where you left off** — invoke with `/durum-kaydet` (or `/enver-framework:durum-kaydet` if the short name does not resolve).
+
+Writes the session summary and handover note so the next session starts from the right place. The raw log is archived afterwards, so each summary covers one session.

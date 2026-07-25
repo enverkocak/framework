@@ -150,3 +150,11 @@ Sorun bulunursa: "X sorun bulundu. Duzeltmemi ister misin?" sor.
 - API testlerinde hassas veri gosterME
 - Menu gosterirken AskUserQuestion ile secim al
 - Kullanicinin secimini bekle, varsayilan secim YAPMA
+
+---
+
+## English
+
+**Local environment check** — invoke with `/canli-kontrol` (or `/enver-framework:canli-kontrol` if the short name does not resolve).
+
+Opens localhost in the browser and checks the interface and behaviour before anything is shipped.

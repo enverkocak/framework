@@ -48,3 +48,11 @@ Kullaniciya sor:
 - Force push ASLA yapilmaz (kullanici acikca istemezse)
 - --no-verify KULLANILMAZ
 - Main/master'a direkt push YAPILMAZ, uyari ver
+
+---
+
+## English
+
+**Git operations** — invoke with `/git-islemleri` (or `/enver-framework:git-islemleri` if the short name does not resolve).
+
+Branch, commit, pull request, merge and conflict resolution. Making a repository public is blocked.

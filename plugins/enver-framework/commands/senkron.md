@@ -59,3 +59,11 @@ Senkrona **yalnız `hafiza/` klasörü** girer.
 
 - `/hafiza` — kayıtların kendisi
 - `/kasa` — şifreler (senkrona dahil değil)
+
+---
+
+## English
+
+**Multi-computer sync** — invoke with `/senkron` (or `/enver-framework:senkron` if the short name does not resolve).
+
+Machine registration, pulling and pushing memory, conflict protection. If the remote has newer records, sending stops instead of overwriting.

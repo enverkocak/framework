@@ -59,3 +59,11 @@ Emin değilsen sor: *"Keşif yapalım mı, doğrudan mı geçelim?"*
 - `/faz` — faz motoru
 - `/tasarim` — tasarım brifingi (keşiften sonra)
 - `/projeler` — proje tanımı
+
+---
+
+## English
+
+**Discovery - four stages before coding** — invoke with `/kesif` (or `/enver-framework:kesif` if the short name does not resolve).
+
+Requirements, research, clarification, plan. Until discovery finishes the tool refuses to start coding.

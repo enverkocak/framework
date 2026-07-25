@@ -53,3 +53,11 @@ Cron job olustur: gunluk veya haftalik secim
 - Yedek boyutunu her zaman goster
 - Disk alani %90 uzeri ise UYARI ver
 - Sunucuda sadece proje dizininde calis
+
+---
+
+## English
+
+**Database and file backup** — invoke with `/backup` (or `/enver-framework:backup` if the short name does not resolve).
+
+Dump, restore, uploads backup and scheduled backup. Nothing is deleted; every backup is archived with a note.

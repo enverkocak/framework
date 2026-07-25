@@ -62,3 +62,11 @@ Aynı hata tekrar çıkarsa çözüm hazır gelir.
 - `/senkron` — başka bilgisayarla eşitleme
 - `/kasa` — şifreler ve anahtarlar
 - `/index` — bütün komutlar
+
+---
+
+## English
+
+**Memory** — invoke with `/hafiza` (or `/enver-framework:hafiza` if the short name does not resolve).
+
+Where you left off, the decision ledger, the error library, session summaries and project indexes.

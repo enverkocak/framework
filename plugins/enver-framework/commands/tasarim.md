@@ -148,3 +148,11 @@ python "$T/imza.py" ayarla --sirket "<projeye uygun ad>"
 
 - `/projeler` — proje tanımları
 - `/index` — bütün komutlar
+
+---
+
+## English
+
+**Original design** — invoke with `/tasarim` (or `/enver-framework:tasarim` if the short name does not resolve).
+
+Identity generation, inspiration sources, template-pattern audit and signature. No two projects look alike.

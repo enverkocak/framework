@@ -60,3 +60,11 @@ FROM pg_stat_statements ORDER BY mean_exec_time DESC LIMIT 10;
 - [7] SADECE SELECT izin ver, digerleri ENGELLE
 - DROP, DELETE, TRUNCATE ASLA calistirilmaz
 - DB credentials ekrana YAZILMAZ
+
+---
+
+## English
+
+**Database management** — invoke with `/db-yonetimi` (or `/enver-framework:db-yonetimi` if the short name does not resolve).
+
+Migration, seed, table inspection and queries. Irreversible operations always ask first.

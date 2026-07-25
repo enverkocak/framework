@@ -214,7 +214,42 @@ grep -q "Kayıtlı.*çalışıyor.*farklı" "$P/commands/saglik.md" \
   || kontrol "Komut kayitli-calisiyor ayrimini anlatiyor" 1
 
 echo ""
-echo "--- 9. GERILEME TESTLERI ---"
+echo "--- 9. IKI DILLILIK ---"
+# Cerceve iki dilde teslim edilir. Belge tek dilli kalirsa disaridan
+# gelen kullanici yariyolda kaliyor; kural burada olculur.
+for BELGE in KULLANIM-KILAVUZU KURULUM-KILAVUZU DEGISIKLIKLER README; do
+  [ -f "$BELGE.md" ] && [ -f "$BELGE.en.md" ]     && kontrol "$BELGE iki dilde var" 0 || kontrol "$BELGE iki dilde var" 1
+done
+
+# Turkce belge Ingilizcesine baglanmali, tersi de
+for BELGE in KULLANIM-KILAVUZU KURULUM-KILAVUZU DEGISIKLIKLER; do
+  head -6 "$BELGE.md" 2>/dev/null | grep -q "$BELGE.en.md"     && kontrol "$BELGE.md Ingilizcesine baglaniyor" 0 || kontrol "$BELGE.md Ingilizcesine baglaniyor" 1
+  head -6 "$BELGE.en.md" 2>/dev/null | grep -q "$BELGE.md"     && kontrol "$BELGE.en.md Turkcesine baglaniyor" 0 || kontrol "$BELGE.en.md Turkcesine baglaniyor" 1
+done
+
+# Komut belgeleri de iki dilli olmali
+EKSIK_INGILIZCE=0
+for K in "$P"/commands/*.md; do
+  case "$(basename "$K")" in ICINDEKILER.md) continue ;; esac
+  grep -q "^## English" "$K" || EKSIK_INGILIZCE=$((EKSIK_INGILIZCE+1))
+done
+[ "$EKSIK_INGILIZCE" -eq 0 ] && kontrol "Butun komut belgelerinde Ingilizce bolum var" 0   || kontrol "Ingilizce bolumu eksik komut: $EKSIK_INGILIZCE" 1
+
+# Dil dosyalari ayni anahtarlari tasimali
+"$PY_KOMUT" - << 'PY' 2>/dev/null && kontrol "Dil dosyalari ayni anahtarlarda" 0 || kontrol "Dil dosyalari ayni anahtarlarda" 1
+import json
+from pathlib import Path
+d = Path("plugins/enver-framework/diller")
+tr = json.loads((d / "tr.json").read_text(encoding="utf-8"))
+en = json.loads((d / "en.json").read_text(encoding="utf-8"))
+eksik = set(tr) - set(en)
+fazla = set(en) - set(tr)
+assert not eksik, f"Ingilizcede eksik: {sorted(eksik)[:5]}"
+assert not fazla, f"Turkcede eksik: {sorted(fazla)[:5]}"
+PY
+
+echo ""
+echo "--- 10. GERILEME TESTLERI ---"
 if [ -n "$ENVER_GERILEME_ATLA" ]; then
   echo "  (gerileme testleri atlandi - ust testten cagrildi)"
 else

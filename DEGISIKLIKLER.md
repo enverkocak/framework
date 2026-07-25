@@ -1,11 +1,43 @@
 # Değişiklikler
 
+English: [`DEGISIKLIKLER.en.md`](DEGISIKLIKLER.en.md)
+
 Enver Framework'ün sürüm geçmişi.
 
 Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 "Ne" olmadan geçmiş anlamsız, "neden" olmadan öğretici değildir.
 
 ---
+
+## 3.2.1 — Her şey iki dilli
+
+Çerçeve herkese açık bir depoda duruyor ama belgelerin çoğu tek dilliydi:
+yalnız README'nin İngilizcesi vardı. Dışarıdan gelen biri kurulumu okuyup
+kılavuza geçtiğinde Türkçe duvara çarpıyordu.
+
+**Eklenen belgeler:**
+
+| Belge | Ne |
+|-------|-----|
+| `KURULUM-KILAVUZU.en.md` | Kurulum kılavuzunun tamamı |
+| `KULLANIM-KILAVUZU.en.md` | Kullanım kılavuzunun tamamı |
+| `DEGISIKLIKLER.en.md` | Sürüm geçmişi (3.0.0'dan bugüne) |
+
+Türkçe belgeler İngilizcesine, İngilizceler Türkçesine bağlanıyor; hangi
+dilde açarsan aç diğerine bir tıkla geçiliyor.
+
+**30 komut belgesinin hepsine İngilizce bölüm eklendi.** Komutun ne yaptığı
+ve nasıl çağrıldığı artık iki dilde yazılı — ad alanlı biçim de dahil.
+
+**Kapıya bağlandı (11 yeni kontrol).** İki dillilik artık bir niyet değil
+ölçüm: dört belgenin iki dili de var mı, karşılıklı bağlar duruyor mu, 30
+komutta İngilizce bölüm var mı, `tr.json` ile `en.json` aynı anahtarları
+mı taşıyor. Biri tek dilli kalırsa Faz 10 kapısı kapanır.
+
+**Sürüm notları da iki dilli yayınlanıyor** — bugüne kadar yalnız Türkçe
+yazılıyordu.
+
+Tam takım: **552 geçti, 0 kaldı.**
 
 ## 3.2.0 — İz kuralı kod yorumlarına daraltıldı
 

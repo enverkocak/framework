@@ -1,5 +1,7 @@
 # Kullanım Kılavuzu
 
+English: [`KULLANIM-KILAVUZU.en.md`](KULLANIM-KILAVUZU.en.md)
+
 Enver Framework'ün günlük kullanımı. Ne zaman hangi komutu çalıştıracağını,
 hangi kuralın neden var olduğunu anlatır.
 

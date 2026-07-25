@@ -1,5 +1,7 @@
 # Kurulum Kılavuzu
 
+English: [`KURULUM-KILAVUZU.en.md`](KURULUM-KILAVUZU.en.md)
+
 Bu framework'ü sıfırdan kurmak için. Hiçbir adım varsayılmaz.
 
 ---
