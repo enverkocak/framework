@@ -6,9 +6,22 @@
 
 [![Testler](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-green.svg)](LICENSE)
-![Sürüm](https://img.shields.io/badge/sürüm-3.2.4-blue.svg)
+![Sürüm](https://img.shields.io/badge/sürüm-3.2.5-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-eklenti-8A2BE2)
 ![Dil](https://img.shields.io/badge/belge-Türkçe%20%7C%20English-orange)
+
+> **🇬🇧 English speaker?** This is a project-management framework for
+> [Claude Code](https://claude.com/claude-code): commands, skills, agents
+> and **protection hooks** that block data loss, remember where you left
+> off, run phased delivery with measurable gates, and give every project
+> its own visual identity. Free and open source (MIT).
+> **→ [Read the English documentation](README.en.md)** ·
+> [Installation](KURULUM-KILAVUZU.en.md) ·
+> [User guide](KULLANIM-KILAVUZU.en.md) ·
+> [Changelog](DEGISIKLIKLER.en.md)
+>
+> The interface and generated content are Turkish by default; the language
+> layer ships with English (`diller/en.json`) and switching is one setting.
 
 [Claude Code](https://claude.com/claude-code) için proje yönetim çerçevesi:
 komutlar, beceriler, ajanlar ve **koruma kancaları**. Ücretsiz ve açık kaynak.

@@ -10,6 +10,25 @@ teaches nothing.
 
 ---
 
+## 3.2.5 — The repository page introduces itself to non-Turkish readers
+
+The repository is public and MIT licensed, yet **not one line of English
+appeared above the fold** on github.com. A language switch existed
+(`Türkçe · English`) but it was a small link; someone seeing Turkish
+headings would close the page before noticing it.
+
+An **English summary block** now sits at the top of the README, right
+under the badges: what this is, what it does, the licence, and direct
+links to the four English documents. It also states plainly that the
+interface defaults to Turkish while the language layer ships with English
+— so nobody installs it and is surprised.
+
+Why it matters: open-source work is not evaluated unless it is read. A
+page that does not answer "is this useful to me" in the first ten seconds
+gets closed.
+
+Full suite: **584 passed, 0 failed.**
+
 ## 3.2.4 — The suite said "all passed" while a section had failed
 
 Testing the update banner end to end on the second computer surfaced

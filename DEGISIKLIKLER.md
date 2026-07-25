@@ -9,6 +9,24 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.2.5 — Depo sayfasi yabanciya kendini anlatiyor
+
+Depo herkese acik ve MIT lisansli, ama github.com sayfasinda **ilk ekranda
+tek satir Ingilizce yoktu**. Dil cubugu vardi (`Turkce - English`) fakat
+kucuk bir baglantiydi; Turkce basliklari goren biri o baglantiyi fark
+etmeden sayfayi kapatirdi.
+
+README'nin en ustune, rozetlerin hemen altina **Ingilizce ozet blogu**
+kondu: bunun ne oldugu, ne yaptigi, lisansi ve dort belgeye dogrudan
+baglanti. Ayrica arayuzun varsayilan dilinin Turkce oldugu ama dil
+katmaninda Ingilizce bulundugu acikca yaziliyor - kuran kisi surprizle
+karsilasmasin.
+
+Neden onemli: acik kaynak bir is, okunmadan degerlendirilmez. Ilk on
+saniyede "bu benim isime yarar mi" sorusuna cevap vermeyen sayfa kapanir.
+
+Tam takim: **584 gecti, 0 kaldi.**
+
 ## 3.2.4 — Takim "hepsi gecti" derken bir bolum kalmisti
 
 Guncelleme bildirimi ikinci bilgisayarda ucdan uca denenirken uc hata
