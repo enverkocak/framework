@@ -10,7 +10,7 @@ CLAUDE_DIR="$HOME/.claude"
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "========================================"
-echo "  ENVER FRAMEWORK v1.0 - KURULUM"
+echo "  ENVER FRAMEWORK - KURULUM"
 echo "========================================"
 echo ""
 echo "Kaynak: $REPO_DIR"
@@ -31,22 +31,60 @@ mkdir -p "$CLAUDE_DIR/sablonlar"
 mkdir -p "$CLAUDE_DIR/plugins/enver-framework"
 mkdir -p "$CLAUDE_DIR/plugins/.claude-plugin"
 
+# Kaynakta olmayan klasör kurulumu DURDURMAZ, atlanır.
+#
+# Eskiden kasa ve bilgi deposu koşulsuz kopyalanıyordu. Herkese açık
+# sürümde bu iki klasör YOKTUR (kişisel veri paylaşılmaz), yani kopyalama
+# hata veriyor ve "set -e" kurulumu oracıkta kesiyordu: eklenti hiç
+# kopyalanmadan çıkılıyordu. Windows tarafı zaten atlayıp geçiyordu;
+# iki taraf artık aynı davranıyor.
+kopyala() {
+    local ad="$1" kaynak="$2" hedef="$3" sira="$4"
+
+    echo "[$sira] $ad"
+
+    if [ ! -d "$kaynak" ]; then
+        echo "      atlandi (kaynak yok)"
+        return 0
+    fi
+
+    # "dizin/." biçimi gizli dosyaları da alır ve boşluklu yolu bozmaz.
+    cp -r "$kaynak/." "$hedef/"
+}
+
+# Kurulu kurallar dosyasının üzerine yazmadan önce yedeğini al.
+#
+# Kullanıcı kendi kimliğini ve kurallarını bu dosyaya işlemiş olabilir.
+# Güncelleme onu sessizce silerse kayıp geri getirilemez; yedek yalnız
+# içerik gerçekten farklıysa alınır, aynı dosya için çöp üretilmez.
+yedekle_kurallar() {
+    local hedef="$CLAUDE_DIR/CLAUDE.md"
+    local kaynak="$REPO_DIR/CLAUDE.md"
+
+    [ -f "$hedef" ] || return 0
+    cmp -s "$hedef" "$kaynak" 2>/dev/null && return 0
+
+    local yedek_dizin="$CLAUDE_DIR/enver/yedek"
+    local damga
+    damga="$(date +%Y%m%d-%H%M%S)"
+
+    mkdir -p "$yedek_dizin"
+    cp "$hedef" "$yedek_dizin/CLAUDE.$damga.md"
+    echo "      onceki dosya yedeklendi: enver/yedek/CLAUDE.$damga.md"
+}
+
 # Dosyaları kopyala
 echo "[1/5] Global CLAUDE.md kopyalaniyor..."
+yedekle_kurallar
 cp "$REPO_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
 
-echo "[2/5] Vault dosyalari kopyalaniyor..."
-cp -r "$REPO_DIR/vault/"* "$CLAUDE_DIR/vault/"
-
-echo "[3/5] Bilgi deposu kopyalaniyor..."
-cp -r "$REPO_DIR/bilgi/"* "$CLAUDE_DIR/bilgi/"
-
-echo "[4/5] Sablonlar kopyalaniyor..."
-cp -r "$REPO_DIR/sablonlar/"* "$CLAUDE_DIR/sablonlar/"
+kopyala "Kasa dosyalari kopyalaniyor..."   "$REPO_DIR/vault"     "$CLAUDE_DIR/vault"     "2/5"
+kopyala "Bilgi deposu kopyalaniyor..."     "$REPO_DIR/bilgi"     "$CLAUDE_DIR/bilgi"     "3/5"
+kopyala "Sablonlar kopyalaniyor..."        "$REPO_DIR/sablonlar" "$CLAUDE_DIR/sablonlar" "4/5"
 
 echo "[5/5] Plugin kopyalaniyor (korumalar plugin ile gelir)..."
-cp -r "$REPO_DIR/plugins/enver-framework/"* "$CLAUDE_DIR/plugins/enver-framework/"
-cp -r "$REPO_DIR/plugins/.claude-plugin/"* "$CLAUDE_DIR/plugins/.claude-plugin/"
+cp -r "$REPO_DIR/plugins/enver-framework/." "$CLAUDE_DIR/plugins/enver-framework/"
+cp -r "$REPO_DIR/plugins/.claude-plugin/." "$CLAUDE_DIR/plugins/.claude-plugin/"
 
 # Korumalar (kancalar) artik plugin'in hooks.json'u ile gelir. Kurulum
 # ayri kanca kaydi YAPMAZ - "/plugin install" calistirilinca devreye girer.

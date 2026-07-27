@@ -1,34 +1,44 @@
 #!/bin/bash
 # ================================================
 # Enver Framework - Güncelleme
-# GitHub'dan çekip dosyaları günceller
+# Depodan çekip kurulumu yeniler
 # Mac ve Linux için
 # ================================================
 
 set -e
 
-CLAUDE_DIR="$HOME/.claude"
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "========================================"
 echo "  ENVER FRAMEWORK - GUNCELLEME"
 echo "========================================"
-
-# Git pull
-echo "[1/3] GitHub'dan cekiliyor..."
-cd "$REPO_DIR"
-git pull origin master
-
-# Dosyaları kopyala
-echo "[2/3] Dosyalar guncelleniyor..."
-cp "$REPO_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
-cp -r "$REPO_DIR/vault/"* "$CLAUDE_DIR/vault/"
-cp -r "$REPO_DIR/bilgi/"* "$CLAUDE_DIR/bilgi/"
-cp -r "$REPO_DIR/sablonlar/"* "$CLAUDE_DIR/sablonlar/"
-cp -r "$REPO_DIR/plugins/enver-framework/"* "$CLAUDE_DIR/plugins/enver-framework/"
-cp -r "$REPO_DIR/plugins/.claude-plugin/"* "$CLAUDE_DIR/plugins/.claude-plugin/"
-
-echo "[3/3] Tamamlandi!"
 echo ""
-echo "Claude Code'da /reload-plugins calistir."
-echo "========================================"
+
+# --- Depodan çek ---
+#
+# Dal adı yazılmaz, takip edilen uzak dal ne ise o çekilir. Sabit
+# "origin master" yazılıydı: herkese açık depo "main" dalında olduğu
+# için güncelleme oradan hiç gelmiyor, komut her seferinde hata veriyordu.
+echo "[1/2] Depodan guncelleme aliniyor..."
+cd "$REPO_DIR"
+if ! git pull --ff-only; then
+    echo ""
+    echo "UYARI: Guncelleme alinamadi. Sebep genelde biri:"
+    echo "  - Ag yok"
+    echo "  - Yerel degisiklik var (git durumunu kontrol et)"
+    exit 1
+fi
+
+# --- Kurulumu tekrar çalıştır ---
+#
+# Kopyalama listesi tek yerde durur. Eskiden burada kurulum.sh'in bir
+# kopyası vardı; ikisi zamanla ayrışınca güncelleme, kurulumun düzelttiği
+# hataları geri getiriyordu.
+echo ""
+echo "[2/2] Dosyalar yenileniyor..."
+echo ""
+bash "$REPO_DIR/kurulum.sh"
+
+echo ""
+echo "Guncelleme bitti. Simdi: /reload-plugins"
+echo ""

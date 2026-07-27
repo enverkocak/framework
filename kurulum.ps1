@@ -62,6 +62,36 @@ function Kopyala {
     Copy-Item -Path $Kaynak -Destination $Hedef -Recurse -Force
 }
 
+# Kurulu kurallar dosyasinin uzerine yazmadan once yedegini al.
+#
+# Kullanici kendi kimligini ve kurallarini bu dosyaya islemis olabilir.
+# Guncelleme onu sessizce silerse kayip geri getirilemez; yedek yalniz
+# icerik gercekten farkliysa alinir, ayni dosya icin cop uretilmez.
+function YedekleKurallar {
+    $hedef  = Join-Path $HedefDizin "CLAUDE.md"
+    $kaynak = Join-Path $KaynakDizin "CLAUDE.md"
+
+    if (-not (Test-Path $hedef)) { return }
+
+    # Karsilastirma ve zaman damgasi .NET ile alinir, cmdlet ile degil.
+    # Get-FileHash kilitli makinelerde bulunamayabiliyor; kurulumun
+    # yedek alma adimi boyle bir yerde hata verip duruyordu.
+    if (Test-Path $kaynak) {
+        $a = [System.IO.File]::ReadAllText($hedef)
+        $b = [System.IO.File]::ReadAllText($kaynak)
+        if ($a -eq $b) { return }
+    }
+
+    $YedekDizin = Join-Path $HedefDizin "enver\yedek"
+    New-Item -ItemType Directory -Force -Path $YedekDizin | Out-Null
+
+    $Damga = [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
+    Copy-Item -Path $hedef -Destination (Join-Path $YedekDizin "CLAUDE.$Damga.md")
+    Write-Host "Onceki CLAUDE.md yedeklendi: enver\yedek\CLAUDE.$Damga.md"
+    Write-Host ""
+}
+
+YedekleKurallar
 Kopyala "Kurallar dosyasi" (Join-Path $KaynakDizin "CLAUDE.md") (Join-Path $HedefDizin "CLAUDE.md") "1/6"
 Kopyala "Kasa"             (Join-Path $KaynakDizin "vault\*")     (Join-Path $HedefDizin "vault\") "2/6"
 Kopyala "Bilgi deposu"     (Join-Path $KaynakDizin "bilgi\*")     (Join-Path $HedefDizin "bilgi\") "3/6"

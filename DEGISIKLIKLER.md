@@ -9,6 +9,50 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.3.3 — Guncelleme yolu Mac ve Linux'ta hic yurumuyordu
+
+"Ilk surumu kuran biri sona nasil gecer" sorusu soruldu. Cevabi yazarken
+gecis yolunun kendisinin bozuk oldugu cikti - hem de kurulumun ilk
+gununden beri.
+
+| Nerede | Ne oluyordu |
+|--------|-------------|
+| `kurulum.sh` | Kasa ve bilgi deposu **kosulsuz** kopyalaniyordu. Herkese acik surumde bu iki klasor YOK; `cp` hata veriyor, `set -e` kurulumu oracikta kesiyordu. Eklenti **hic kopyalanmadan** cikiliyordu. |
+| `guncelle.sh` | `git pull origin master` yaziliydi. Acik depo `main` dalinda; guncelleme oradan hic gelmiyordu. |
+| `kurulum.ps1` | Kurulu `CLAUDE.md` yedeksiz eziliyordu. Kullanici kendi kurallarini oraya islediyse geri getirilemiyordu. |
+
+Ilki yalniz ilk kurulumu degil, **her guncellemeyi** vuruyordu: `/guncelle`
+ikinci adimda `kurulum.sh`'i cagirir. Yani Mac ve Linux'ta tek komutla
+guncelleme de ayni yerde kesiliyordu. Windows tarafi ayni durumu zaten
+"atlandi (kaynak yok)" deyip gecmisti - iki isletim sistemi ayni betigin
+iki farkli davranisini yasiyordu.
+
+**Duzeltmeler:**
+
+- `kurulum.sh` eksik kaynagi atlar, durmaz. Windows ile ayni davranis.
+- `guncelle.sh` dal adi yazmaz, takip edilen dali ceker (`--ff-only`).
+  Kendi kopyalama listesini de tutmaz; `kurulum.sh`'i cagirir. Iki liste
+  zamanla ayrisinca guncelleme, kurulumun duzelttigi hatalari geri
+  getiriyordu.
+- Kurallar dosyasi uzerine yazilmadan once yedeklenir:
+  `~/.claude/enver/yedek/CLAUDE.<tarih>-<saat>.md`. Yedek yalniz icerik
+  gercekten farkliysa alinir; ayni dosya icin cop uretilmez.
+- Yedek karsilastirmasi `Get-FileHash` yerine .NET ile yapilir. Kilitli
+  bir makinede o cmdlet bulunamadi ve kurulum tam yedek adiminda hata
+  verip durdu - bu, senaryo yazilirken canli olarak yakalandi.
+
+**Belge:** Iki kurulum kilavuzuna da "Eski surumden gecis" bolumu
+eklendi. Orada soylenmesi gereken sey su: `/guncelle` **2.13.0'da geldi**.
+Daha eskisinde ne komut ne de klonun yerini tutan
+`~/.claude/enver/kurulum-bilgisi.json` vardir; komut klonu bulamaz. Ilk
+gecis elle yapilir, sonrasi tek komuttur.
+
+**Olcum:** `kurulum-testleri.py` - 24 senaryo. Kurulum gercekten
+calistirilir ama kum havuzunda: `HOME` (ve Windows'ta `USERPROFILE`)
+gecici dizine cevrilir, gercek `~/.claude` dokunulmadan kalir. Kasa ve
+bilgi deposu olmayan bir kaynak agaci kurulur - yani acik surumdeki
+durum - ve eklentinin gercekten kopyalandigi gorulur. Takime baglandi.
+
 ## 3.3.2 — Iki dillilik komut belgelerinin otesine gecti
 
 "Her seyin Ingilizcesi olsun" denince olculdu: komut belgelerinin 30'u da

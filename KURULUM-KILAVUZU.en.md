@@ -135,6 +135,56 @@ You should see **"Framework sağlıklı"** (framework healthy).
 
 ---
 
+## Upgrading from an older version
+
+If you already have a copy installed, you do not need to reinstall from
+scratch. The route depends on how you installed it.
+
+### Installed as a plugin
+
+```bash
+claude plugin marketplace update enver-framework
+claude plugin install enver-framework@enver-framework
+```
+
+Then run `/reload-plugins` inside Claude Code.
+
+### Installed by cloning the repository
+
+```bash
+cd <framework folder>
+git pull
+```
+
+**Windows:** `.\kurulum.ps1` — **Linux / macOS:** `./kurulum.sh`
+
+Then `/reload-plugins`.
+
+### One command: `/guncelle`
+
+Pulls and re-runs the installation in a single step. Run it when the
+session banner says "GÜNCELLEME VAR" (an update is available).
+
+**This command only exists from 2.13.0 onwards.** On an older version
+you have neither the command nor the file the installer writes to record
+where the clone lives (`~/.claude/enver/kurulum-bilgisi.json`), so
+`/guncelle` cannot find the repository. Do the first hop manually with
+one of the two routes above; everything after that is one command.
+
+### What happens to your own edits
+
+The installer overwrites `~/.claude/CLAUDE.md`. If you added your own
+rules to it, the previous file is backed up first:
+
+```
+~/.claude/enver/yedek/CLAUDE.<date>-<time>.md
+```
+
+The backup is only taken when the file actually differs. The vault,
+memory and project records are never touched by the installer.
+
+---
+
 ## First steps
 
 ### See the commands

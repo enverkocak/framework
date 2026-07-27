@@ -10,6 +10,52 @@ teaches nothing.
 
 ---
 
+## 3.3.3 — The upgrade path never worked on Mac and Linux
+
+Someone asked how a user on the first version reaches the latest one.
+Writing the answer showed the path itself was broken — and had been since
+day one.
+
+| Where | What happened |
+|-------|---------------|
+| `kurulum.sh` | The vault and knowledge folders were copied **unconditionally**. The public release has neither; `cp` failed, `set -e` stopped the installer on the spot, and it exited **without ever copying the plugin**. |
+| `guncelle.sh` | It said `git pull origin master`. The public repository lives on `main`, so no update ever arrived. |
+| `kurulum.ps1` | An installed `CLAUDE.md` was overwritten with no backup. Rules the user had written into it could not be recovered. |
+
+The first one hit not only fresh installs but **every update**:
+`/guncelle` runs `kurulum.sh` as its second step, so one-command updating
+died at the same line. Windows already skipped missing sources — the same
+script behaved differently on the two systems.
+
+**Fixes:**
+
+- `kurulum.sh` skips a missing source instead of stopping. Same behaviour
+  as Windows.
+- `guncelle.sh` names no branch; it pulls the tracked one (`--ff-only`),
+  and no longer keeps its own copy list — it calls `kurulum.sh`. Two
+  lists drifting apart meant an update could reinstate bugs the installer
+  had fixed.
+- The rules file is backed up before being overwritten:
+  `~/.claude/enver/yedek/CLAUDE.<date>-<time>.md`, and only when the
+  content actually differs.
+- The comparison uses .NET instead of `Get-FileHash`: on a locked-down
+  machine that cmdlet was not found and the installer stopped exactly at
+  the backup step — caught live while writing the scenarios.
+
+**Documentation:** both installation guides gained an "upgrading from an
+older version" section. The point that had to be written down: `/guncelle`
+**only exists from 2.13.0**. Older installs have neither the command nor
+`~/.claude/enver/kurulum-bilgisi.json`, which records where the clone
+lives, so the command cannot find the repository. The first hop is
+manual; everything after it is one command.
+
+**Measured:** `kurulum-testleri.py` — 24 scenarios. The installer really
+runs, but inside a sandbox: `HOME` (and `USERPROFILE` on Windows) points
+at a temporary directory, so the real `~/.claude` is never touched. The
+source tree is built without the vault and knowledge folders — the state
+of the public release — and the plugin is verified to arrive. Wired into
+the suite.
+
 ## 3.3.2 — Bilingual coverage went beyond the command documents
 
 "Let everything have English" was measured: all 30 command documents were

@@ -150,6 +150,56 @@ python plugins/enver-framework/scripts/saglik/saglik.py bak
 
 ---
 
+## Eski sürümden geçiş
+
+Kurulu bir kopyan varsa baştan kurmana gerek yok. Yol, çerçeveyi ilk
+nasıl kurduğuna bağlı.
+
+### Eklenti olarak kurduysan
+
+```bash
+claude plugin marketplace update enver-framework
+claude plugin install enver-framework@enver-framework
+```
+
+Sonra Claude Code içinde `/reload-plugins`.
+
+### Depoyu klonlayıp kurulum betiğiyle kurduysan
+
+```bash
+cd <framework klasörü>
+git pull
+```
+
+**Windows:** `.\kurulum.ps1` — **Linux / macOS:** `./kurulum.sh`
+
+Sonra `/reload-plugins`.
+
+### Tek komutla: `/guncelle`
+
+Depodan çekmeyi ve kurulumu tek adımda yapar; açılışta "GÜNCELLEME VAR"
+bildirimi gördüğünde bunu çalıştır.
+
+**Ama bu komut 2.13.0'da geldi.** Daha eski bir sürümdeysen komut sende
+yoktur ve kurulumun kaynak deponun yerini kaydeden dosyası
+(`~/.claude/enver/kurulum-bilgisi.json`) da yoktur - `/guncelle` klonu
+bulamayıp durur. İlk geçişi yukarıdaki iki yoldan biriyle elle yap;
+ondan sonrası tek komutla yürür.
+
+### Kendi yazdıkların ne oluyor
+
+Kurulum `~/.claude/CLAUDE.md` dosyasının üzerine yazar. İçine kendi
+kurallarını eklediysen, üzerine yazmadan önce yedeği alınır:
+
+```
+~/.claude/enver/yedek/CLAUDE.<tarih>-<saat>.md
+```
+
+Yedek yalnız dosya gerçekten değiştiyse alınır. Kasa, hafıza ve proje
+kayıtlarına kurulum dokunmaz.
+
+---
+
 ## İlk adımlar
 
 ### Komutları gör

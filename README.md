@@ -7,7 +7,7 @@
 
 [![Testler](https://github.com/enverkocak/framework/actions/workflows/test.yml/badge.svg)](https://github.com/enverkocak/framework/actions/workflows/test.yml)
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-green.svg)](LICENSE)
-![Sürüm](https://img.shields.io/badge/sürüm-3.3.2-blue.svg)
+![Sürüm](https://img.shields.io/badge/sürüm-3.3.3-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-eklenti-8A2BE2)
 ![Dil](https://img.shields.io/badge/belge-Türkçe%20%7C%20English-orange)
 
@@ -109,7 +109,7 @@ dilli kalırsa test kalır.
 
 ## İçinde ne var · What's inside
 
-**30 komut** · **4 beceri** · **5 ajan** · **10 koruma** · **53 betik**
+**30 komut** · **4 beceri** · **5 ajan** · **10 koruma** · **54 betik**
 
 *30 commands · 4 skills · 5 agents · 10 protections · 53 scripts*
 
