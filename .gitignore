@@ -7,6 +7,11 @@
 /vault/
 /kasa/
 *.vault
+
+# Uretilmis paylasim kopyasinin isareti. Kaynakta bulunmaz; kopyanin
+# kendi deposunda da izlenmemeli - o klasorun uretilmis oldugunu yalniz
+# yerel tarama bilir.
+/.enver-ayna
 .env
 .env.*
 credentials*

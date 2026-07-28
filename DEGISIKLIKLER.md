@@ -9,6 +9,61 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.3.4 — Kurulum artik kasaya hic dokunmuyor
+
+"Guncelleme yapinca kasa kirilir mi" diye soruldu. Olculdu: kirilmiyordu.
+Ama sebebi bir koruma degil, bir tesadufu: kaynakta `vault/` klasoru yok,
+o yuzden kopyalama adimi bos geciyordu. **Klasor bir gun geri gelse
+kullanicinin sifreli kasasi `-Force` ile ezilirdi** ve bunu olcen hicbir
+sey yoktu.
+
+Kural zaten aciktir: kasa dosyalari git'e girmez, log'a yazilmaz, ekrana
+basilmaz ve **kopyalanmaz**. Kurulum bu kuralin disinda tutulmustu.
+
+**Ne degisti:** Iki kurulum betigi de kasayi kopyalamayi tumden birakti.
+Klasorun varligi saglanir, icine dokunulmaz. Kaynakta bir kasa klasoru
+varsa tasinmaz, "KOPYALANMADI (kural geregi)" diye haber verilir. Kasa
+`kasa.py kur` ile olusur ve makineye ozeldir.
+
+**Olcum:** `kurulum-testleri.py` 24'ten **32 senaryoya** cikti. En kotu
+durum kurulur: kaynakta da kasa var, hedefte de, hem de **ayni adli
+dosya** - kopyalayan bir kurulum burada gercekten ezer. Kurulu kasanin
+**bayt bayt** ayni kaldigi olculur.
+
+Senaryolarin gercekten yakaladigi ayrica denendi: kopyalama satiri
+bilerek geri konuldu, iki isletim sisteminde de yedi kontrol dustu.
+Satir farkli bicimde yazildiginda da dustu - metinde belirli bir satir
+aranmiyor, "kopyalayan hicbir satir kasadan soz etmiyor" olculuyor.
+
+**Belge:** Iki kurulum kilavuzunda da kasanin nerede yasadigi ve neyin
+onu goturdugu yazili: `git pull` guvenli (kasa izlenmiyor), ama depoyu
+yeni bir klasore yeniden klonlamak kasayi geride birakir, `git clean
+-xfd` siler. Kasa senkron olmaz.
+
+### Ayni kosuda cikan ikinci bulgu: uretilen kopya proje sanildi
+
+Tam takim iki yerde birden kirmizi yandi ve ikisinin de koku ayniydi:
+paylasim icin uretilen ayna klasoru **bagimsiz bir proje** sayiliyordu.
+
+- Kayitta "tanimsiz proje" olarak goruluyor, Faz 4 kapisi dusuyordu.
+- Daha kotusu: klasor adinin parcalari kisisel veri deseni oluyordu.
+  `...-framework-acik` kayitliyken **`framework`** aranan kelime haline
+  geldi, 96 dosyada eslesti ve temiz kopya **paylasilamaz** ilan edildi.
+  Yani yayin hatti, hicbir gercek sizinti yokken kilitlenmisti.
+
+Iki duzeltme: (1) `paylasima-hazirla` hedefe `.enver-ayna` isareti
+birakir, tarama bu isareti tasiyan klasoru proje saymaz - kayit
+silinmez, yalniz listede gosterilmez. Isaretin icine yol ya da kimlik
+yazilmaz, cunku o dosya paylasilan klasorde durur. (2) `framework`,
+`cerceve`, `kaynak`, `surum`, `yedek` yaygin kelime listesine girdi:
+genel bir teknik kelime kisisel veri sayilmaz.
+
+Faz 10'a uc kontrol eklendi. Biri karsi olcum yapiyor: isaretsiz ayni
+klasor proje **sayilmali** - yoksa kontrol "hicbir sey proje degil"
+diyerek bos yere gecerdi.
+
+**Tam takim: 622 gecti, 0 kaldi.**
+
 ## 3.3.3 — Guncelleme yolu Mac ve Linux'ta hic yurumuyordu
 
 "Ilk surumu kuran biri sona nasil gecer" sorusu soruldu. Cevabi yazarken

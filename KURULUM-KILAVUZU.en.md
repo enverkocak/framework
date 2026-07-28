@@ -180,8 +180,20 @@ rules to it, the previous file is backed up first:
 ~/.claude/enver/yedek/CLAUDE.<date>-<time>.md
 ```
 
-The backup is only taken when the file actually differs. The vault,
-memory and project records are never touched by the installer.
+The backup is only taken when the file actually differs. Memory and
+project records are never touched by the installer.
+
+**The vault is never copied.** By rule, vault files are never committed,
+logged, printed or copied — and the installer is no exception. Even if
+the source contains a vault folder it is not carried over; you are only
+told about it. An encrypted file that gets overwritten cannot be brought
+back.
+
+One consequence: the vault lives in `<project folder>/kasa/kasa.kilit`
+and belongs to that machine — it does not sync. Updating with `git pull`
+is safe (the vault is untracked). But updating by **cloning into a fresh
+folder** leaves the vault behind, and `git clean -xfd` deletes it. To
+move a vault, copy the file yourself.
 
 ---
 

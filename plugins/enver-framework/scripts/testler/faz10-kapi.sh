@@ -160,6 +160,45 @@ rm -rf _calisma/paylasim-kapi 2>/dev/null
   --hedef _calisma/paylasim-kapi --uzerine-yaz > _calisma/pz.txt 2>&1 \
   && kontrol "Temiz kopya uretiliyor" 0 || kontrol "Temiz kopya uretiliyor" 1
 
+# Uretilen kopya AYNA'dir, bagimsiz bir proje degildir. Isaretlenmezse
+# tarama onu proje sanip kayda "tanimsiz" olarak sokuyor, klasor adinin
+# parcalari da kisisel veri deseni sayiliyordu.
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Uretilen kopya ayna diye isaretli" 0 || kontrol "Uretilen kopya ayna diye isaretli" 1
+from pathlib import Path
+isaret = Path("_calisma/paylasim-kapi/.enver-ayna")
+assert isaret.is_file(), "ayna isareti yok"
+metin = isaret.read_text(encoding="utf-8")
+# Isaret paylasilan klasorde durur: icinde yol ya da kimlik olmamali.
+assert ":\\\\" not in metin and "/Projeler" not in metin, "isaretde yol var"
+PY
+
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Ayna proje sayilmiyor" 0 || kontrol "Ayna proje sayilmiyor" 1
+import sys, tempfile
+from pathlib import Path
+sys.path.insert(0, r"$P/scripts/projeler")
+import kayit
+
+assert not kayit.proje_mu(Path("_calisma/paylasim-kapi")), "ayna proje sayildi"
+
+# Karsi olcum: isaretsiz ayni klasor proje SAYILMALI. Yoksa kontrol
+# "her sey proje degil" diyerek bos yere gecerdi.
+with tempfile.TemporaryDirectory() as gecici:
+    sahte = Path(gecici) / "proje"
+    sahte.mkdir()
+    (sahte / "CLAUDE.md").write_text("x", encoding="utf-8")
+    assert kayit.proje_mu(sahte), "isaretsiz klasor proje sayilmadi"
+PY
+
+"$PY_KOMUT" - << PY 2>/dev/null && kontrol "Yaygin teknik kelime kisisel veri sayilmiyor" 0 || kontrol "Yaygin teknik kelime kisisel veri sayilmiyor" 1
+from pathlib import Path
+metin = Path(r"$P/scripts/kurulum/sihirbaz.py").read_text(encoding="utf-8")
+bas = metin.index("YAYGIN = {")
+son = metin.index("}", bas)
+yaygin = metin[bas:son]
+for kelime in ("framework", "cerceve", "kaynak"):
+    assert f'"{kelime}"' in yaygin, kelime
+PY
+
 "$PY_KOMUT" - << PY 2>/dev/null && kontrol "Temiz kopyada hafiza YOK" 0 || kontrol "Temiz kopyada hafiza YOK" 1
 from pathlib import Path
 hedef = Path("_calisma/paylasim-kapi")

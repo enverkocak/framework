@@ -91,9 +91,34 @@ function YedekleKurallar {
     Write-Host ""
 }
 
+# Kasa KOPYALANMAZ.
+#
+# Kural acik: kasa dosyalari git'e girmez, log'a yazilmaz, ekrana
+# basilmaz ve KOPYALANMAZ. Kurulumun kasayi tasimasi bu kurali deldigi
+# gibi, hedefte duran dolu bir kasayi da uzerine yazma riski tasir -
+# sifreli bir dosya ezildiginde geri getirilemez.
+#
+# Kasa "kasa.py kur" ile olusur ve makineye ozeldir; kurulum yalniz
+# klasorun varligini saglar. Kaynakta duz metin bir kasa klasoru varsa
+# kopyalanmaz, yalniz haber verilir.
+function KasayaDokunma {
+    param($Sira)
+
+    Write-Host "[$Sira] Kasa"
+
+    $KaynakKasa = Join-Path $KaynakDizin "vault"
+    if ((Test-Path $KaynakKasa) -and
+        (Get-ChildItem -Path $KaynakKasa -Force | Select-Object -First 1)) {
+        Write-Host "      kaynakta kasa klasoru var, KOPYALANMADI (kural geregi)" `
+                   -ForegroundColor DarkYellow
+    }
+
+    Write-Host "      dokunulmadi - kasa 'kasa.py kur' ile olusur"
+}
+
 YedekleKurallar
 Kopyala "Kurallar dosyasi" (Join-Path $KaynakDizin "CLAUDE.md") (Join-Path $HedefDizin "CLAUDE.md") "1/6"
-Kopyala "Kasa"             (Join-Path $KaynakDizin "vault\*")     (Join-Path $HedefDizin "vault\") "2/6"
+KasayaDokunma "2/6"
 Kopyala "Bilgi deposu"     (Join-Path $KaynakDizin "bilgi\*")     (Join-Path $HedefDizin "bilgi\") "3/6"
 Kopyala "Sablonlar"        (Join-Path $KaynakDizin "sablonlar\*") (Join-Path $HedefDizin "sablonlar\") "4/6"
 

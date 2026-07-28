@@ -195,8 +195,19 @@ kurallarını eklediysen, üzerine yazmadan önce yedeği alınır:
 ~/.claude/enver/yedek/CLAUDE.<tarih>-<saat>.md
 ```
 
-Yedek yalnız dosya gerçekten değiştiyse alınır. Kasa, hafıza ve proje
+Yedek yalnız dosya gerçekten değiştiyse alınır. Hafıza ve proje
 kayıtlarına kurulum dokunmaz.
+
+**Kasa hiç kopyalanmaz.** Kural gereği kasa dosyaları git'e girmez, log'a
+yazılmaz, ekrana basılmaz ve kopyalanmaz — kurulum da bu kuralın dışında
+değildir. Kaynakta bir kasa klasörü olsa bile taşınmaz, yalnız haber
+verilir. Şifreli bir dosya bir kez ezilirse geri getirilemez.
+
+Bunun bir sonucu var: kasa `<proje klasörü>/kasa/kasa.kilit` içinde
+yaşar ve makineye özeldir, senkron olmaz. `git pull` ile güncellemek
+güvenlidir (kasa izlenmeyen bir dosyadır). Ama depoyu **yeni bir klasöre
+yeniden klonlayarak** güncellersen kasa geride kalır, `git clean -xfd` de
+onu siler. Kasayı taşımak istiyorsan dosyayı elle kopyalarsın.
 
 ---
 

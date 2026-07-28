@@ -10,6 +10,66 @@ teaches nothing.
 
 ---
 
+## 3.3.4 — The installer no longer touches the vault at all
+
+The question was whether updating breaks the vault. It was measured: it
+did not. But the reason was an accident, not a protection — the source
+has no `vault/` folder, so the copy step happened to do nothing. **If
+that folder ever came back, the user's encrypted vault would be
+overwritten with `-Force`**, and nothing measured it.
+
+The rule is explicit: vault files are never committed, logged, printed or
+**copied**. The installer had been left outside that rule.
+
+**What changed:** both installers stopped copying the vault entirely. The
+folder is created if missing and its contents are left alone. If the
+source does contain a vault folder it is not carried over — you are told
+`KOPYALANMADI (kural geregi)`, "not copied, by rule". A vault is created
+by `kasa.py kur` and belongs to that machine.
+
+**Measured:** `kurulum-testleri.py` went from 24 to **32 scenarios**. The
+worst case is built: a vault in the source *and* in the target, with the
+**same file name** — where a copying installer really would destroy it.
+The installed vault is checked to be **byte for byte** unchanged.
+
+The scenarios were themselves tested: the copy line was deliberately put
+back, and seven checks failed across both operating systems. They failed
+again when the line was written differently — the test does not look for
+one specific line, it measures that **no copying line mentions the
+vault**.
+
+**Documentation:** both installation guides now say where the vault lives
+and what carries it away: `git pull` is safe (the vault is untracked),
+but updating by cloning into a fresh folder leaves it behind, and
+`git clean -xfd` deletes it. Vaults do not sync.
+
+### A second finding from the same run: the generated copy was mistaken for a project
+
+The full suite went red in two places at once, both with the same root:
+the mirror folder produced for sharing was being counted as an
+**independent project**.
+
+- It showed up in the registry as an "undefined project" and the phase 4
+  gate failed.
+- Worse: parts of the folder name became personal-data patterns. With
+  `...-framework-acik` registered, **`framework`** became a searched word,
+  matched in 96 files, and the clean copy was declared **unshareable** —
+  the release pipeline was locked with no real leak anywhere.
+
+Two fixes: (1) `paylasima-hazirla` leaves a `.enver-ayna` marker in the
+target, and the scan does not count a folder carrying it as a project —
+the record is not deleted, only hidden from the listing. The marker holds
+no path and no identity, because that file sits in the shared folder.
+(2) `framework`, `cerceve`, `kaynak`, `surum` and `yedek` joined the
+common-word list: a generic technical word is not personal data.
+
+Phase 10 gained three checks. One of them measures the opposite
+direction: the same folder **without** the marker must still count as a
+project — otherwise the check would pass vacuously by calling nothing a
+project.
+
+**Full suite: 622 passed, 0 failed.**
+
 ## 3.3.3 — The upgrade path never worked on Mac and Linux
 
 Someone asked how a user on the first version reaches the latest one.

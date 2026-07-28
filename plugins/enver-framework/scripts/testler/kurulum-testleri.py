@@ -61,11 +61,14 @@ def _kabuk():
     return yol if sonuc.returncode == 0 else None
 
 
-def _kum_kaynak(dizin, kurallar="yeni kurallar\n"):
+def _kum_kaynak(dizin, kurallar="yeni kurallar\n", kasa_ile=False):
     """Kurulumun kopyalayacağı sahte kaynak ağacı.
 
     Kasa (vault) ve bilgi deposu BİLEREK yok: herkese açık sürümdeki
     durum budur, ölçülmek istenen de tam bu.
+
+    kasa_ile=True kaynağa bir kasa klasörü koyar. Bu, kurulumun onu
+    kopyalamayı REDDETTİĞİNİ ölçmek içindir - kopyaladığını değil.
     """
     kaynak = Path(dizin) / "kaynak"
     (kaynak / "sablonlar").mkdir(parents=True)
@@ -79,8 +82,26 @@ def _kum_kaynak(dizin, kurallar="yeni kurallar\n"):
     (kaynak / "plugins" / ".claude-plugin" / "marketplace.json").write_text(
         '{"name": "enver-framework"}\n', encoding="utf-8")
 
+    if kasa_ile:
+        (kaynak / "vault").mkdir()
+        (kaynak / "vault" / "kaynak-kasasi.md").write_text(
+            "kaynaktaki kasa\n", encoding="utf-8")
+        # Hedeftekiyle AYNI adli dosya: kopyalayan bir kurulum burada
+        # kullanicinin kasasini gercekten ezer. Ad farkli olsaydi bayt
+        # karsilastirmasi hicbir sey olcmezdi.
+        (kaynak / "vault" / "kasa.kilit").write_text(
+            "KAYNAKTAN GELEN BASKA KASA\n", encoding="utf-8")
+
     shutil.copy2(KOK / "kurulum.sh", kaynak / "kurulum.sh")
     return kaynak
+
+
+def _kasa_kur(ev, icerik="SIFRELI-KASA-ICERIGI\n"):
+    """Hedefe kurulu bir kasa koy. Ölçülecek şey: dokunulmadan kalması."""
+    kasa = ev / ".claude" / "vault"
+    kasa.mkdir(parents=True, exist_ok=True)
+    (kasa / "kasa.kilit").write_text(icerik, encoding="utf-8")
+    return kasa / "kasa.kilit"
 
 
 def _kur(bash, kaynak, ev):
@@ -162,6 +183,29 @@ else:
         olc("Icerik ayniysa yedek alinmiyor", not yedekler,
             f"{len(yedekler)} gereksiz yedek")
 
+    print("\n  Kasa - kurulum kasaya dokunmamali")
+    with tempfile.TemporaryDirectory() as gecici:
+        # En kotu durum: kaynakta da kasa var, hedefte de. Kopyalayan bir
+        # kurulum burada kullanicinin sifreli kasasini ezerdi.
+        kaynak = _kum_kaynak(gecici, kasa_ile=True)
+        ev = Path(gecici) / "ev"
+        (ev / ".claude").mkdir(parents=True)
+        kurulu_kasa = _kasa_kur(ev)
+        onceki = kurulu_kasa.read_bytes()
+
+        sonuc = _kur(bash, kaynak, ev)
+
+        olc("Kurulu kasa BAYT BAYT ayni kaldi",
+            kurulu_kasa.read_bytes() == onceki,
+            "kasa dosyasi degismis")
+        olc("Kaynaktaki kasa hedefe GECMEDI",
+            not (ev / ".claude" / "vault" / "kaynak-kasasi.md").exists())
+        olc("Kopyalamadigini soyluyor", "KOPYALANMADI" in sonuc.stdout)
+        olc("Kasa varken kurulum yine de tamamlaniyor",
+            sonuc.returncode == 0
+            and (ev / ".claude" / "plugins" / "enver-framework"
+                 / "commands" / "panel.md").is_file())
+
 # --------------------------------------------------------- canlı kurulum (ps1)
 
 # Windows tarafı ayrı bir betik; aynı davranışı orada da ölçmek gerekir.
@@ -173,13 +217,16 @@ if sys.platform == "win32":
         print("  [ATLA  ] PowerShell bulunamadi")
     else:
         with tempfile.TemporaryDirectory() as gecici:
-            kaynak = _kum_kaynak(gecici)
+            kaynak = _kum_kaynak(gecici, kasa_ile=True)
             shutil.copy2(KOK / "kurulum.ps1", kaynak / "kurulum.ps1")
             ev = Path(gecici) / "ev"
             (ev / ".claude").mkdir(parents=True)
 
             eski = "benim kendi kurallarim\n"
             (ev / ".claude" / "CLAUDE.md").write_text(eski, encoding="utf-8")
+
+            kurulu_kasa = _kasa_kur(ev)
+            onceki_kasa = kurulu_kasa.read_bytes()
 
             ortam = dict(os.environ)
             # Kurulum hedefi USERPROFILE'dan cozulur; kum havuzuna cevrilir.
@@ -205,6 +252,11 @@ if sys.platform == "win32":
             if yedekler:
                 olc("Yedek ESKI icerigi tasiyor (ps1)",
                     yedekler[0].read_text(encoding="utf-8").strip() == eski.strip())
+            olc("kurulum.ps1 kurulu kasayi bozmuyor",
+                kurulu_kasa.read_bytes() == onceki_kasa,
+                "kasa dosyasi degismis")
+            olc("kurulum.ps1 kaynaktaki kasayi tasimiyor",
+                not (ev / ".claude" / "vault" / "kaynak-kasasi.md").exists())
 
 # ------------------------------------------------------------ güncelleme betiği
 
@@ -237,6 +289,27 @@ olc("kurulum.sh eksik kaynagi atliyor", "atlandi (kaynak yok)" in kurulum_sh)
 olc("kurulum.ps1 eksik kaynagi atliyor", "atlandi (kaynak yok)" in kurulum_ps1)
 olc("kurulum.sh kurallari yedekliyor", "yedekle_kurallar" in kurulum_sh)
 olc("kurulum.ps1 kurallari yedekliyor", "YedekleKurallar" in kurulum_ps1)
+
+# Kasa kopyalama satiri geri gelmemeli. Belirli bir satiri aramak yetmez -
+# ayni is baska bicimde yazilinca kontrol sessizce gecerdi. Olculen sey
+# sudur: KOPYALAYAN hicbir satir kasadan soz etmiyor.
+def _kasa_kopyalayan_satir(metin, fiiller):
+    bulunan = []
+    for satir in metin.splitlines():
+        s = satir.strip()
+        if not s or s.startswith("#"):
+            continue
+        if "vault" in s and any(f in s for f in fiiller):
+            bulunan.append(s[:70])
+    return bulunan
+
+sh_kopya = _kasa_kopyalayan_satir(kurulum_sh, ("cp ", "cp -", "kopyala "))
+ps1_kopya = _kasa_kopyalayan_satir(kurulum_ps1, ("Copy-Item", "Kopyala "))
+
+olc("kurulum.sh kasa kopyalamiyor",
+    "kasaya_dokunma" in kurulum_sh and not sh_kopya, str(sh_kopya))
+olc("kurulum.ps1 kasa kopyalamiyor",
+    "KasayaDokunma" in kurulum_ps1 and not ps1_kopya, str(ps1_kopya))
 
 # Yedek, kopyalamadan ONCE calismali; sonra calisirsa yeni dosyayi yedekler.
 olc("Yedek, uzerine yazmadan once aliniyor (sh)",

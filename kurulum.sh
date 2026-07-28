@@ -73,12 +73,32 @@ yedekle_kurallar() {
     echo "      onceki dosya yedeklendi: enver/yedek/CLAUDE.$damga.md"
 }
 
+# Kasa KOPYALANMAZ.
+#
+# Kural açık: kasa dosyaları git'e girmez, log'a yazılmaz, ekrana
+# basılmaz ve KOPYALANMAZ. Kurulumun kasayı taşıması bu kuralı deldiği
+# gibi, hedefte duran dolu bir kasayı da üzerine yazma riski taşır -
+# şifreli bir dosya ezildiğinde geri getirilemez.
+#
+# Kasa "kasa.py kur" ile oluşur ve makineye özeldir; kurulum yalnız
+# klasörün varlığını sağlar. Kaynakta düz metin bir kasa klasörü varsa
+# kopyalanmaz, yalnız haber verilir.
+kasaya_dokunma() {
+    echo "[$1] Kasa"
+
+    if [ -d "$REPO_DIR/vault" ] && [ -n "$(ls -A "$REPO_DIR/vault" 2>/dev/null)" ]; then
+        echo "      kaynakta kasa klasoru var, KOPYALANMADI (kural geregi)"
+    fi
+
+    echo "      dokunulmadi - kasa 'kasa.py kur' ile olusur"
+}
+
 # Dosyaları kopyala
 echo "[1/5] Global CLAUDE.md kopyalaniyor..."
 yedekle_kurallar
 cp "$REPO_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
 
-kopyala "Kasa dosyalari kopyalaniyor..."   "$REPO_DIR/vault"     "$CLAUDE_DIR/vault"     "2/5"
+kasaya_dokunma "2/5"
 kopyala "Bilgi deposu kopyalaniyor..."     "$REPO_DIR/bilgi"     "$CLAUDE_DIR/bilgi"     "3/5"
 kopyala "Sablonlar kopyalaniyor..."        "$REPO_DIR/sablonlar" "$CLAUDE_DIR/sablonlar" "4/5"
 

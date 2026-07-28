@@ -579,6 +579,24 @@ def komut_paylasima_hazirla(args):
         for ad in eklenen_ornek:
             print(f"    {ad}")
 
+    # Ayna işareti: bu klasör ÜRETİLMİŞTİR, ayrı bir proje değildir.
+    #
+    # İşaret yokken tarama burayı bağımsız bir proje sanıyordu: kayda
+    # "tanımsız proje" olarak giriyor, kapı kontrolü kırmızı yanıyordu.
+    # Daha kötüsü, klasör adının parçaları kişisel veri deseni sayılıp
+    # ("...-framework-acik" içindeki 'framework') temiz kopyayı
+    # paylaşılamaz ilan ediyordu.
+    #
+    # İçine yol ya da kimlik yazılmaz - paylaşılan klasörde duracak.
+    try:
+        (hedef / ".enver-ayna").write_text(
+            json.dumps({"tur": "paylasim-aynasi",
+                        "aciklama": "Uretilmis kopya; elle duzenlenmez."},
+                       ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8")
+    except OSError:
+        pass
+
     # KİŞİSEL DEĞER TARAMASI
     #
     # Klasör çıkarmak yetmiyor: kalan dosyaların İÇİNDE de sunucu adresi,
@@ -599,6 +617,11 @@ def komut_paylasima_hazirla(args):
             "projesi", "sistem", "sistemi", "uygulama", "uygulamasi",
             "yonetim", "yonetimi", "kurulum", "masaustu", "hesap",
             "export", "import", "asistan", "asistanim",
+            # Bir proje adında geçen genel teknik kelimeler kişisel veri
+            # değildir. 'x-framework-acik' kayıtlıyken 'framework' desen
+            # sayılıyor ve 96 dosyada eşleşip temiz kopyayı paylaşılamaz
+            # ilan ediyordu.
+            "framework", "cerceve", "kaynak", "surum", "yedek",
         }
 
         # Kimlik değerleri proje adı olarak sayılmaz; onlar zaten

@@ -45,6 +45,12 @@ KAYIT_YOLU = Path.home() / ".claude" / "enver" / "projeler.json"
 # Bir klasörün proje olduğunu gösteren işaretler
 PROJE_ISARETLERI = [".claude/proje.json", "CLAUDE.md", ".git"]
 
+# Üretilmiş kopyanın işareti. Paylaşıma hazırlama bu dosyayı bırakır.
+# Böyle bir klasör proje sayılmaz: kendi deposu ve CLAUDE.md'si vardır
+# ama bağımsız bir iş değildir, kaynağın aynasıdır. Sayılınca kayda
+# "tanımsız proje" olarak giriyor ve kapı kontrolünü düşürüyordu.
+AYNA_ISARETI = ".enver-ayna"
+
 TARANMAYAN = {
     "node_modules", "vendor", "__pycache__", ".git", "dist", "build",
     "_arsiv", "_calisma", ".venv", "venv", "AppData", "Windows",
@@ -75,7 +81,14 @@ def kokler():
     return [str(Path(yollar.proje_kok()).parent)]
 
 
+def ayna_mi(dizin):
+    """Üretilmiş paylaşım kopyası mı?"""
+    return (Path(dizin) / AYNA_ISARETI).is_file()
+
+
 def proje_mu(dizin):
+    if ayna_mi(dizin):
+        return False
     return any((dizin / isaret).exists() for isaret in PROJE_ISARETLERI)
 
 
@@ -257,6 +270,13 @@ def komut_liste(args):
 
     satirlar = []
     for ad, kayit in projeler.items():
+        # Üretilmiş aynalar listede görünmez. Kayıt SİLİNMEZ - eski
+        # tarama sonucu durur, yalnız gösterilmez. Ayna bir iş değildir;
+        # listede "tanımsız proje" olarak durması hem yanlış bilgidir hem
+        # de kapı kontrolünü düşürür.
+        if ayna_mi(kayit.get("yol", "")):
+            continue
+
         tanim = tanim_getir(kayit)
 
         # Tanımlı olup olmadığı KAYITTAN değil, o anki durumdan okunur.
