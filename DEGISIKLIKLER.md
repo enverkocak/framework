@@ -9,6 +9,52 @@ Kayıt tutma biçimi: her sürümde **ne değişti** ve **neden** yazılır.
 
 ---
 
+## 3.3.5 — Guncelleme bildirimi kurulu kopyayi hic gormuyordu
+
+`/guncelle` calistirildi ve ortaya cikti: depo gunlerdir 3.3.4'te, ama
+**calisan eklenti 3.2.9'da**. Komut bunu soylemiyordu; "Cerceve guncel"
+diyordu. Iki ayri hata ust uste binmisti.
+
+**1. Surum okuma dizin duzenini varsayiyordu.** `yerel_surum()`
+manifesti `parents[2]` ile ariyordu:
+
+| Duzen | Betik | Manifest |
+|-------|-------|----------|
+| Depo klonu | `plugins/enver-framework/scripts/` | `parents[2]` **dogru** |
+| Pazar yerinden | `cache/<eklenti>/<surum>/scripts/` | bir seviye derin, **bulamiyor** |
+
+Pazar yerinden kurulu her makinede surum `None` okunuyordu. Sonuc
+sessizdi: karsilastirma anlamsizlasiyor, `var_mi` hicbir zaman dogru
+olamiyor, yani **kurulu kopya aylarca geride kalsa da bildirim
+cikmiyordu**. Artik derinlik varsayilmaz; yukari dogru ilk manifest
+aranir.
+
+**2. Guncelleme, calisan kopyaya hic dokunmuyordu.** `git pull` +
+kurulum `~/.claude/plugins/` altina yazar. Ama pazar yerinden kurulu
+makinede calisan kopya orasi degil, onbellektir. Komut "bitti" diyor,
+kullanici eski surumde kaliyordu - tam olarak bu oldu.
+
+Daha kotusu: iki yolu birden kosmak `~/.claude/plugins/` altina
+**ikinci, paralel bir kurulum** birakiyordu. Ayni komutlar ve kancalar
+iki kopyada; hangisinin canli oldugu belirsiz. Ustelik klon, herkese
+acik depo degil **ozel gelistirme deposu** olabilir - o zaman kurulum,
+paylasilmamasi gereken bir kopyayi yayardi.
+
+Artik `/guncelle` once kurulum kaynagini secer: pazar yerinden kuruluysa
+`claude plugin marketplace update` + `claude plugin update` calisir ve
+depo klonuna dokunulmaz; klondan kuruluysa eski yol isler.
+
+**Ucuncu olarak** acilis bildirimine yeni bir satir eklendi: kurulu kopya
+calisan koddan geride kaldiginda "PAZAR YERI KOPYASI GERIDE" denir. Bu
+fark eskiden hicbir yerde gorunmuyordu.
+
+**Olcum:** guncelleme senaryolari 7'den **17'ye** cikti. Surum okuma iki
+dizin duzeninde de gercek dosya agaci kurularak olculuyor (biri pazar
+yeri duzeni, biri depo duzeni), kurulu kopyanin geride kalmasi uc
+senaryoyla, kurulum yolunun secimi iki senaryoyla.
+
+**Tam takim: 632 gecti, 0 kaldi.**
+
 ## 3.3.4 — Kurulum artik kasaya hic dokunmuyor
 
 "Guncelleme yapinca kasa kirilir mi" diye soruldu. Olculdu: kirilmiyordu.

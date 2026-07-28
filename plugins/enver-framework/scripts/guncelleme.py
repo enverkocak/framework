@@ -19,6 +19,7 @@ Geliştirici: Enver KOCAK
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timedelta
@@ -31,6 +32,10 @@ for _akis in (sys.stdout, sys.stderr):
 ENVER_DIZINI = Path.home() / ".claude" / "enver"
 KURULUM_BILGISI = ENVER_DIZINI / "kurulum-bilgisi.json"
 DURUM_DOSYASI = ENVER_DIZINI / "guncelle-durum.json"
+
+# Pazar yerinden kurulan kopyanın kaydı. Çalışan eklenti çoğu makinede
+# BURADAKİ kopyadır; depo klonu yalnız geliştirme makinesinde canlıdır.
+KURULU_EKLENTILER = Path.home() / ".claude" / "plugins" / "installed_plugins.json"
 
 # Günde bir kez yeter; daha sık yoklamak ağ trafiği demek.
 YOKLAMA_ARALIGI = timedelta(hours=24)
@@ -94,10 +99,71 @@ def _surum_tuple(s):
         return ()
 
 
+def plugin_manifesti():
+    """Çalışan kopyanın plugin.json'u.
+
+    İki farklı düzen var ve sabit bir derinlik ikisini birden tutmuyor:
+
+      depo klonu        <depo>/plugins/enver-framework/scripts/guncelleme.py
+                        manifest: <depo>/plugins/enver-framework/.claude-plugin/
+      pazar yerinden    <onbellek>/enver-framework/<surum>/scripts/guncelleme.py
+                        manifest: <onbellek>/enver-framework/<surum>/.claude-plugin/
+
+    Eskiden yol `parents[2]` ile sabitlenmişti. Depoda doğruydu; pazar
+    yerinden kurulumda bir seviye şaşıyor ve dosya bulunamıyordu. Sonuç
+    sessiz ve tehlikeliydi: sürüm None okunuyor, karşılaştırma anlamını
+    yitiriyor, `var_mi` hiçbir zaman doğru olamıyordu. Yani kurulu kopya
+    aylarca geride kalsa da güncelleme bildirimi ÇIKMAZDI.
+
+    Artık derinlik varsayılmaz; yukarı doğru ilk manifest aranır.
+    """
+    for ata in Path(__file__).resolve().parents:
+        yol = ata / ".claude-plugin" / "plugin.json"
+        if yol.is_file():
+            return yol
+    return None
+
+
 def yerel_surum():
     """Çalışan çerçevenin sürümü."""
-    yol = Path(__file__).resolve().parents[2] / ".claude-plugin" / "plugin.json"
-    return _surum_ayikla(yol.read_text(encoding="utf-8")) if yol.is_file() else None
+    yol = plugin_manifesti()
+    return _surum_ayikla(yol.read_text(encoding="utf-8")) if yol else None
+
+
+def eklenti_adi():
+    """Manifestteki eklenti adı. Kurulu kopyayı ararken kullanılır."""
+    yol = plugin_manifesti()
+    if not yol:
+        return None
+    try:
+        return json.loads(yol.read_text(encoding="utf-8")).get("name")
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def kurulu_eklenti():
+    """Pazar yerinden kurulu kopyanın kaydı. Yoksa None.
+
+    Çoğu makinede ÇALIŞAN kopya budur; depo klonu yalnız geliştirme
+    makinesinde canlıdır. Depoyu güncellemek bu kopyayı yenilemez -
+    onu ayrıca `claude plugin update` tazeler.
+    """
+    ad = eklenti_adi()
+    if not ad:
+        return None
+
+    veri = _guvenli_oku(KURULU_EKLENTILER)
+    for anahtar, kayitlar in (veri.get("plugins") or {}).items():
+        if anahtar.split("@")[0] != ad:
+            continue
+        for kayit in kayitlar or []:
+            return {
+                "anahtar": anahtar,
+                "pazar_yeri": anahtar.split("@")[-1],
+                "surum": kayit.get("version"),
+                "yol": kayit.get("installPath"),
+            }
+    return None
 
 
 def _canli_kontrol(kaynak):
@@ -212,12 +278,38 @@ def kontrol(zorla=False):
     return sonuc
 
 
+def pazar_geride_mi():
+    """Pazar yerinden kurulu kopya, çalışan koddan eski mi?
+
+    İki sürüm ayrı yaşayabiliyor: depo klonu güncellenir ama çalışan
+    eklenti pazar yeri önbelleğinde eski kalır. Bunu ölçen bir şey yoktu;
+    fark günlerce görünmedi.
+    """
+    kurulu = kurulu_eklenti()
+    if not kurulu or not kurulu.get("surum"):
+        return None
+    yerel = yerel_surum()
+    if not yerel:
+        return None
+    if _surum_tuple(kurulu["surum"]) >= _surum_tuple(yerel):
+        return None
+    return {"kurulu": kurulu["surum"], "calisan": yerel,
+            "anahtar": kurulu["anahtar"]}
+
+
 def banner():
     """Açılış brifingine eklenecek kısa bildirim. Güncelleme yoksa boş."""
     try:
         durum = kontrol()
+        geride = pazar_geride_mi()
     except Exception:
         return ""
+
+    if geride and not (durum and durum.get("var_mi")):
+        return ("PAZAR YERI KOPYASI GERIDE: "
+                f"{geride['kurulu']} → {geride['calisan']}\n"
+                "  Calisan eklenti eski surumde. Tek komut:  /guncelle")
+
     if not durum or not durum.get("var_mi"):
         return ""
 
@@ -234,13 +326,48 @@ def banner():
     return "\n".join(satirlar)
 
 
-def komut_yap():
-    """Güncellemeyi uygula: git pull + kurulumu tekrar çalıştır.
+def guncelleme_yolu():
+    """Bu makinede güncelleme hangi yoldan yapılmalı?
 
-    Baştan sona kendisi yürütür; kullanıcı tek komutla günceller. Sonunda
+    'pazar' — eklenti pazar yerinden kurulmuş. Çalışan kopya önbellekte
+              durur; onu yalnız `claude plugin update` tazeler.
+    'klon'  — çerçeve depo klonundan kurulmuş; git pull + kurulum.
+
+    Ayrım şart: pazar yerinden kurulu bir makinede klon kurulumunu da
+    çalıştırmak `~/.claude/plugins/` altına İKİNCİ, paralel bir kurulum
+    bırakır. İki kopya aynı komutları ve kancaları taşır; hangisinin
+    canlı olduğu belirsizleşir. Üstelik klon, herkese açık depo değil
+    özel geliştirme deposu olabilir - o zaman kurulum, paylaşılmaması
+    gereken bir kopyayı yayar.
+    """
+    return "pazar" if kurulu_eklenti() else "klon"
+
+
+def komut_yap():
+    """Güncellemeyi uygula.
+
+    Pazar yerinden kurulu makinede yalnız o kopya tazelenir. Depo
+    klonundan kurulu makinede git pull + kurulum çalışır. Sonunda
     '/reload-plugins' gerekir - onu yapan istemci (Claude Code), bu betik
     değil, o yüzden yalnız hatırlatılır.
     """
+    if guncelleme_yolu() == "pazar":
+        kurulu = kurulu_eklenti()
+        print(f"Kurulum kaynagi: pazar yeri ({kurulu['anahtar']})")
+        print(f"Kurulu surum   : {kurulu['surum']}")
+        print()
+        sonuc = pazar_yerini_tazele()
+        if sonuc == "elle":
+            return 1
+        try:
+            DURUM_DOSYASI.unlink()
+        except OSError:
+            pass
+        print()
+        print("Guncelleme tamam. Son adim (bunu sen calistir): /reload-plugins")
+        print("Depo klonuna dokunulmadi; pazar yerinden kurulu kopya tazelendi.")
+        return 0
+
     kaynak = klon_dizini()
     if kaynak is None:
         print("Klon dizini bulunamadı. Elle güncelle:")
@@ -275,21 +402,80 @@ def komut_yap():
         return 1
 
     print()
-    if sonuc.returncode == 0:
-        # Yeni sürüm kuruldu; önbelleği temizle ki banner bir daha çıkmasın.
-        try:
-            DURUM_DOSYASI.unlink()
-        except OSError:
-            pass
-        print("Güncelleme tamam. Son adım (bunu sen çalıştır): /reload-plugins")
-        return 0
+    if sonuc.returncode != 0:
+        print("Kurulum hata verdi. Yukarıdaki çıktıya bak.")
+        return 1
 
-    print("Kurulum hata verdi. Yukarıdaki çıktıya bak.")
-    return 1
+    # Yeni sürüm kuruldu; önbelleği temizle ki banner bir daha çıkmasın.
+    try:
+        DURUM_DOSYASI.unlink()
+    except OSError:
+        pass
+
+    print("Güncelleme tamam. Son adım (bunu sen çalıştır): /reload-plugins")
+    return 0
+
+
+def pazar_yerini_tazele():
+    """Pazar yerinden kurulu kopyayı da yenile.
+
+    Depoyu çekmek ve kurulumu koşturmak `~/.claude/plugins/` altına yazar.
+    Ama eklenti pazar yerinden kurulduysa ÇALIŞAN kopya orası değil,
+    `~/.claude/plugins/cache/<eklenti>/<surum>/` altındaki kopyadır.
+    Bu adım olmadan güncelleme "bitti" der, kullanıcı eski sürümde kalır -
+    tam olarak böyle oldu: depo günlerce 3.3.4 iken çalışan eklenti
+    3.2.9'da kaldı ve hiçbir şey haber vermedi.
+
+    Dönüş: 'yapildi' | 'elle' | 'yok'
+    """
+    kurulu = kurulu_eklenti()
+    if not kurulu:
+        return "yok"
+
+    print()
+    print(f"[3/3] Pazar yeri kopyasi yenileniyor ({kurulu['surum']})...")
+
+    claude = shutil.which("claude")
+    if not claude:
+        print("  'claude' komutu bulunamadi. Elle:")
+        print(f"    claude plugin marketplace update {kurulu['pazar_yeri']}")
+        print(f"    claude plugin update {kurulu['anahtar']}")
+        return "elle"
+
+    for arg in (["plugin", "marketplace", "update", kurulu["pazar_yeri"]],
+                ["plugin", "update", kurulu["anahtar"]]):
+        try:
+            sonuc = subprocess.run([claude, *arg], timeout=180,
+                                   capture_output=True, text=True,
+                                   encoding="utf-8", errors="replace")
+        except (OSError, subprocess.TimeoutExpired) as hata:
+            print(f"  Calistirilamadi: {hata}")
+            return "elle"
+        if sonuc.returncode != 0:
+            print(f"  Hata: {(sonuc.stderr or sonuc.stdout).strip()[:200]}")
+            return "elle"
+        son_satir = [s for s in (sonuc.stdout or "").splitlines() if s.strip()]
+        if son_satir:
+            print("  " + son_satir[-1].strip())
+
+    return "yapildi"
 
 
 def komut_kontrol():
     durum = kontrol(zorla=True)
+
+    # Kurulu kopya ayrıca yazılır. "Çerçeve güncel" demek yetmiyordu:
+    # o cümle depo klonunu anlatıyor, kullanıcının çalıştırdığı kopyayı
+    # değil. İkisi ayrı sürümde olabilir ve tam olarak öyle oldu.
+    kurulu = kurulu_eklenti()
+    if kurulu:
+        print(f"Pazar yeri kopyasi : {kurulu['surum']}  ({kurulu['anahtar']})")
+    print(f"Calisan kod        : {yerel_surum()}")
+
+    geride = pazar_geride_mi()
+    if geride:
+        print("UYARI: Calisan eklenti geride. Tazelemek icin: /guncelle")
+
     if durum is None:
         print("Güncelleme kontrol edilemedi (klon bulunamadı ya da ağ yok).")
         return 0

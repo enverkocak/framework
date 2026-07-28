@@ -10,6 +10,52 @@ teaches nothing.
 
 ---
 
+## 3.3.5 — The update notice could not see the installed copy
+
+`/guncelle` was run and the truth came out: the repository had been at
+3.3.4 for days while the **running plugin was still 3.2.9**. The command
+never said so — it said "up to date". Two bugs were stacked on top of
+each other.
+
+**1. Reading the version assumed a directory layout.** `yerel_surum()`
+looked for the manifest at `parents[2]`:
+
+| Layout | Script | Manifest |
+|--------|--------|----------|
+| Repository clone | `plugins/enver-framework/scripts/` | `parents[2]` **correct** |
+| From a marketplace | `cache/<plugin>/<version>/scripts/` | one level deeper, **not found** |
+
+On every marketplace install the version read as `None`. The failure was
+silent: the comparison became meaningless, `var_mi` could never be true,
+and so **an installed copy could fall months behind without a word**. The
+depth is no longer assumed; the first manifest upwards is used.
+
+**2. The update never touched the running copy.** `git pull` plus the
+installer write into `~/.claude/plugins/`. But on a marketplace install
+the live copy is the cache, not that folder. The command reported
+success while the user stayed on the old version — exactly what happened.
+
+Worse, running both paths left a **second, parallel installation** in
+`~/.claude/plugins/`: the same commands and hooks in two copies, with no
+way to tell which is live. And the clone may be the **private
+development repository** rather than the public one — in which case the
+installer would spread a copy that was never meant to be shared.
+
+`/guncelle` now picks the source first: on a marketplace install it runs
+`claude plugin marketplace update` + `claude plugin update` and leaves
+the clone alone; on a clone install the old path applies.
+
+**Third**, the session banner gained a line: when the installed copy
+falls behind the running code it says so. That gap was previously
+invisible everywhere.
+
+**Measured:** update scenarios went from 7 to **17**. Version reading is
+measured against real directory trees in both layouts (one marketplace,
+one repository), the stale-installed-copy case with three scenarios, and
+the choice of update path with two.
+
+**Full suite: 632 passed, 0 failed.**
+
 ## 3.3.4 — The installer no longer touches the vault at all
 
 The question was whether updating breaks the vault. It was measured: it
